@@ -5,6 +5,7 @@
     (modulesPath + "/installer/scan/not-detected.nix")
     ./disko.nix
     ../default.nix
+    ../../../modules/nixos/common.nix
   ];
 
   # Boot configuration
@@ -48,9 +49,6 @@
     useDHCP = true;
     networkmanager.enable = false;
   };
-
-  # Nix configuration
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   # System configuration
   time.timeZone = "Europe/Vienna";

@@ -5,6 +5,8 @@
     (modulesPath + "/installer/scan/not-detected.nix")
     ./disko.nix
     ../default.nix
+    ../../../overlays
+    ../../../modules/nixos/common.nix
   ];
 
   # Boot configuration
@@ -58,9 +60,6 @@
     pkgs.jellyfin-web
     pkgs.jellyfin-ffmpeg
   ];
-
-  # Nix configuration
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   # System configuration
   time.timeZone = "Europe/Vienna";

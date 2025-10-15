@@ -1,6 +1,6 @@
 {
   description = "NixOS configuration with flake-parts";
-
+  
   nixConfig = {
     trusted-substituters = [
       "https://cachix.cachix.org"
