@@ -1,6 +1,6 @@
 {
   description = "NixOS configuration with flake-parts";
-  
+
   nixConfig = {
     trusted-substituters = [
       "https://cachix.cachix.org"
@@ -32,7 +32,7 @@
 
   outputs = inputs@{ nixpkgs, flake-parts, disko, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = [ "x86_64-linux" "aarch64-linux" ];
+      systems = [ "x86_64-linux" ];
       
       flake.nixosConfigurations = {
         adam = nixpkgs.lib.nixosSystem {
