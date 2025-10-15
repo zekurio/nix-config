@@ -18,6 +18,7 @@
       "udev.log_priority=3"
       "boot.shell_on_fail"
       "acpi_enforce_resources=lax"
+      "amdgpu.ppfeaturemask=0xffffffff"
     ];
     kernelModules = [
       "kvm-amd"
@@ -27,7 +28,7 @@
       timeout = 10;
       efi.canTouchEfiVariables = true;
       systemd-boot.enable = true;
-    }
+    };
   };
 
   # Hardware configuration
@@ -55,6 +56,10 @@
   time.timeZone = "Europe/Vienna";
   system.autoUpgrade.enable = true;
 
+  environment.systemPackages = with pkgs; [ lact ];
+  systemd.packages = with pkgs; [ lact ];
+  systemd.services.lactd.wantedBy = ["multi-user.target"];
+
   # Hyprland configuration
   programs.hyprland = {
     enable = true;
@@ -69,16 +74,15 @@
   };
 
   services = {
-    lact.enable = true;
     openssh.enable = true;
-    pipewire {
+    pipewire = {
       enable = true;
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
     };
     blueman.enable = true;
-  }
+  };
 
   # DO NOT TOUCH THIS
   system.stateVersion = "25.05";

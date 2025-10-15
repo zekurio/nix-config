@@ -30,43 +30,27 @@
     };
   };
 
-  outputs = inputs @ { self, nixpkgs, flake-parts, disko, ... }:
+  outputs = inputs@{ nixpkgs, flake-parts, disko, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [ "x86_64-linux" "aarch64-linux" ];
-
-      flake = {
-        # Export overlays for reuse
-        overlays = import ./overlays;
-
-        # Define your NixOS configurations here
-        nixosConfigurations = {
-          adam = nixpkgs.lib.nixosSystem {
-            system = "x86_64-linux";
-            specialArgs = { inherit inputs; };
-            modules = [
-              disko.nixosModules.disko
-              ./machines/nixos/adam/configuration.nix
-              { nixpkgs.overlays = [ self.overlays.jellyfin-ffmpeg ]; }
-            ];
-          };
-          lilith = nixpkgs.lib.nixosSystem {
-            system = "x86_64-linux";
-            specialArgs = { inherit inputs; };
-            modules = [
-              disko.nixosModules.disko
-              ./machines/nixos/lilith/configuration.nix
-            ];
-          };
+      
+      flake.nixosConfigurations = {
+        adam = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = { inherit inputs; };
+          modules = [
+            disko.nixosModules.disko
+            inputs.autoaspm.nixosModules.default
+            ./machines/nixos/adam/configuration.nix
+          ];
         };
-      };
 
-      perSystem = { config, self', inputs', pkgs, system, ... }: {
-        # Per-system attributes can be defined here
-        # For example, development shells, packages, etc.
-        devShells.default = pkgs.mkShell {
-          buildInputs = with pkgs; [
-            git
-            nixfmt-rfc-style
+        lilith = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = { inherit inputs; };
+          modules = [
+            disko.nixosModules.disko
+            ./machines/nixos/lilith/configuration.nix
           ];
         };
       };

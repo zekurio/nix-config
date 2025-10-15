@@ -1,5 +1,25 @@
 {
   "nodes": {
+    "autoaspm": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1759050207,
+        "narHash": "sha256-WnEKYqj0xs92DZscGVMmLytHOQlUWg3ZtZRdgCoTgQw=",
+        "owner": "notthebee",
+        "repo": "AutoASPM",
+        "rev": "0c73e0ed98e7bb3f6854bab9505e79a7f61654bd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "notthebee",
+        "repo": "AutoASPM",
+        "type": "github"
+      }
+    },
     "disko": {
       "inputs": {
         "nixpkgs": [
@@ -58,6 +78,7 @@
     },
     "root": {
       "inputs": {
+        "autoaspm": "autoaspm",
         "disko": "disko",
         "flake-parts": "flake-parts",
         "nixpkgs": "nixpkgs"
