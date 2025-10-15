@@ -1,4 +1,4 @@
-# Disko configuration for adam
+# Disko configuration for lilith
 # This provides declarative disk partitioning for easy deployment
 { lib, ... }:
 {
@@ -6,7 +6,8 @@
     disk = {
       main = {
         type = "disk";
-        device = lib.mkDefault "to-be-filled-during-installation";
+        # PLACEHOLDER-DISK: This will be replaced during deployment
+        device = lib.mkDefault "PLACEHOLDER-DISK";
         content = {
           type = "gpt";
           partitions = {

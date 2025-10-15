@@ -107,8 +107,8 @@ update_user_password() {
     # Create a backup
     cp "$user_file" "$user_file.bak"
     
-    # Update the hashedPassword line
-    sed -i "s/hashedPassword = \"[^\"]*\";/hashedPassword = \"$escaped_hash\";/" "$user_file"
+    # Update the hashedPassword line (using PLACEHOLDER-HASH as the target)
+    sed -i "s/PLACEHOLDER-HASH/$escaped_hash/g" "$user_file"
     
     print_success "Password hash updated"
 }
@@ -131,7 +131,7 @@ prepare_disko() {
     scp "$disko_file" "root@$host:/tmp/disko.nix"
     
     # Update the disk device path on remote host
-    ssh "root@$host" "sed -i 's|to-be-filled-during-installation|$disk|' /tmp/disko.nix"
+    ssh "root@$host" "sed -i 's|PLACEHOLDER-DISK|$disk|g' /tmp/disko.nix"
     
     print_success "Disko configuration prepared"
 }

@@ -11,7 +11,8 @@
         shell = pkgs.bash;
         uid = 1000;
         isNormalUser = true;
-        hashedPassword = "$6$rSob073ER.AwVG2u$FD4btmbZ9jFPpdtslAadBDss.4CvIjshCAvFBXe3NtYjU/ydqODGsdYRMnZh5qxpGgy6mNRHeMsrJFwO6XMM./";
+        # PLACEHOLDER-HASH: This will be replaced during deployment
+        hashedPassword = "PLACEHOLDER-HASH";
         extraGroups = [
           "wheel"
           "users"
