@@ -1,58 +1,57 @@
-# Edit this configuration file to define what should be installed on
-# your system. Help is available in the configuration.nix(5) man page, on
-# https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
-
 { config, lib, pkgs, modulesPath, ... }:
 
 {
-  imports =
-    [ 
-      (modulesPath + "/installer/scan/not-detected.nix")
-      ./disko.nix
-      ../default.nix
-    ];
-
-  # Hardware configuration
-  boot.initrd.availableKernelModules = [ 
-    "nvme" "ahci" "xhci_pci" "usbhid" "usb_storage" "sd_mod"
+  imports = [
+    (modulesPath + "/installer/scan/not-detected.nix")
+    ./disko.nix
+    ../default.nix
   ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ ];
-  boot.extraModulePackages = [ ];
 
-  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-
-  # Platform
-  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-
-  # No swap devices
-  swapDevices = [ ];
-
-  # Use the systemd-boot EFI boot loader.
+  # Boot configuration
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot = {
+    kernelParams = [
+      "pcie_aspm=force"
+      "consoleblank=60"
+      "acpi_enforce_resources=lax"
+    ];
+    kernelModules = [
+      "kvm-amd"
+      "k10temp"
+    ];
+  };
 
-  # Use default kernel (stable)
-  # boot.kernelPackages = pkgs.linuxPackages_latest;
+  # Hardware configuration
+  hardware = {
+    enableRedistributableFirmware = true;
+    cpu.amd.updateMicrocode = true;
+    graphics = {
+      enable = true;
+      extraPackages = with pkgs; [
+        vpl-gpu-rt
+        libvdpau-va-gl
+        intel-media-driver
+        intel-compute-runtime
+      ];
+    };
+  };
 
-  # Define your hostname.
-  networking.hostName = "adam";
+  # Networking configuration
+  networking = {
+    hostName = "adam";
+    useDHCP = true;
+    networkmanager.enable = false;
+  };
 
-  # Enable DHCP
-  networking.useDHCP = lib.mkDefault true;
-
-  # Pick only one of the below networking options.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  # networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
-
-  # Enable flakes
+  # Nix configuration
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  # Set your time zone.
+  # System configuration
   time.timeZone = "Europe/Vienna";
-
-  # Enable the OpenSSH daemon.
   services.openssh.enable = true;
+  services.autoaspm.enable = true;
+  system.autoUpgrade.enable = true;
 
   # DO NOT TOUCH THIS
   system.stateVersion = "25.05";

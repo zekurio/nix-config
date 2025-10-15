@@ -6,7 +6,7 @@
     disk = {
       main = {
         type = "disk";
-        device = lib.mkDefault "/dev/sda";
+        device = lib.mkDefault "to-be-filled-during-installation";
         content = {
           type = "gpt";
           partitions = {
