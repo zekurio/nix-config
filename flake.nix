@@ -35,6 +35,9 @@
       systems = [ "x86_64-linux" "aarch64-linux" ];
 
       flake = {
+        # Export overlays for reuse
+        overlays = import ./overlays;
+
         # Define your NixOS configurations here
         nixosConfigurations = {
           adam = nixpkgs.lib.nixosSystem {
@@ -43,6 +46,15 @@
             modules = [
               disko.nixosModules.disko
               ./machines/nixos/adam/configuration.nix
+              { nixpkgs.overlays = [ self.overlays.jellyfin-ffmpeg ]; }
+            ];
+          };
+          lilith = nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            specialArgs = { inherit inputs; };
+            modules = [
+              disko.nixosModules.disko
+              ./machines/nixos/lilith/configuration.nix
             ];
           };
         };

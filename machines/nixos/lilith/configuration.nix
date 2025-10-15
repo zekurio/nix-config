@@ -9,9 +9,14 @@
 
   # Boot configuration
   boot = {
+    kernelPackages = pkgs.linuxPackages_latest;
     kernelParams = [
-      "pcie_aspm=force"
-      "consoleblank=60"
+      "quiet"
+      "splash"
+      "rd.systemd.show_status=false"
+      "rd.udev.log_level=3"
+      "udev.log_priority=3"
+      "boot.shell_on_fail"
       "acpi_enforce_resources=lax"
     ];
     kernelModules = [
@@ -19,7 +24,7 @@
       "k10temp"
     ];
     loader = {
-      timeout = 0;
+      timeout = 10;
       efi.canTouchEfiVariables = true;
       systemd-boot.enable = true;
     }
@@ -31,33 +36,17 @@
     cpu.amd.updateMicrocode = true;
     graphics = {
       enable = true;
-      extraPackages = with pkgs; [
-        vpl-gpu-rt
-      ];
+      enable32Bit = true;
     };
+    bluetooth.enable = true;
   };
 
   # Networking configuration
   networking = {
-    hostName = "adam";
+    hostName = "lilith";
     useDHCP = true;
     networkmanager.enable = false;
   };
-
-  services = {
-    openssh.enable = true;
-    autoaspm.enable = true;
-    jellyfin = {
-      enable = true;
-      openFirewall = true;
-    };
-  };
-
-  environment.systemPackages = [
-    pkgs.jellyfin
-    pkgs.jellyfin-web
-    pkgs.jellyfin-ffmpeg
-  ];
 
   # Nix configuration
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -65,6 +54,31 @@
   # System configuration
   time.timeZone = "Europe/Vienna";
   system.autoUpgrade.enable = true;
+
+  # Hyprland configuration
+  programs.hyprland = {
+    enable = true;
+    withUWSM = true;
+    xwayland.enable = true;
+  };
+
+  # XDG Portal for screensharing
+  xdg.portal = {
+    enable = true;
+    extraPortals = with pkgs; [ xdg-desktop-portal-hyprland ];
+  };
+
+  services = {
+    lact.enable = true;
+    openssh.enable = true;
+    pipewire {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+    };
+    blueman.enable = true;
+  }
 
   # DO NOT TOUCH THIS
   system.stateVersion = "25.05";
