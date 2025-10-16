@@ -6,6 +6,14 @@
     ./disko.nix
     ../default.nix
     ../../../overlays
+    ../../../modules/services/jellyfin.nix
+    ../../../modules/services/navidrome.nix
+    ../../../modules/services/vaultwarden.nix
+    ../../../modules/services/caddy.nix
+    ../../../modules/services/sonarr.nix
+    ../../../modules/services/radarr.nix
+    ../../../modules/services/prowlarr.nix
+    ../../../modules/services/wireguard-vpn.nix
   ];
 
   # Boot configuration
@@ -43,11 +51,10 @@
     hostName = "adam";
     useDHCP = true;
     networkmanager.enable = false;
-    firewall = {
-      enable = true;
-      allowedTCPPorts = [ 80 443 ];
-    };
   };
+
+  # Enable firewall (ports configured in service modules)
+  networking.firewall.enable = true;
 
   fileSystems."/mnt/fast-nvme" = {
     device = "/dev/nvme0n1p1";
@@ -59,14 +66,7 @@
   sops = {
     defaultSopsFile = ../../../secrets/adam.yaml;
     age.keyFile = "/var/lib/sops-nix/key.txt";
-    secrets.caddy_env = {
-      owner = "caddy";
-      group = "caddy";
-      mode = "0400";
-    };
-    secrets.vaultwarden_env = {
-      owner = "vaultwarden";
-      group = "vaultwarden";
+    secrets.wireguard_private_key = {
       mode = "0400";
     };
   };
@@ -74,76 +74,33 @@
   services = {
     openssh.enable = true;
     autoaspm.enable = true;
-    jellyfin = {
+
+    # Enable wrapped services with Caddy integration
+    jellyfin-wrapped.enable = true;
+    navidrome-wrapped.enable = true;
+    vaultwarden-wrapped.enable = true;
+
+    # Enable arr stack services
+    sonarr-wrapped.enable = true;
+    radarr-wrapped.enable = true;
+    prowlarr-wrapped = {
       enable = true;
-      openFirewall = true;
-      group = "zekurio";
+      useVpn = true;
     };
-    navidrome = {
+
+    # WireGuard VPN
+    wireguard-vpn = {
       enable = true;
-      settings = {
-        MusicFolder = "/mnt/fast-nvme/media/music";
-        Address = "127.0.0.1";
-        Port = 4533;
-        BaseUrl = "/";
-      };
-      group = "zekurio";
-    };
-    vaultwarden = {
-      enable = true;
-      config = {
-        DOMAIN = "https://vw.zekurio.xyz";
-        ROCKET_ADDRESS = "127.0.0.1";
-        ROCKET_PORT = 8222;
-        WEBSOCKET_ENABLED = true;
-        SIGNUPS_ALLOWED = false;
-        INVITATIONS_ALLOWED = true;
-      };
-      environmentFile = config.sops.secrets.vaultwarden_env.path;
-    };
-    caddy = {
-      enable = true;
-      package = pkgs.caddy.withPlugins {
-        plugins = [ "github.com/caddy-dns/cloudflare@v0.2.1" ];
-        hash = "sha256-p9AIi6MSWm0umUB83HPQoU8SyPkX5pMx989zAi8d/74=";
-      };
-      globalConfig = ''
-        email {env.CLOUDFLARE_API_EMAIL}
-      '';
-      virtualHosts."schnitzelflix.xyz" = {
-        extraConfig = ''
-          reverse_proxy localhost:8096
-          tls {
-            dns cloudflare {env.CLOUDFLARE_API_TOKEN}
-          }
-        '';
-      };
-      virtualHosts."vw.zekurio.xyz" = {
-        extraConfig = ''
-          reverse_proxy localhost:8222
-          tls {
-            dns cloudflare {env.CLOUDFLARE_API_TOKEN}
-          }
-        '';
-      };
-      virtualHosts."nv.zekurio.xyz" = {
-        extraConfig = ''
-          reverse_proxy localhost:4533
-          tls {
-            dns cloudflare {env.CLOUDFLARE_API_TOKEN}
-          }
-        '';
+      address = [ "10.67.244.211/32" "fc00:bbbb:bbbb:bb01::4:f4d2/128" ];
+      privateKeyFile = config.sops.secrets.wireguard_private_key.path;
+      dns = [ "10.64.0.1" ];
+      peer = {
+        publicKey = "ddllelPu2ndjSX4lHhd/kdCStaSJOQixs9z551qN6B8=";
+        endpoint = "146.70.116.162:51820";
+        allowedIPs = [ "0.0.0.0/0" "::/0" ];
       };
     };
   };
-
-  # Make Cloudflare API token and email available to Caddy
-  systemd.services.caddy.serviceConfig = {
-    EnvironmentFile = [ config.sops.secrets.caddy_env.path ];
-  };
-
-  # Add jellyfin user to zekurio group for media access
-  users.groups.zekurio.members = [ "jellyfin" ];
 
   # Create required directories with proper ownership
   systemd.tmpfiles.rules = [
@@ -161,12 +118,6 @@
     "z /mnt/fast-nvme/media/movies 0775 zekurio zekurio -"
     "z /mnt/fast-nvme/media/music 0775 zekurio zekurio -"
     "z /mnt/fast-nvme/media/tv 0775 zekurio zekurio -"
-  ];
-
-  environment.systemPackages = [
-    inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}.jellyfin
-    inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}.jellyfin-web
-    inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}.jellyfin-ffmpeg
   ];
 
   virtualisation = {
