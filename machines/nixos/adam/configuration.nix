@@ -6,7 +6,6 @@
     ./disko.nix
     ../default.nix
     ../../../overlays
-    ../../../modules/nixos/common.nix
   ];
 
   # Boot configuration

@@ -5,7 +5,6 @@
     (modulesPath + "/installer/scan/not-detected.nix")
     ./disko.nix
     ../default.nix
-    ../../../modules/nixos/common.nix
   ];
 
   # Boot configuration
