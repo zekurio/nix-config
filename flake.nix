@@ -44,6 +44,7 @@
         nix.settings = {
           experimental-features = [ "nix-command" "flakes" ];
           trusted-users = [ "root" "@wheel" ];
+          auto-optimise-store = true;
           
           substituters = [
             "https://cache.nixos.org"
@@ -58,6 +59,12 @@
             "nixpkgs.cachix.org-1:q91R6hxbwFvDqTSDKwDAV4T5PxqXGxswD8vhONFMeOE="
             "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
           ];
+        };
+        
+        nix.gc = {
+          automatic = true;
+          dates = "weekly";
+          options = "--delete-older-than 14d";
         };
       };
     in
