@@ -79,6 +79,16 @@
       openFirewall = true;
       group = "zekurio";
     };
+    navidrome = {
+      enable = true;
+      settings = {
+        MusicFolder = "/mnt/fast-nvme/media/music";
+        Address = "127.0.0.1";
+        Port = 4533;
+        BaseUrl = "/";
+      };
+      group = "zekurio";
+    };
     vaultwarden = {
       enable = true;
       config = {
@@ -111,6 +121,14 @@
       virtualHosts."vw.zekurio.xyz" = {
         extraConfig = ''
           reverse_proxy localhost:8222
+          tls {
+            dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+          }
+        '';
+      };
+      virtualHosts."nv.zekurio.xyz" = {
+        extraConfig = ''
+          reverse_proxy localhost:4533
           tls {
             dns cloudflare {env.CLOUDFLARE_API_TOKEN}
           }
