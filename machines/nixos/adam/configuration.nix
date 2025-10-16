@@ -43,12 +43,37 @@
     hostName = "adam";
     useDHCP = true;
     networkmanager.enable = false;
+    firewall = {
+      enable = true;
+      allowedTCPPorts = [ 80 443 ];
+    };
   };
 
   fileSystems."/mnt/fast-nvme" = {
     device = "/dev/nvme0n1p1";
     fsType = "ext4";
     options = [ "defaults" "noatime" ];
+  };
+
+  # SOPS secrets configuration
+  sops = {
+    defaultSopsFile = ../../../secrets/adam.yaml;
+    age.keyFile = "/var/lib/sops-nix/key.txt";
+    secrets.cloudflare_api_token = {
+      owner = "caddy";
+      group = "caddy";
+      mode = "0400";
+    };
+    secrets.cloudflare_api_email = {
+      owner = "caddy";
+      group = "caddy";
+      mode = "0400";
+    };
+    secrets.vaultwarden_env = {
+      owner = "vaultwarden";
+      group = "vaultwarden";
+      mode = "0400";
+    };
   };
 
   services = {
@@ -59,6 +84,53 @@
       openFirewall = true;
       group = "zekurio";
     };
+    vaultwarden = {
+      enable = true;
+      config = {
+        DOMAIN = "https://vw.zekurio.xyz";
+        ROCKET_ADDRESS = "127.0.0.1";
+        ROCKET_PORT = 8222;
+        WEBSOCKET_ENABLED = true;
+        SIGNUPS_ALLOWED = false;
+        INVITATIONS_ALLOWED = true;
+      };
+      environmentFile = config.sops.secrets.vaultwarden_env.path;
+    };
+    caddy = {
+      enable = true;
+      package = pkgs.caddy.withPlugins {
+        plugins = [ "github.com/caddy-dns/cloudflare@v0.2.1" ];
+        hash = "";
+      };
+      email = "placeholder@example.com"; # Will be overridden by environment variable
+      globalConfig = ''
+        email {env.ACME_EMAIL}
+      '';
+      virtualHosts."schnitzelflix.xyz" = {
+        extraConfig = ''
+          reverse_proxy localhost:8096
+          tls {
+            dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+          }
+        '';
+      };
+      virtualHosts."vw.zekurio.xyz" = {
+        extraConfig = ''
+          reverse_proxy localhost:8222
+          tls {
+            dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+          }
+        '';
+      };
+    };
+  };
+
+  # Make Cloudflare API token and email available to Caddy
+  systemd.services.caddy.serviceConfig = {
+    EnvironmentFile = [
+      config.sops.secrets.cloudflare_api_token.path
+      config.sops.secrets.cloudflare_api_email.path
+    ];
   };
 
   # Add jellyfin user to zekurio group for media access

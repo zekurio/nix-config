@@ -31,6 +31,10 @@
       url = "github:notthebee/AutoASPM";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs@{ nixpkgs, nixpkgs-unstable, flake-parts, disko, ... }:
@@ -68,6 +72,7 @@
             commonNixConfig
             disko.nixosModules.disko
             inputs.autoaspm.nixosModules.default
+            inputs.sops-nix.nixosModules.sops
             ./machines/nixos/adam/configuration.nix
           ];
         };
