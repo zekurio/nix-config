@@ -134,7 +134,13 @@
 
   # System configuration
   time.timeZone = "Europe/Vienna";
-  system.autoUpgrade.enable = true;
+  system.autoUpgrade = {
+    enable = true;
+    allowReboot = true;
+    dates = "*-*-* 03:00:00";
+    randomizedDelaySec = "1h";
+    flake = "github:zekurio/nix-config";
+  };
 
   # DO NOT TOUCH THIS
   system.stateVersion = "25.05";
