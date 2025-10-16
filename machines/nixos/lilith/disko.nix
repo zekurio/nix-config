@@ -6,8 +6,8 @@
     disk = {
       main = {
         type = "disk";
-        # PLACEHOLDER-DISK: This will be replaced during deployment
-        device = lib.mkDefault "PLACEHOLDER-DISK";
+        # Change this to match your actual disk device
+        device = lib.mkDefault "/dev/sda";
         content = {
           type = "gpt";
           partitions = {

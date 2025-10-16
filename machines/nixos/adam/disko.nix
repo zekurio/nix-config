@@ -6,8 +6,8 @@
     disk = {
       main = {
         type = "disk";
-        # PLACEHOLDER-DISK: This will be replaced during deployment
-        device = lib.mkDefault "PLACEHOLDER-DISK";
+        # Change this to match your actual disk device (e.g., /dev/nvme0n1, /dev/sda)
+        device = "/dev/sda";
         content = {
           type = "gpt";
           partitions = {
@@ -21,12 +21,41 @@
                 mountOptions = [ "fmask=0022" "dmask=0022" ];
               };
             };
-            root = {
+            luks = {
+              size = "100%";
+              content = {
+                type = "luks";
+                name = "cryptroot";
+                settings = {
+                  allowDiscards = true;
+                  bypassWorkqueues = true;
+                };
+                content = {
+                  type = "filesystem";
+                  format = "ext4";
+                  mountpoint = "/";
+                };
+              };
+            };
+          };
+        };
+      };
+      
+      # SATA drive for downloads and transcoding cache
+      cache = {
+        type = "disk";
+        # Update this to your SATA device path (e.g., /dev/sdb)
+        device = "/dev/sdb";
+        content = {
+          type = "gpt";
+          partitions = {
+            cache = {
               size = "100%";
               content = {
                 type = "filesystem";
                 format = "ext4";
-                mountpoint = "/";
+                mountpoint = "/mnt/cache";
+                mountOptions = [ "defaults" "noatime" ];
               };
             };
           };

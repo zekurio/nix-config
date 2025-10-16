@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# THIS WAS BUILT BY CLAUDE, NEEDS TO BE TESTED AND VERIFIED
-
 set -euo pipefail
 
 # Colors for output
@@ -39,21 +37,14 @@ OPTIONS:
     -h, --help              Show this help message
     -H, --host HOST         Target host IP or hostname (required)
     -f, --flake FLAKE       Flake name (e.g., adam, lilith) (required)
-    -d, --disk DISK         Disk device path (e.g., /dev/nvme0n1, /dev/sda)
-    -p, --password PASS     Plain text password for user (will be hashed)
-    --password-hash HASH    Pre-hashed password for user
     --skip-disko            Skip disko partitioning step
-    --skip-password         Skip password configuration
 
 EXAMPLES:
     # Interactive mode (will prompt for missing values)
     $0
 
     # With all parameters
-    $0 --host 192.168.2.100 --flake adam --disk /dev/nvme0n1 --password mypassword
-
-    # With pre-hashed password
-    $0 --host 192.168.2.100 --flake adam --disk /dev/sda --password-hash '\$6\$...'
+    $0 --host 192.168.2.100 --flake adam
 
     # Skip disko (when disk is already partitioned)
     $0 --host 192.168.2.100 --flake adam --skip-disko
@@ -74,73 +65,12 @@ check_host() {
     print_success "Successfully connected to $host"
 }
 
-# Function to list available disks on remote host
-list_disks() {
-    local host=$1
-    print_info "Available disks on $host:"
-    ssh "root@$host" "lsblk -dno NAME,SIZE,TYPE | grep disk"
-}
-
-# Function to generate password hash
-generate_password_hash() {
-    local password=$1
-    print_info "Generating password hash..."
-    # Using mkpasswd with SHA-512
-    if command -v mkpasswd &> /dev/null; then
-        mkpasswd -m sha-512 "$password"
-    else
-        print_warning "mkpasswd not found, using openssl"
-        openssl passwd -6 "$password"
-    fi
-}
-
-# Function to update user password in default.nix
-update_user_password() {
-    local password_hash=$1
-    local user_file="$SCRIPT_DIR/modules/users/zekurio/default.nix"
-    
-    print_info "Updating user password hash in $user_file..."
-    
-    # Escape special characters in the hash for sed
-    local escaped_hash=$(echo "$password_hash" | sed 's/[\/&]/\\&/g' | sed 's/\$/\\$/g')
-    
-    # Create a backup
-    cp "$user_file" "$user_file.bak"
-    
-    # Update the hashedPassword line (using PLACEHOLDER-HASH as the target)
-    sed -i "s/PLACEHOLDER-HASH/$escaped_hash/g" "$user_file"
-    
-    print_success "Password hash updated"
-}
-
-# Function to prepare disko configuration
-prepare_disko() {
-    local host=$1
-    local flake=$2
-    local disk=$3
-    local disko_file="$SCRIPT_DIR/machines/nixos/$flake/disko.nix"
-    
-    if [ ! -f "$disko_file" ]; then
-        print_error "Disko configuration not found: $disko_file"
-        exit 1
-    fi
-    
-    print_info "Preparing disko configuration for $disk..."
-    
-    # Copy disko file to remote host
-    scp "$disko_file" "root@$host:/tmp/disko.nix"
-    
-    # Update the disk device path on remote host
-    ssh "root@$host" "sed -i 's|PLACEHOLDER-DISK|$disk|g' /tmp/disko.nix"
-    
-    print_success "Disko configuration prepared"
-}
-
 # Function to run disko
 run_disko() {
     local host=$1
+    local flake=$2
     
-    print_warning "This will DESTROY all data on the selected disk!"
+    print_warning "This will DESTROY all data on the disk specified in $flake/disko.nix!"
     read -p "Are you sure you want to continue? (yes/no): " confirm
     if [ "$confirm" != "yes" ]; then
         print_info "Aborted by user"
@@ -148,6 +78,10 @@ run_disko() {
     fi
     
     print_info "Running disko partitioning..."
+    # Copy disko configuration to remote host
+    scp "$SCRIPT_DIR/machines/nixos/$flake/disko.nix" "root@$host:/tmp/disko.nix"
+    
+    # Run disko
     ssh "root@$host" "nix --experimental-features 'nix-command flakes' run github:nix-community/disko -- -m destroy,format,mount /tmp/disko.nix"
     
     print_success "Disko partitioning completed"
@@ -203,11 +137,7 @@ main() {
     # Parse arguments
     HOST=""
     FLAKE=""
-    DISK=""
-    PASSWORD=""
-    PASSWORD_HASH=""
     SKIP_DISKO=false
-    SKIP_PASSWORD=false
     
     while [[ $# -gt 0 ]]; do
         case $1 in
@@ -222,24 +152,8 @@ main() {
                 FLAKE="$2"
                 shift 2
                 ;;
-            -d|--disk)
-                DISK="$2"
-                shift 2
-                ;;
-            -p|--password)
-                PASSWORD="$2"
-                shift 2
-                ;;
-            --password-hash)
-                PASSWORD_HASH="$2"
-                shift 2
-                ;;
             --skip-disko)
                 SKIP_DISKO=true
-                shift
-                ;;
-            --skip-password)
-                SKIP_PASSWORD=true
                 shift
                 ;;
             *)
@@ -269,42 +183,9 @@ main() {
     # Check host connectivity
     check_host "$HOST"
     
-    # Handle password configuration
-    if [ "$SKIP_PASSWORD" = false ]; then
-        if [ -z "$PASSWORD_HASH" ] && [ -z "$PASSWORD" ]; then
-            read -p "Do you want to set a custom password for the user? (yes/no): " set_password
-            if [ "$set_password" = "yes" ]; then
-                read -sp "Enter password: " PASSWORD
-                echo
-                read -sp "Confirm password: " PASSWORD_CONFIRM
-                echo
-                if [ "$PASSWORD" != "$PASSWORD_CONFIRM" ]; then
-                    print_error "Passwords do not match"
-                    exit 1
-                fi
-            fi
-        fi
-        
-        if [ -n "$PASSWORD" ]; then
-            PASSWORD_HASH=$(generate_password_hash "$PASSWORD")
-        fi
-        
-        if [ -n "$PASSWORD_HASH" ]; then
-            update_user_password "$PASSWORD_HASH"
-        else
-            print_info "Using existing password hash from configuration"
-        fi
-    fi
-    
     # Handle disko partitioning
     if [ "$SKIP_DISKO" = false ]; then
-        if [ -z "$DISK" ]; then
-            list_disks "$HOST"
-            read -p "Enter disk device (e.g., /dev/nvme0n1): " DISK
-        fi
-        
-        prepare_disko "$HOST" "$FLAKE" "$DISK"
-        run_disko "$HOST"
+        run_disko "$HOST" "$FLAKE"
     else
         print_info "Skipping disko partitioning"
     fi
