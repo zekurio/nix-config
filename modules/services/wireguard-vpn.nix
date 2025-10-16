@@ -82,8 +82,11 @@
           config.services.wireguard-vpn.address;
         dnsServers = lib.concatStringsSep "," config.services.wireguard-vpn.dns;
       in ''
+        # Clean up any existing namespace
+        ip netns del ${ns} 2>/dev/null || true
+
         # Create network namespace
-        ip netns add ${ns} || true
+        ip netns add ${ns}
 
         # Create WireGuard interface in namespace
         ip link add ${iface} type wireguard
