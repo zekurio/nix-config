@@ -91,12 +91,28 @@ deploy_nixos() {
     print_info "Creating nixos configuration directory..."
     ssh "root@$host" "mkdir -p /mnt/etc/nixos"
     
-    print_info "Copying configuration to remote host..."
-    rsync -av --delete \
-        --exclude '.git' \
-        --exclude '*.bak' \
-        --exclude 'result' \
-        "$SCRIPT_DIR/" "root@$host:/mnt/etc/nixos/"
+    print_info "Cloning configuration repository to remote host..."
+    # Get the git remote URL
+    GIT_REMOTE=$(git -C "$SCRIPT_DIR" remote get-url origin 2>/dev/null || echo "")
+    
+    if [ -n "$GIT_REMOTE" ]; then
+        print_info "Cloning from: $GIT_REMOTE"
+        ssh "root@$host" "cd /mnt/etc && git clone $GIT_REMOTE nixos"
+        
+        # Checkout current branch
+        CURRENT_BRANCH=$(git -C "$SCRIPT_DIR" branch --show-current)
+        if [ -n "$CURRENT_BRANCH" ]; then
+            print_info "Checking out branch: $CURRENT_BRANCH"
+            ssh "root@$host" "cd /mnt/etc/nixos && git checkout $CURRENT_BRANCH"
+        fi
+    else
+        print_warning "No git remote found, falling back to rsync"
+        rsync -av --delete \
+            --exclude '.git' \
+            --exclude '*.bak' \
+            --exclude 'result' \
+            "$SCRIPT_DIR/" "root@$host:/mnt/etc/nixos/"
+    fi
     
     print_info "Installing NixOS..."
     ssh "root@$host" "nixos-install --root /mnt --no-root-passwd --flake /mnt/etc/nixos#$flake"
