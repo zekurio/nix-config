@@ -15,7 +15,6 @@
       "pcie_aspm=force"
       "consoleblank=60"
       "acpi_enforce_resources=lax"
-      "ip=dhcp"  # Enable network in initrd
     ];
     kernelModules = [
       "kvm-amd"
@@ -25,22 +24,6 @@
       timeout = 0;
       efi.canTouchEfiVariables = true;
       systemd-boot.enable = true;
-    };
-    
-    # Enable SSH in initrd for remote LUKS unlocking
-    initrd = {
-      network = {
-        enable = true;
-        ssh = {
-          enable = true;
-          port = 22;
-          # Automatically prompt for LUKS password on SSH connection
-          shell = "/bin/cryptsetup-askpass";
-          # Reuse SSH keys from the zekurio user configuration
-          authorizedKeys = config.users.users.zekurio.openssh.authorizedKeys.keys;
-          hostKeys = [ "/nix/secret/initrd/ssh_host_ed25519_key" ];
-        };
-      };
     };
   };
 
@@ -77,7 +60,6 @@
       openFirewall = true;
       group = "zekurio";
     };
-    getty.autologinUser = "zekurio";
   };
 
   # Add jellyfin user to zekurio group for media access

@@ -70,18 +70,11 @@ run_disko() {
     local host=$1
     local flake=$2
     
-    print_warning "This will DESTROY all data on the disk specified in $flake/disko.nix!"
-    read -p "Are you sure you want to continue? (yes/no): " confirm
-    if [ "$confirm" != "yes" ]; then
-        print_info "Aborted by user"
-        exit 0
-    fi
-    
     print_info "Running disko partitioning..."
     # Copy disko configuration to remote host
     scp "$SCRIPT_DIR/machines/nixos/$flake/disko.nix" "root@$host:/tmp/disko.nix"
     
-    # Run disko
+    # Run disko (disko will ask for confirmation)
     ssh "root@$host" "nix --experimental-features 'nix-command flakes' run github:nix-community/disko -- -m destroy,format,mount /tmp/disko.nix"
     
     print_success "Disko partitioning completed"
