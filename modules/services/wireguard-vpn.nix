@@ -77,7 +77,9 @@
       script = let
         ns = config.services.wireguard-vpn.namespaceName;
         iface = config.services.wireguard-vpn.interfaceName;
-        addresses = lib.concatStringsSep " " config.services.wireguard-vpn.address;
+        addressCommands = lib.concatMapStringsSep "\n" 
+          (addr: "        ip netns exec ${ns} ip addr add ${addr} dev ${iface}") 
+          config.services.wireguard-vpn.address;
         dnsServers = lib.concatStringsSep "," config.services.wireguard-vpn.dns;
       in ''
         # Create network namespace
@@ -87,8 +89,10 @@
         ip link add ${iface} type wireguard
         ip link set ${iface} netns ${ns}
 
+        # Configure IP addresses (each address added separately)
+${addressCommands}
+
         # Configure WireGuard in namespace
-        ip netns exec ${ns} ip addr add ${addresses} dev ${iface}
         ip netns exec ${ns} wg set ${iface} \
           private-key ${config.services.wireguard-vpn.privateKeyFile} \
           peer ${config.services.wireguard-vpn.peer.publicKey} \
