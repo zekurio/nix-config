@@ -110,6 +110,18 @@
     inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}.jellyfin-ffmpeg
   ];
 
+  virtualisation = {
+    containers.enable = true;
+    podman = {
+      dockerCompat = true;
+      autoPrune.enable = true;
+      defaultNetwork.settings = {
+        dns_enabled = true;
+      };
+    };
+    oci-containers.backend = "podman";
+  };
+
   # System configuration
   time.timeZone = "Europe/Vienna";
   system.autoUpgrade.enable = true;
