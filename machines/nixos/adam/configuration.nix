@@ -75,8 +75,6 @@
     jellyfin = {
       enable = true;
       openFirewall = true;
-      dataDir = "/var/lib/jellyfin";
-      cacheDir = "/mnt/cache/jellyfin-cache";
       group = "zekurio";
     };
     getty.autologinUser = "zekurio";
@@ -87,16 +85,15 @@
 
   # Create required directories with proper ownership
   systemd.tmpfiles.rules = [
-    "d /mnt/cache/jellyfin-cache 0775 jellyfin zekurio -"
-    "d /mnt/cache/downloads 0775 zekurio zekurio -"
-    "d /mnt/cache/downloads/completed 0775 zekurio zekurio -"
-    "d /mnt/cache/downloads/completed/sonarr 0775 zekurio zekurio -"
-    "d /mnt/cache/downloads/completed/radarr 0775 zekurio zekurio -"
-    "d /mnt/cache/downloads/completed/torrent 0775 zekurio zekurio -"
-    "d /mnt/cache/downloads/converted 0775 zekurio zekurio -"
-    "d /mnt/cache/downloads/converted/sonarr 0775 zekurio zekurio -"
-    "d /mnt/cache/downloads/converted/radarr 0775 zekurio zekurio -"
-    "d /mnt/cache/downloads/incomplete 0775 zekurio zekurio -"
+    "d /var/cache/downloads 0775 zekurio zekurio -"
+    "d /var/cache/downloads/completed 0775 zekurio zekurio -"
+    "d /var/cache/downloads/completed/sonarr 0775 zekurio zekurio -"
+    "d /var/cache/downloads/completed/radarr 0775 zekurio zekurio -"
+    "d /var/cache/downloads/completed/torrent 0775 zekurio zekurio -"
+    "d /var/cache/downloads/converted 0775 zekurio zekurio -"
+    "d /var/cache/downloads/converted/sonarr 0775 zekurio zekurio -"
+    "d /var/cache/downloads/converted/radarr 0775 zekurio zekurio -"
+    "d /var/cache/downloads/incomplete 0775 zekurio zekurio -"
     "z /mnt/fast-nvme/media 0775 zekurio zekurio -"
     "z /mnt/fast-nvme/media/anime 0775 zekurio zekurio -"
     "z /mnt/fast-nvme/media/movies 0775 zekurio zekurio -"

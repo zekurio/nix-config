@@ -40,27 +40,6 @@
           };
         };
       };
-      
-      # SATA drive for downloads and transcoding cache
-      cache = {
-        type = "disk";
-        # Update this to your SATA device path (e.g., /dev/sdb)
-        device = "/dev/sdb";
-        content = {
-          type = "gpt";
-          partitions = {
-            cache = {
-              size = "100%";
-              content = {
-                type = "filesystem";
-                format = "ext4";
-                mountpoint = "/mnt/cache";
-                mountOptions = [ "defaults" "noatime" ];
-              };
-            };
-          };
-        };
-      };
     };
   };
 }
