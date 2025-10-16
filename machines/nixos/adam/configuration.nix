@@ -59,12 +59,7 @@
   sops = {
     defaultSopsFile = ../../../secrets/adam.yaml;
     age.keyFile = "/var/lib/sops-nix/key.txt";
-    secrets.cloudflare_api_token = {
-      owner = "caddy";
-      group = "caddy";
-      mode = "0400";
-    };
-    secrets.cloudflare_api_email = {
+    secrets.caddy_env = {
       owner = "caddy";
       group = "caddy";
       mode = "0400";
@@ -102,9 +97,8 @@
         plugins = [ "github.com/caddy-dns/cloudflare@v0.2.1" ];
         hash = "sha256-p9AIi6MSWm0umUB83HPQoU8SyPkX5pMx989zAi8d/74=";
       };
-      email = "";
       globalConfig = ''
-        email {env.ACME_EMAIL}
+        email {env.CLOUDFLARE_API_EMAIL}
       '';
       virtualHosts."schnitzelflix.xyz" = {
         extraConfig = ''
@@ -127,10 +121,7 @@
 
   # Make Cloudflare API token and email available to Caddy
   systemd.services.caddy.serviceConfig = {
-    EnvironmentFile = [
-      config.sops.secrets.cloudflare_api_token.path
-      config.sops.secrets.cloudflare_api_email.path
-    ];
+    EnvironmentFile = [ config.sops.secrets.caddy_env.path ];
   };
 
   # Add jellyfin user to zekurio group for media access
