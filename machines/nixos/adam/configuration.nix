@@ -84,7 +84,7 @@
     autoaspm.enable = true;
 
     # Enable wrapped services with Caddy integration
-    jellyfin-wrapped.enable = true;
+    jellyfin-wrapped.enable = false;  # Using container instead
     navidrome-wrapped.enable = true;
     vaultwarden-wrapped.enable = true;
 
@@ -93,6 +93,12 @@
     radarr-wrapped.enable = true;
     prowlarr-wrapped.enable = true;
     sabnzbd-wrapped.enable = true;
+
+    # Caddy reverse proxy for Jellyfin container
+    caddy-wrapper.virtualHosts."jellyfin-container" = {
+      domain = "schnitzelflix.xyz";
+      reverseProxy = "localhost:8096";
+    };
   };
 
   # Create required directories with proper ownership
@@ -110,6 +116,9 @@
     "z /mnt/fast-nvme/media/movies 0775 zekurio zekurio -"
     "z /mnt/fast-nvme/media/music 0775 zekurio zekurio -"
     "z /mnt/fast-nvme/media/tv 0775 zekurio zekurio -"
+    # Podman directories
+    "d /var/lib/containers/jellyfin 0775 zekurio zekurio -"
+    "d /var/cache/containers/jellyfin 0775 zekurio zekurio -"
   ];
 
   virtualisation = {
@@ -122,6 +131,24 @@
       };
     };
     oci-containers.backend = "podman";
+    oci-containers.containers = {
+      jellyfin = {
+        image = "jellyfin/jellyfin:10.11.0-rc9";
+        autoStart = true;
+        user = "1000:1000";
+        ports = [ "127.0.0.1:8096:8096" ];
+
+        volumes = [
+          "/mnt/fast-nvme/media:/media"
+          "/var/lib/containers/jellyfin:/config"
+          "/var/cache/containers/jellyfin:/cache"
+        ];
+
+        extraOptions = [
+          "--device=/dev/dri:/dev/dri"
+        ];
+      };
+    };
   };
 
   # System configuration
