@@ -19,8 +19,6 @@
     services.sabnzbd = {
       enable = true;
       group = "zekurio";
-      openFirewall = true;
-      configFile = "/var/lib/sabnzbd/sabnzbd.ini";
     };
 
     # Add sabnzbd user to zekurio group for media access

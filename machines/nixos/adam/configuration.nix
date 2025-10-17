@@ -14,6 +14,7 @@
     ../../../modules/services/radarr.nix
     ../../../modules/services/prowlarr.nix
     ../../../modules/services/sabnzbd.nix
+    ../../../modules/services/jellyseerr.nix
   ];
 
   # Boot configuration
@@ -93,6 +94,7 @@
     jellyfin-wrapped.enable = false;  # Using container instead
     navidrome-wrapped.enable = true;
     vaultwarden-wrapped.enable = true;
+    jellyseerr-wrapped.enable = true;
 
     # Enable arr stack services
     sonarr-wrapped.enable = true;

@@ -19,7 +19,6 @@
     services.radarr = {
       enable = true;
       group = "zekurio";
-      openFirewall = true;
     };
 
     # Add radarr user to zekurio group for media access
