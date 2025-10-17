@@ -15,6 +15,8 @@
     ../../../modules/services/prowlarr.nix
     ../../../modules/services/sabnzbd.nix
     ../../../modules/services/jellyseerr.nix
+    ../../../modules/services/autobrr.nix
+    ../../../modules/services/qbittorrent.nix
   ];
 
   # Boot configuration
@@ -80,6 +82,9 @@
   sops = {
     defaultSopsFile = ../../../secrets/adam.yaml;
     age.keyFile = "/var/lib/sops-nix/key.txt";
+    secrets = {
+      mullvad-wg = { };
+    };
   };
 
   services = {
@@ -103,12 +108,37 @@
     radarr-wrapped.enable = true;
     prowlarr-wrapped.enable = true;
     sabnzbd-wrapped.enable = true;
+    autobrr-wrapped.enable = true;
+    
+    # qBittorrent with VPN confinement
+    qbittorrent-wrapped.enable = true;
 
     # Caddy reverse proxy for Jellyfin container
     caddy-wrapper.virtualHosts."jellyfin-container" = {
       domain = "schnitzelflix.xyz";
       reverseProxy = "localhost:8096";
     };
+  };
+
+  # VPN namespace configuration for qBittorrent
+  vpnNamespaces.mullvad = {
+    enable = true;
+    wireguardConfigFile = config.sops.secrets.mullvad-wg.path;
+    accessibleFrom = [
+      "192.168.0.0/16"  # Adjust to your local network
+    ];
+    portMappings = [
+      { from = 8080; to = 8080; }  # qBittorrent WebUI
+    ];
+    openVPNPorts = [
+      { port = 6881; protocol = "both"; }  # qBittorrent incoming connections
+    ];
+  };
+
+  # Confine qBittorrent to VPN namespace
+  systemd.services.qbittorrent.vpnConfinement = {
+    enable = true;
+    vpnNamespace = "mullvad";
   };
 
   # Create required directories with proper ownership

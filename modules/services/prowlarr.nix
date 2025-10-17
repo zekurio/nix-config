@@ -19,12 +19,7 @@
     services.prowlarr = {
       enable = true;
     };
-
-    # Configure Prowlarr's URL base
-    systemd.services.prowlarr.environment = {
-      Prowlarr__Server__UrlBase = "/prowlarr";
-    };
-
+    
     # Caddy virtual host configuration with base URL
     services.caddy-wrapper.virtualHosts."prowlarr" = {
       domain = config.services.prowlarr-wrapped.domain;

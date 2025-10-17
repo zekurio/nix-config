@@ -22,11 +22,6 @@
       group = "zekurio";
     };
 
-    # Configure Radarr's URL base
-    systemd.services.radarr.environment = {
-      Radarr__Server__UrlBase = "/radarr";
-    };
-
     # Caddy virtual host configuration with base URL
     services.caddy-wrapper.virtualHosts."radarr" = {
       domain = config.services.radarr-wrapped.domain;

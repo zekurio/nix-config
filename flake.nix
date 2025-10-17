@@ -35,6 +35,10 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    vpn-confinement = {
+      url = "github:Maroka-chan/VPN-Confinement";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs@{ nixpkgs, nixpkgs-unstable, flake-parts, disko, ... }:
@@ -80,6 +84,7 @@
             disko.nixosModules.disko
             inputs.autoaspm.nixosModules.default
             inputs.sops-nix.nixosModules.sops
+            inputs.vpn-confinement.nixosModules.default
             ./machines/nixos/adam/configuration.nix
             (import ./overlays inputs)
           ];

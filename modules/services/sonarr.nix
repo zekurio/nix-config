@@ -22,11 +22,6 @@
       group = "zekurio";
     };
 
-    # Configure Sonarr's URL base
-    systemd.services.sonarr.environment = {
-      Sonarr__Server__UrlBase = "/sonarr";
-    };
-
     # Caddy virtual host configuration with base URL
     services.caddy-wrapper.virtualHosts."sonarr" = {
       domain = config.services.sonarr-wrapped.domain;
