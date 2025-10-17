@@ -13,6 +13,7 @@
     ../../../modules/services/sonarr.nix
     ../../../modules/services/radarr.nix
     ../../../modules/services/prowlarr.nix
+    ../../../modules/services/sabnzbd.nix
   ];
 
   # Boot configuration
@@ -91,6 +92,7 @@
     sonarr-wrapped.enable = true;
     radarr-wrapped.enable = true;
     prowlarr-wrapped.enable = true;
+    sabnzbd-wrapped.enable = true;
   };
 
   # Create required directories with proper ownership
