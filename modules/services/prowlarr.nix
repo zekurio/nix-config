@@ -13,16 +13,6 @@
       default = 9696;
       description = "Port for Prowlarr to listen on";
     };
-    useVpn = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "Run Prowlarr through the VPN namespace";
-    };
-    vpnNamespace = lib.mkOption {
-      type = lib.types.str;
-      default = "vpn";
-      description = "Name of the VPN network namespace to use";
-    };
   };
 
   config = lib.mkIf config.services.prowlarr-wrapped.enable {
@@ -34,44 +24,9 @@
     # Add prowlarr user to zekurio group for coordination with other arr services
     users.groups.zekurio.members = [ "prowlarr" ];
 
-    # Configure Prowlarr service
-    systemd.services.prowlarr = lib.mkMerge [
-      # Base configuration for URL base
-      {
-        environment = {
-          Prowlarr__Server__UrlBase = "/prowlarr";
-        };
-      }
-      # VPN-specific configuration
-      (lib.mkIf config.services.prowlarr-wrapped.useVpn {
-        after = [ "wireguard-ns.service" ];
-        requires = [ "wireguard-ns.service" ];
-        environment = {
-          # Bind to all interfaces in namespace
-          PROWLARR__BindAddress = "0.0.0.0";
-        };
-        serviceConfig = {
-          # Run in network namespace
-          NetworkNamespacePath = "/var/run/netns/${config.services.prowlarr-wrapped.vpnNamespace}";
-        };
-      })
-    ];
-
-    # Create a bridge to access Prowlarr from the host
-    systemd.services.prowlarr-proxy = lib.mkIf config.services.prowlarr-wrapped.useVpn {
-      description = "Proxy to access Prowlarr in VPN namespace";
-      after = [ "prowlarr.service" ];
-      wants = [ "prowlarr.service" ];
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        Type = "simple";
-        Restart = "always";
-      };
-      script = ''
-        ${pkgs.socat}/bin/socat \
-          TCP-LISTEN:${toString config.services.prowlarr-wrapped.port},bind=0.0.0.0,fork,reuseaddr \
-          EXEC:'${pkgs.iproute2}/bin/ip netns exec ${config.services.prowlarr-wrapped.vpnNamespace} ${pkgs.socat}/bin/socat STDIO TCP:127.0.0.1:${toString config.services.prowlarr-wrapped.port}',nofork
-      '';
+    # Configure Prowlarr's URL base
+    systemd.services.prowlarr.environment = {
+      Prowlarr__Server__UrlBase = "/prowlarr";
     };
 
     # Caddy virtual host configuration with base URL

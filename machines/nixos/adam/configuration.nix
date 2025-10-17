@@ -13,7 +13,6 @@
     ../../../modules/services/sonarr.nix
     ../../../modules/services/radarr.nix
     ../../../modules/services/prowlarr.nix
-    ../../../modules/services/wireguard-vpn.nix
   ];
 
   # Boot configuration
@@ -53,6 +52,17 @@
     networkmanager.enable = false;
   };
 
+  # DNS over TLS with Cloudflare
+  services.resolved = {
+    enable = true;
+    dnssec = "true";
+    domains = [ "~." ];
+    fallbackDns = [ "1.1.1.1#cloudflare-dns.com" "1.0.0.1#cloudflare-dns.com" ];
+    extraConfig = ''
+      DNSOverTLS=yes
+    '';
+  };
+
   # Enable firewall (ports configured in service modules)
   networking.firewall.enable = true;
 
@@ -83,23 +93,7 @@
     # Enable arr stack services
     sonarr-wrapped.enable = true;
     radarr-wrapped.enable = true;
-    prowlarr-wrapped = {
-      enable = true;
-      useVpn = true;
-    };
-
-    # WireGuard VPN
-    wireguard-vpn = {
-      enable = true;
-      address = [ "10.67.244.211/32" "fc00:bbbb:bbbb:bb01::4:f4d2/128" ];
-      privateKeyFile = config.sops.secrets.wireguard_private_key.path;
-      dns = [ "10.64.0.1" ];
-      peer = {
-        publicKey = "ddllelPu2ndjSX4lHhd/kdCStaSJOQixs9z551qN6B8=";
-        endpoint = "146.70.116.162:51820";
-        allowedIPs = [ "0.0.0.0/0" "::/0" ];
-      };
-    };
+    prowlarr-wrapped.enable = true;
   };
 
   # Create required directories with proper ownership
