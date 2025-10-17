@@ -34,17 +34,28 @@
     # Add prowlarr user to zekurio group for coordination with other arr services
     users.groups.zekurio.members = [ "prowlarr" ];
 
-    # If using VPN, modify the systemd service to run in the namespace
-    systemd.services.prowlarr = lib.mkIf config.services.prowlarr-wrapped.useVpn {
-      after = [ "wireguard-ns.service" ];
-      requires = [ "wireguard-ns.service" ];
-      serviceConfig = {
-        # Run in network namespace
-        NetworkNamespacePath = "/var/run/netns/${config.services.prowlarr-wrapped.vpnNamespace}";
-        # Bind to all interfaces in namespace
-        Environment = "PROWLARR__BindAddress=0.0.0.0";
-      };
-    };
+    # Configure Prowlarr service
+    systemd.services.prowlarr = lib.mkMerge [
+      # Base configuration for URL base
+      {
+        environment = {
+          Prowlarr__Server__UrlBase = "/prowlarr";
+        };
+      }
+      # VPN-specific configuration
+      (lib.mkIf config.services.prowlarr-wrapped.useVpn {
+        after = [ "wireguard-ns.service" ];
+        requires = [ "wireguard-ns.service" ];
+        environment = {
+          # Bind to all interfaces in namespace
+          PROWLARR__BindAddress = "0.0.0.0";
+        };
+        serviceConfig = {
+          # Run in network namespace
+          NetworkNamespacePath = "/var/run/netns/${config.services.prowlarr-wrapped.vpnNamespace}";
+        };
+      })
+    ];
 
     # Create a bridge to access Prowlarr from the host
     systemd.services.prowlarr-proxy = lib.mkIf config.services.prowlarr-wrapped.useVpn {
@@ -52,11 +63,10 @@
       after = [ "prowlarr.service" ];
       wants = [ "prowlarr.service" ];
       wantedBy = [ "multi-user.target" ];
-      
       serviceConfig = {
         Type = "simple";
         Restart = "always";
-        ExecStart = "${pkgs.socat}/bin/socat TCP-LISTEN:${toString config.services.prowlarr-wrapped.port},fork,reuseaddr EXEC:'${pkgs.iproute2}/bin/ip netns exec ${config.services.prowlarr-wrapped.vpnNamespace} ${pkgs.socat}/bin/socat STDIO TCP:localhost:${toString config.services.prowlarr-wrapped.port}'";
+        ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.socat}/bin/socat TCP-LISTEN:${toString config.services.prowlarr-wrapped.port},fork,reuseaddr EXEC:\"${pkgs.iproute2}/bin/ip netns exec ${config.services.prowlarr-wrapped.vpnNamespace} ${pkgs.socat}/bin/socat STDIO TCP:localhost:${toString config.services.prowlarr-wrapped.port}\",nofork'";
       };
     };
 
