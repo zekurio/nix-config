@@ -12,7 +12,7 @@
 
   config = lib.mkIf config.services.jellyfin-wrapped.enable {
     services.jellyfin = {
-      enable = true;
+      enable = false;
       openFirewall = true;
       group = "zekurio";
     };

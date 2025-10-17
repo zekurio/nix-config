@@ -34,8 +34,11 @@
     services.caddy-wrapper.virtualHosts."radarr" = {
       domain = config.services.radarr-wrapped.domain;
       extraConfig = ''
-        handle_path /radarr/* {
-          reverse_proxy localhost:${toString config.services.radarr-wrapped.port}
+        redir /radarr /radarr/
+        @radarr path /radarr*
+        reverse_proxy @radarr localhost:${toString config.services.radarr-wrapped.port} {
+          header_up Host {http.request.host}
+          header_up X-Forwarded-Prefix /radarr
         }
       '';
     };

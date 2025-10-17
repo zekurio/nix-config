@@ -34,8 +34,11 @@
     services.caddy-wrapper.virtualHosts."sonarr" = {
       domain = config.services.sonarr-wrapped.domain;
       extraConfig = ''
-        handle_path /sonarr/* {
-          reverse_proxy localhost:${toString config.services.sonarr-wrapped.port}
+        redir /sonarr /sonarr/
+        @sonarr path /sonarr*
+        reverse_proxy @sonarr localhost:${toString config.services.sonarr-wrapped.port} {
+          header_up Host {http.request.host}
+          header_up X-Forwarded-Prefix /sonarr
         }
       '';
     };

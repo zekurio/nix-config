@@ -74,8 +74,11 @@
     services.caddy-wrapper.virtualHosts."prowlarr" = {
       domain = config.services.prowlarr-wrapped.domain;
       extraConfig = ''
-        handle_path /prowlarr/* {
-          reverse_proxy localhost:${toString config.services.prowlarr-wrapped.port}
+        redir /prowlarr /prowlarr/
+        @prowlarr path /prowlarr*
+        reverse_proxy @prowlarr localhost:${toString config.services.prowlarr-wrapped.port} {
+          header_up Host {http.request.host}
+          header_up X-Forwarded-Prefix /prowlarr
         }
       '';
     };
