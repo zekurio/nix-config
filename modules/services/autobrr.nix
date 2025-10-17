@@ -18,8 +18,15 @@
   config = lib.mkIf config.services.autobrr-wrapped.enable {
     services.autobrr = {
       enable = true;
-      # Temporary placeholder - you should create a proper secret file
-      secretFile = pkgs.writeText "autobrr-secret" "sessionSecret=changeme";
+      secretFile = config.sops.secrets.autobrr-secret.path;
+      settings = {
+        host = "0.0.0.0";
+        port = config.services.autobrr-wrapped.port;
+        baseUrl = "/autobrr/";
+        baseUrlModeLegacy = false;
+        logLevel = "INFO";
+        checkForUpdates = true;
+      };
     };
 
     services.caddy-wrapper.virtualHosts."autobrr" = {
