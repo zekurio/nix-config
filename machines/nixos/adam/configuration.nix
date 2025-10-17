@@ -127,6 +127,9 @@
     # Podman directories
     "d /var/lib/containers/jellyfin 0775 zekurio zekurio -"
     "d /var/cache/containers/jellyfin 0775 zekurio zekurio -"
+    "d /var/lib/containers/fileflows/data 0775 zekurio zekurio -"
+    "d /var/lib/containers/fileflows/logs 0775 zekurio zekurio -"
+    "d /tmp/fileflows 0775 zekurio zekurio -"
   ];
 
   virtualisation = {
@@ -151,6 +154,30 @@
           "/var/lib/containers/jellyfin:/config"
           "/var/cache/containers/jellyfin:/cache"
         ];
+
+        extraOptions = [
+          "--device=/dev/dri:/dev/dri"
+        ];
+      };
+
+      fileflows = {
+        image = "revenz/fileflows:latest";
+        autoStart = true;
+        ports = [ "127.0.0.1:19200:5000" ];
+
+        volumes = [
+          "/run/podman/podman.sock:/var/run/docker.sock:ro"
+          "/var/downloads:/downloads"
+          "/var/lib/containers/fileflows/data:/app/Data"
+          "/var/lib/containers/fileflows/logs:/app/Logs"
+          "/tmp/fileflows:/temp"
+        ];
+
+        environment = {
+          "TempPathHost" = "/tmp/fileflows";
+          "PUID" = "1000";
+          "PGID" = "1000";
+        };
 
         extraOptions = [
           "--device=/dev/dri:/dev/dri"
