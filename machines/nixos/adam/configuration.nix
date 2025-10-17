@@ -67,6 +67,8 @@
 
   # Enable firewall (ports configured in service modules)
   networking.firewall.enable = true;
+  networking.firewall.allowedTCPPorts = [ 8096 19200 ];
+
 
   fileSystems."/mnt/fast-nvme" = {
     device = "/dev/nvme0n1p1";
