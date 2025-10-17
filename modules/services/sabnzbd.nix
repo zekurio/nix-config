@@ -20,10 +20,16 @@
       enable = true;
       group = "zekurio";
       openFirewall = true;
+      configFile = "/var/lib/sabnzbd/sabnzbd.ini";
     };
 
     # Add sabnzbd user to zekurio group for media access
     users.groups.zekurio.members = [ "sabnzbd" ];
+
+    # Ensure SABnzbd has access to download directories
+    systemd.services.sabnzbd.serviceConfig = {
+      ReadWritePaths = [ "/var/cache/downloads" ];
+    };
 
     # Caddy virtual host configuration
     services.caddy-wrapper.virtualHosts."sabnzbd" = {
