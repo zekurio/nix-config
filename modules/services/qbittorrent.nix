@@ -5,7 +5,7 @@
     enable = lib.mkEnableOption "qBittorrent with VPN confinement";
     domain = lib.mkOption {
       type = lib.types.str;
-      default = "qbt.schnitzelflix.xyz";
+      default = "qbit.schnitzelflix.xyz";
       description = "Domain name for qBittorrent";
     };
     webuiPort = lib.mkOption {
@@ -30,17 +30,10 @@
       openFirewall = false; # Managed through VPN namespace
     };
 
-    # Caddy virtual host configuration with base URL
+    # Caddy virtual host configuration
     services.caddy-wrapper.virtualHosts."qbittorrent" = {
       domain = config.services.qbittorrent-wrapped.domain;
-      extraConfig = ''
-        redir /qbt /qbt/
-        @qbt path /qbt*
-        reverse_proxy @qbt 192.168.15.1:${toString config.services.qbittorrent-wrapped.webuiPort} {
-          header_up Host {http.request.host}
-          header_up X-Forwarded-Prefix /qbt
-        }
-      '';
+      reverseProxy = "192.168.15.1:${toString config.services.qbittorrent-wrapped.webuiPort}";
     };
   };
 }
