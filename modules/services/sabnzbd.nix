@@ -29,6 +29,8 @@
     # Ensure SABnzbd has access to download directories
     systemd.services.sabnzbd.serviceConfig = {
       ReadWritePaths = [ "/var/cache/downloads" ];
+      ProtectSystem = lib.mkForce false;
+      ProtectHome = lib.mkForce false;
     };
 
     # Caddy virtual host configuration
