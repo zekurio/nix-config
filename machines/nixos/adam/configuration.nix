@@ -149,7 +149,7 @@
         image = "jellyfin/jellyfin:10.11.0-rc9";
         autoStart = true;
         user = "1000:1000";
-        ports = [ "127.0.0.1:8096:8096" ];
+        ports = [ "8096:8096" ];
 
         volumes = [
           "/mnt/fast-nvme/media:/media"
@@ -165,7 +165,7 @@
       fileflows = {
         image = "revenz/fileflows:latest";
         autoStart = true;
-        ports = [ "127.0.0.1:19200:5000" ];
+        ports = [ "19200:5000" ];
 
         volumes = [
           "/run/podman/podman.sock:/var/run/docker.sock:ro"
