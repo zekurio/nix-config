@@ -20,6 +20,7 @@
       enable = true;
       port = config.services.jellyseerr-wrapped.port;
       openFirewall = true;
+      package = pkgs.unstable.jellyseerr;
     };
 
     # Caddy virtual host configuration
