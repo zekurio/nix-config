@@ -97,14 +97,14 @@
 
   # Create required directories with proper ownership
   systemd.tmpfiles.rules = [
-    # Downloads directories on NVMe
-    "d /mnt/fast-nvme/downloads 0775 zekurio zekurio -"
-    "d /mnt/fast-nvme/downloads/completed 0775 zekurio zekurio -"
-    "d /mnt/fast-nvme/downloads/completed/sonarr 0775 zekurio zekurio -"
-    "d /mnt/fast-nvme/downloads/completed/radarr 0775 zekurio zekurio -"
-    "d /mnt/fast-nvme/downloads/completed/torrent 0775 zekurio zekurio -"
-    "d /mnt/fast-nvme/downloads/incomplete 0775 zekurio zekurio -"
-    # Media directories
+    # Downloads directories on root drive (for transcoding before moving to NVMe)
+    "d /var/downloads 0775 zekurio zekurio -"
+    "d /var/downloads/completed 0775 zekurio zekurio -"
+    "d /var/downloads/completed/sonarr 0775 zekurio zekurio -"
+    "d /var/downloads/completed/radarr 0775 zekurio zekurio -"
+    "d /var/downloads/completed/torrent 0775 zekurio zekurio -"
+    "d /var/downloads/incomplete 0775 zekurio zekurio -"
+    # Media directories on NVMe
     "z /mnt/fast-nvme/media 0775 zekurio zekurio -"
     "z /mnt/fast-nvme/media/anime 0775 zekurio zekurio -"
     "z /mnt/fast-nvme/media/movies 0775 zekurio zekurio -"

@@ -28,7 +28,7 @@
 
     # Ensure SABnzbd has access to download directories
     systemd.services.sabnzbd.serviceConfig = {
-      ReadWritePaths = [ "/mnt/fast-nvme/downloads" ];
+      ReadWritePaths = [ "/var/downloads" "/mnt/fast-nvme/media" ];
       ProtectSystem = lib.mkForce false;
       ProtectHome = lib.mkForce false;
     };
