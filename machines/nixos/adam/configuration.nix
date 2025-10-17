@@ -152,6 +152,8 @@
 
         extraOptions = [
           "--device=/dev/dri:/dev/dri"
+          "--group-add=video"
+          "--group-add=render"
         ];
       };
     };
