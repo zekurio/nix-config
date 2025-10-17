@@ -97,15 +97,14 @@
 
   # Create required directories with proper ownership
   systemd.tmpfiles.rules = [
-    "d /var/cache/downloads 0775 zekurio zekurio -"
-    "d /var/cache/downloads/completed 0775 zekurio zekurio -"
-    "d /var/cache/downloads/completed/sonarr 0775 zekurio zekurio -"
-    "d /var/cache/downloads/completed/radarr 0775 zekurio zekurio -"
-    "d /var/cache/downloads/completed/torrent 0775 zekurio zekurio -"
-    "d /var/cache/downloads/converted 0775 zekurio zekurio -"
-    "d /var/cache/downloads/converted/sonarr 0775 zekurio zekurio -"
-    "d /var/cache/downloads/converted/radarr 0775 zekurio zekurio -"
-    "d /var/cache/downloads/incomplete 0775 zekurio zekurio -"
+    # Downloads directories on NVMe
+    "d /mnt/fast-nvme/downloads 0775 zekurio zekurio -"
+    "d /mnt/fast-nvme/downloads/completed 0775 zekurio zekurio -"
+    "d /mnt/fast-nvme/downloads/completed/sonarr 0775 zekurio zekurio -"
+    "d /mnt/fast-nvme/downloads/completed/radarr 0775 zekurio zekurio -"
+    "d /mnt/fast-nvme/downloads/completed/torrent 0775 zekurio zekurio -"
+    "d /mnt/fast-nvme/downloads/incomplete 0775 zekurio zekurio -"
+    # Media directories
     "z /mnt/fast-nvme/media 0775 zekurio zekurio -"
     "z /mnt/fast-nvme/media/anime 0775 zekurio zekurio -"
     "z /mnt/fast-nvme/media/movies 0775 zekurio zekurio -"
