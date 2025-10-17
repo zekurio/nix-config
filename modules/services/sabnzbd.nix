@@ -18,18 +18,8 @@
   config = lib.mkIf config.services.sabnzbd-wrapped.enable {
     services.sabnzbd = {
       enable = true;
+      user = "zekurio";
       group = "zekurio";
-    };
-
-    # Add sabnzbd user to zekurio group for media access
-    users.groups.zekurio.members = [ "sabnzbd" ];
-
-    # Ensure SABnzbd has access to download directories
-    systemd.services.sabnzbd.serviceConfig = {
-      ReadWritePaths = [ "/var/downloads" "/mnt/fast-nvme/media" ];
-      ProtectSystem = lib.mkForce false;
-      ProtectHome = lib.mkForce false;
-      UMask = "0002";  # Create files with 664 and directories with 775
     };
 
     # Caddy virtual host configuration

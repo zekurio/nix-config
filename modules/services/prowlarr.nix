@@ -20,9 +20,6 @@
       enable = true;
     };
 
-    # Add prowlarr user to zekurio group for coordination with other arr services
-    users.groups.zekurio.members = [ "prowlarr" ];
-
     # Configure Prowlarr's URL base
     systemd.services.prowlarr.environment = {
       Prowlarr__Server__UrlBase = "/prowlarr";

@@ -18,20 +18,13 @@
   config = lib.mkIf config.services.sonarr-wrapped.enable {
     services.sonarr = {
       enable = true;
+      user = "zekurio";
       group = "zekurio";
     };
-
-    # Add sonarr user to zekurio group for media access
-    users.groups.zekurio.members = [ "sonarr" ];
 
     # Configure Sonarr's URL base
     systemd.services.sonarr.environment = {
       Sonarr__Server__UrlBase = "/sonarr";
-    };
-
-    # Set umask for proper group permissions
-    systemd.services.sonarr.serviceConfig = {
-      UMask = "0002";  # Create files with 664 and directories with 775
     };
 
     # Caddy virtual host configuration with base URL

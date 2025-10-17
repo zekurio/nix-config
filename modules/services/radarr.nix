@@ -18,20 +18,13 @@
   config = lib.mkIf config.services.radarr-wrapped.enable {
     services.radarr = {
       enable = true;
+      user = "zekurio";
       group = "zekurio";
     };
-
-    # Add radarr user to zekurio group for media access
-    users.groups.zekurio.members = [ "radarr" ];
 
     # Configure Radarr's URL base
     systemd.services.radarr.environment = {
       Radarr__Server__UrlBase = "/radarr";
-    };
-
-    # Set umask for proper group permissions
-    systemd.services.radarr.serviceConfig = {
-      UMask = "0002";  # Create files with 664 and directories with 775
     };
 
     # Caddy virtual host configuration with base URL
