@@ -28,6 +28,24 @@
       webuiPort = config.services.qbittorrent-wrapped.webuiPort;
       torrentingPort = config.services.qbittorrent-wrapped.torrentingPort;
       openFirewall = false; # Managed through VPN namespace
+      
+      serverConfig = {
+        LegalNotice.Accepted = true;
+        Preferences = {
+          WebUI = {
+            Address = "0.0.0.0";  # Bind to all interfaces in the namespace
+            Port = config.services.qbittorrent-wrapped.webuiPort;
+          };
+          Connection = {
+            PortRangeMin = config.services.qbittorrent-wrapped.torrentingPort;
+          };
+          Downloads = {
+            SavePath = "/var/downloads/completed/torrent";
+          };
+        };
+      };
+      
+      extraArgs = [ "--confirm-legal-notice" ];
     };
 
     # Caddy virtual host configuration
