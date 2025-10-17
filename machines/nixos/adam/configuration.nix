@@ -80,7 +80,13 @@
   };
 
   services = {
-    openssh.enable = true;
+    openssh = {
+      enable = true;
+      settings = {
+        PasswordAuthentication = false;
+        PermitRootLogin = "no";
+      };
+    };
     autoaspm.enable = true;
 
     # Enable wrapped services with Caddy integration

@@ -47,6 +47,7 @@
     hostName = "lilith";
     useDHCP = true;
     networkmanager.enable = false;
+    firewall.enable = true;
   };
 
   # System configuration
@@ -71,7 +72,13 @@
   };
 
   services = {
-    openssh.enable = true;
+    openssh = {
+      enable = true;
+      settings = {
+        PasswordAuthentication = false;
+        PermitRootLogin = "no";
+      };
+    };
     pipewire = {
       enable = true;
       alsa.enable = true;
