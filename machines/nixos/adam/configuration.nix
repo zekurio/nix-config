@@ -119,6 +119,9 @@
     "d /var/downloads/completed/sonarr 0775 zekurio zekurio -"
     "d /var/downloads/completed/radarr 0775 zekurio zekurio -"
     "d /var/downloads/completed/torrent 0775 zekurio zekurio -"
+    "d /var/downloads/converted 0775 zekurio zekurio -"
+    "d /var/downloads/converted/sonarr 0775 zekurio zekurio -"
+    "d /var/downloads/converted/radarr 0775 zekurio zekurio -"
     "d /var/downloads/incomplete 0775 zekurio zekurio -"
     # Media directories on NVMe
     "z /mnt/fast-nvme/media 0775 zekurio zekurio -"
