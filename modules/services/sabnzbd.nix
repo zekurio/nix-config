@@ -29,6 +29,7 @@
       ReadWritePaths = [ "/var/downloads" "/mnt/fast-nvme/media" ];
       ProtectSystem = lib.mkForce false;
       ProtectHome = lib.mkForce false;
+      UMask = "0002";  # Create files with 664 and directories with 775
     };
 
     # Caddy virtual host configuration

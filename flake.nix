@@ -81,17 +81,7 @@
             inputs.autoaspm.nixosModules.default
             inputs.sops-nix.nixosModules.sops
             ./machines/nixos/adam/configuration.nix
-            # Add unstable packages overlay
-            ({ config, pkgs, ... }: {
-              nixpkgs.overlays = [
-                (final: prev: {
-                  unstable = import inputs.nixpkgs-unstable {
-                    system = prev.system;
-                    config.allowUnfree = true;
-                  };
-                })
-              ];
-            })
+            (import ./overlays inputs)
           ];
         };
 
@@ -102,17 +92,7 @@
             commonNixConfig
             disko.nixosModules.disko
             ./machines/nixos/lilith/configuration.nix
-            # Add unstable packages overlay
-            ({ config, pkgs, ... }: {
-              nixpkgs.overlays = [
-                (final: prev: {
-                  unstable = import inputs.nixpkgs-unstable {
-                    system = prev.system;
-                    config.allowUnfree = true;
-                  };
-                })
-              ];
-            })
+            (import ./overlays inputs)
           ];
         };
       };

@@ -29,6 +29,11 @@
       Sonarr__Server__UrlBase = "/sonarr";
     };
 
+    # Set umask for proper group permissions
+    systemd.services.sonarr.serviceConfig = {
+      UMask = "0002";  # Create files with 664 and directories with 775
+    };
+
     # Caddy virtual host configuration with base URL
     services.caddy-wrapper.virtualHosts."sonarr" = {
       domain = config.services.sonarr-wrapped.domain;

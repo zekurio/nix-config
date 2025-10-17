@@ -29,6 +29,11 @@
       Radarr__Server__UrlBase = "/radarr";
     };
 
+    # Set umask for proper group permissions
+    systemd.services.radarr.serviceConfig = {
+      UMask = "0002";  # Create files with 664 and directories with 775
+    };
+
     # Caddy virtual host configuration with base URL
     services.caddy-wrapper.virtualHosts."radarr" = {
       domain = config.services.radarr-wrapped.domain;
