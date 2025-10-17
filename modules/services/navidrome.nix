@@ -30,6 +30,7 @@
         BaseUrl = "/";
       };
       group = "zekurio";
+      openFirewall = true;
     };
 
     # Caddy virtual host configuration

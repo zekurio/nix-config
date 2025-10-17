@@ -19,6 +19,7 @@
     services.sonarr = {
       enable = true;
       group = "zekurio";
+      openFirewall = true;
     };
 
     # Add sonarr user to zekurio group for media access

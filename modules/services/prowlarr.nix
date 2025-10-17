@@ -28,6 +28,7 @@
   config = lib.mkIf config.services.prowlarr-wrapped.enable {
     services.prowlarr = {
       enable = true;
+      openFirewall = true;
     };
 
     # Add prowlarr user to zekurio group for coordination with other arr services
