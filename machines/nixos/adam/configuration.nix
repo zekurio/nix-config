@@ -76,9 +76,6 @@
   sops = {
     defaultSopsFile = ../../../secrets/adam.yaml;
     age.keyFile = "/var/lib/sops-nix/key.txt";
-    secrets.wireguard_private_key = {
-      mode = "0400";
-    };
   };
 
   services = {
