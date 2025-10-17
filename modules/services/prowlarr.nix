@@ -66,8 +66,12 @@
       serviceConfig = {
         Type = "simple";
         Restart = "always";
-        ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.socat}/bin/socat TCP-LISTEN:${toString config.services.prowlarr-wrapped.port},fork,reuseaddr EXEC:\"${pkgs.iproute2}/bin/ip netns exec ${config.services.prowlarr-wrapped.vpnNamespace} ${pkgs.socat}/bin/socat STDIO TCP:localhost:${toString config.services.prowlarr-wrapped.port}\",nofork'";
       };
+      script = ''
+        ${pkgs.socat}/bin/socat \
+          TCP-LISTEN:${toString config.services.prowlarr-wrapped.port},bind=0.0.0.0,fork,reuseaddr \
+          EXEC:'${pkgs.iproute2}/bin/ip netns exec ${config.services.prowlarr-wrapped.vpnNamespace} ${pkgs.socat}/bin/socat STDIO TCP:127.0.0.1:${toString config.services.prowlarr-wrapped.port}',nofork
+      '';
     };
 
     # Caddy virtual host configuration with base URL
