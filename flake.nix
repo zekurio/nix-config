@@ -39,13 +39,9 @@
       url = "github:Maroka-chan/VPN-Confinement";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    home-manager = {
-      url = "github:nix-community/home-manager/release-25.05";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
-  outputs = inputs@{ nixpkgs, nixpkgs-unstable, flake-parts, disko, home-manager, ... }:
+  outputs = inputs@{ nixpkgs, nixpkgs-unstable, flake-parts, disko, ... }:
     let
       # Shared Nix configuration for all machines
       commonNixConfig = {
@@ -89,7 +85,6 @@
             inputs.autoaspm.nixosModules.default
             inputs.sops-nix.nixosModules.sops
             inputs.vpn-confinement.nixosModules.default
-            home-manager.nixosModules.home-manager
             ./machines/nixos/adam/configuration.nix
             (import ./overlays inputs)
           ];

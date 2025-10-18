@@ -12,20 +12,13 @@
     ../../../modules/services/caddy.nix
     ../../../modules/services/sonarr.nix
     ../../../modules/services/radarr.nix
-    ../../../modules/services/prowlarr.nix
     ../../../modules/services/lidarr.nix
+    ../../../modules/services/prowlarr.nix
     ../../../modules/services/sabnzbd.nix
     ../../../modules/services/jellyseerr.nix
     ../../../modules/services/autobrr.nix
     ../../../modules/services/qbittorrent.nix
   ];
-
-  # Home Manager configuration
-  home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
-    users.zekurio = import ../../../modules/home-manager/zekurio.nix;
-  };
 
   # Boot configuration
   boot = {
@@ -79,6 +72,7 @@
   networking.firewall.enable = true;
   networking.firewall.allowedTCPPorts = [ 8096 19200 ];
 
+
   fileSystems."/mnt/fast-nvme" = {
     device = "/dev/nvme0n1p1";
     fsType = "ext4";
@@ -114,8 +108,8 @@
     # Enable arr stack services
     sonarr-wrapped.enable = true;
     radarr-wrapped.enable = true;
-    prowlarr-wrapped.enable = true;
     lidarr-wrapped.enable = true;
+    prowlarr-wrapped.enable = true;
     sabnzbd-wrapped.enable = true;
     autobrr-wrapped.enable = true;
     
