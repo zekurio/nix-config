@@ -16,7 +16,10 @@
       set -g fish_greeting
     '';
     plugins = [
-      pkgs.fishPlugins.pure
+      {
+        name = "pure";
+        src = pkgs.fishPlugins.pure.src;
+      }
     ];
   };
 

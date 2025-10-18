@@ -54,9 +54,15 @@
   time.timeZone = "Europe/Vienna";
   system.autoUpgrade.enable = true;
 
-  environment.systemPackages = with pkgs; [ lact ];
   systemd.packages = with pkgs; [ lact ];
   systemd.services.lactd.wantedBy = ["multi-user.target"];
+
+  environment.systemPackages = with pkgs; [
+    lact
+    ghostty
+    firefox
+  ];
+  security.polkit.enable = true;
 
   # Hyprland configuration
   programs.hyprland = {
@@ -72,6 +78,7 @@
   };
 
   services = {
+    displayManager.ly.enable = true;
     openssh = {
       enable = true;
       settings = {
