@@ -4,13 +4,13 @@
 }:
 {
   nix.settings.trusted-users = [ "zekurio" ];
-
-  environment.variables.EDITOR = "nvim";
+  
+  programs.fish.enable = true;
 
   users = {
     users = {
       zekurio = {
-        shell = pkgs.bash;
+        shell = pkgs.fish;
         uid = 1000;
         isNormalUser = true;
         hashedPassword = "$6$b22Ve.o/YRXCik6.$bacQz815Lo6lu311ekb2rYOgq9uYLr0NIaHkoGeG5NJUoCsTIUHWEoJmsPH7BRrgLVmBEKWNBEbtaM5kGpzJY.";
@@ -22,11 +22,6 @@
           "input"
         ];
         group = "zekurio";
-        packages = with pkgs; [
-          git
-          btop
-          neovim
-        ];
         openssh = {
           authorizedKeys.keys = [
             "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOCcQoZiY9wkJ+U93isE8B3CKLmzL7TPzVh3ugE1WPJq"
@@ -41,3 +36,4 @@
     };
   };
 }
+
