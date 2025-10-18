@@ -32,10 +32,6 @@ in
           "input"
         ];
         group = "zekurio";
-        packages = with pkgs; [
-          git
-          neovim
-        ];
         openssh = {
           authorizedKeys.keys = [
             "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOCcQoZiY9wkJ+U93isE8B3CKLmzL7TPzVh3ugE1WPJq"
