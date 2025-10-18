@@ -6,8 +6,7 @@
     disk = {
       main = {
         type = "disk";
-        # Change this to match your actual disk device
-        device = lib.mkDefault "/dev/sda";
+        device = lib.mkDefault "/dev/nvme0n1";
         content = {
           type = "gpt";
           partitions = {

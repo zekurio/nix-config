@@ -35,6 +35,10 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    home-manager = {
+      url = "github:nix-community/home-manager/release-25.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     vpn-confinement = {
       url = "github:Maroka-chan/VPN-Confinement";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -82,6 +86,7 @@
           modules = [
             commonNixConfig
             disko.nixosModules.disko
+            inputs.home-manager.nixosModules.home-manager
             inputs.autoaspm.nixosModules.default
             inputs.sops-nix.nixosModules.sops
             inputs.vpn-confinement.nixosModules.default
@@ -96,6 +101,7 @@
           modules = [
             commonNixConfig
             disko.nixosModules.disko
+            inputs.home-manager.nixosModules.home-manager
             ./machines/nixos/lilith/configuration.nix
             (import ./overlays inputs)
           ];
