@@ -18,6 +18,7 @@
   config = lib.mkIf config.services.lidarr-wrapped.enable {
     services.lidarr = {
       enable = true;
+      openFirewall = true;
       user = "zekurio";
       group = "zekurio";
     };
