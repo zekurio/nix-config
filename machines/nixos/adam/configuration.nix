@@ -91,8 +91,8 @@ in
     defaultSopsFile = ../../../secrets/adam.yaml;
     age.keyFile = "/var/lib/sops-nix/key.txt";
     secrets = {
-      mullvad-wg = { };
-      autobrr-secret = { };
+      mullvad_wg = { };
+      autobrr_secret = { };
     };
   };
 
@@ -161,7 +161,7 @@ in
   # VPN namespace configuration for qBittorrent
   vpnNamespaces.mullvad = {
     enable = true;
-    wireguardConfigFile = config.sops.secrets.mullvad-wg.path;
+    wireguardConfigFile = config.sops.secrets.mullvad_wg.path;
     accessibleFrom = [
       "192.168.0.0/16"  # Adjust to your local network
     ];
