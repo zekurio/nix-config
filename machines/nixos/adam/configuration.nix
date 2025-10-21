@@ -18,7 +18,7 @@ in
     ../../../modules/homelab/services/caddy.nix
     ../../../modules/homelab/services/sonarr.nix
     ../../../modules/homelab/services/radarr.nix
-    ../../../modules/homelab/services/lidarr.nix
+    #../../../modules/homelab/services/lidarr.nix
     ../../../modules/homelab/services/prowlarr.nix
     ../../../modules/homelab/services/sabnzbd.nix
     ../../../modules/homelab/services/jellyseerr.nix
@@ -106,6 +106,12 @@ in
     };
   };
 
+  # System packages
+  environment.systemPackages = with pkgs; [
+    streamrip
+    beets
+  ];
+
   services = {
     openssh = {
       enable = true;
@@ -125,7 +131,7 @@ in
     # Enable arr stack services
     sonarr-wrapped.enable = true;
     radarr-wrapped.enable = true;
-    lidarr-wrapped.enable = true;
+    #lidarr-wrapped.enable = true;
     prowlarr-wrapped.enable = true;
     sabnzbd-wrapped.enable = true;
     autobrr-wrapped.enable = true;
@@ -175,46 +181,37 @@ in
   };
 
   # Create media group for shared access
-  users.groups.${mediaGroup} = {};
+  users.groups.${mediaGroup} = {
+    gid = 991;
+  };
 
   # Add main user to media group
   users.users.${mediaUser}.extraGroups = [ mediaGroup ];
 
-  # Add qBittorrent user to media group with proper UMask for shared downloads
-  users.users.qbittorrent.extraGroups = [ mediaGroup ];
-  systemd.services.qbittorrent.serviceConfig.UMask = lib.mkForce "0002";
 
-  # Create required directories with proper ownership
   systemd.tmpfiles.rules = [
     # qBittorrent state directory
-    "d /var/lib/qBittorrent 0775 qbittorrent ${mediaGroup} -"
-    # Arr services state directories
-    "d /var/lib/sonarr 0775 sonarr ${mediaGroup} -"
-    "d /var/lib/sonarr/.config 0775 sonarr ${mediaGroup} -"
-    "d /var/lib/radarr 0775 radarr ${mediaGroup} -"
-    "d /var/lib/radarr/.config 0775 radarr ${mediaGroup} -"
-    "d /var/lib/lidarr 0775 lidarr ${mediaGroup} -"
-    "d /var/lib/lidarr/.config 0775 lidarr ${mediaGroup} -"
+    "d /var/lib/qBittorrent 2775 qbittorrent ${mediaGroup} -"
     # Downloads directories on root drive (for transcoding before moving to NVMe)
-    "d /var/downloads 0775 ${mediaUser} ${mediaGroup} -"
-    "d /var/downloads/completed 0775 ${mediaUser} ${mediaGroup} -"
-    "d /var/downloads/completed/sonarr 0775 ${mediaUser} ${mediaGroup} -"
-    "d /var/downloads/completed/radarr 0775 ${mediaUser} ${mediaGroup} -"
-    "d /var/downloads/completed/torrent 0775 ${mediaUser} ${mediaGroup} -"
-    "d /var/downloads/converted 0775 ${mediaUser} ${mediaGroup} -"
-    "d /var/downloads/converted/sonarr 0775 ${mediaUser} ${mediaGroup} -"
-    "d /var/downloads/converted/radarr 0775 ${mediaUser} ${mediaGroup} -"
-    "d /var/downloads/incomplete 0775 ${mediaUser} ${mediaGroup} -"
+    "d /var/downloads 2775 ${mediaUser} ${mediaGroup} -"
+    "d /var/downloads/completed 2775 ${mediaUser} ${mediaGroup} -"
+    "d /var/downloads/completed/sonarr 2775 ${mediaUser} ${mediaGroup} -"
+    "d /var/downloads/completed/radarr 2775 ${mediaUser} ${mediaGroup} -"
+    "d /var/downloads/completed/torrent 2775 ${mediaUser} ${mediaGroup} -"
+    "d /var/downloads/converted 2775 ${mediaUser} ${mediaGroup} -"
+    "d /var/downloads/converted/sonarr 2775 ${mediaUser} ${mediaGroup} -"
+    "d /var/downloads/converted/radarr 2775 ${mediaUser} ${mediaGroup} -"
+    "d /var/downloads/incomplete 2775 ${mediaUser} ${mediaGroup} -"
     # Media directories on NVMe - owned by user but writable by media group
-    "z /mnt/fast-nvme/media 0775 ${mediaUser} ${mediaGroup} -"
-    "z /mnt/fast-nvme/media/anime 0775 ${mediaUser} ${mediaGroup} -"
-    "z /mnt/fast-nvme/media/movies 0775 ${mediaUser} ${mediaGroup} -"
-    "z /mnt/fast-nvme/media/music 0775 ${mediaUser} ${mediaGroup} -"
-    "z /mnt/fast-nvme/media/tv 0775 ${mediaUser} ${mediaGroup} -"
-    # Fix permissions recursively on existing files
-    "Z /var/downloads 0775 ${mediaUser} ${mediaGroup} -"
-    "Z /mnt/fast-nvme/media 0775 ${mediaUser} ${mediaGroup} -"
+    "z /mnt/fast-nvme/media 2775 ${mediaUser} ${mediaGroup} -"
+    "z /mnt/fast-nvme/media/anime 2775 ${mediaUser} ${mediaGroup} -"
+    "z /mnt/fast-nvme/media/movies 2775 ${mediaUser} ${mediaGroup} -"
+    "z /mnt/fast-nvme/media/music 2775 ${mediaUser} ${mediaGroup} -"
+    "z /mnt/fast-nvme/media/tv 2775 ${mediaUser} ${mediaGroup} -"
   ];
+
+
+
 
   # Systemd service to fix media and downloads permissions on boot
   systemd.services.fix-media-permissions = {
@@ -226,13 +223,13 @@ in
     };
     script = ''
       # Fix downloads directories
-      ${pkgs.findutils}/bin/find /var/downloads -type d -exec ${pkgs.coreutils}/bin/chmod 775 {} \;
+      ${pkgs.findutils}/bin/find /var/downloads -type d -exec ${pkgs.coreutils}/bin/chmod 2775 {} \;
       ${pkgs.findutils}/bin/find /var/downloads -type f -exec ${pkgs.coreutils}/bin/chmod 664 {} \;
       ${pkgs.coreutils}/bin/chown -R ${mediaUser}:${mediaGroup} /var/downloads
 
       # Fix media directories if they exist
       if [ -d /mnt/fast-nvme/media ]; then
-        ${pkgs.findutils}/bin/find /mnt/fast-nvme/media -type d -exec ${pkgs.coreutils}/bin/chmod 775 {} \;
+        ${pkgs.findutils}/bin/find /mnt/fast-nvme/media -type d -exec ${pkgs.coreutils}/bin/chmod 2775 {} \;
         ${pkgs.findutils}/bin/find /mnt/fast-nvme/media -type f -exec ${pkgs.coreutils}/bin/chmod 664 {} \;
         ${pkgs.coreutils}/bin/chown -R ${mediaUser}:${mediaGroup} /mnt/fast-nvme/media
       fi
