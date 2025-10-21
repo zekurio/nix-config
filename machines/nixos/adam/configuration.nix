@@ -47,7 +47,10 @@ in
   # Hardware configuration
   hardware = {
     enableRedistributableFirmware = true;
-    cpu.amd.updateMicrocode = true;
+    cpu.amd = {
+      updateMicrocode = true;
+      ryzen-smu.enable = true;
+    };
     graphics = {
       enable = true;
       extraPackages = with pkgs; [
@@ -110,6 +113,7 @@ in
   environment.systemPackages = with pkgs; [
     streamrip
     beets
+    ryzen-monitor-ng
   ];
 
   services = {
@@ -209,9 +213,6 @@ in
     "z /mnt/fast-nvme/media/music 2775 ${mediaUser} ${mediaGroup} -"
     "z /mnt/fast-nvme/media/tv 2775 ${mediaUser} ${mediaGroup} -"
   ];
-
-
-
 
   # Systemd service to fix media and downloads permissions on boot
   systemd.services.fix-media-permissions = {
