@@ -227,12 +227,16 @@ in
       ${pkgs.findutils}/bin/find /var/downloads -type d -exec ${pkgs.coreutils}/bin/chmod 2775 {} \;
       ${pkgs.findutils}/bin/find /var/downloads -type f -exec ${pkgs.coreutils}/bin/chmod 664 {} \;
       ${pkgs.coreutils}/bin/chown -R ${mediaUser}:${mediaGroup} /var/downloads
+      ${pkgs.acl}/bin/setfacl -Rm g:${mediaGroup}:rwx /var/downloads
+      ${pkgs.acl}/bin/setfacl -dRm g:${mediaGroup}:rwx /var/downloads
 
       # Fix media directories if they exist
       if [ -d /mnt/fast-nvme/media ]; then
         ${pkgs.findutils}/bin/find /mnt/fast-nvme/media -type d -exec ${pkgs.coreutils}/bin/chmod 2775 {} \;
         ${pkgs.findutils}/bin/find /mnt/fast-nvme/media -type f -exec ${pkgs.coreutils}/bin/chmod 664 {} \;
         ${pkgs.coreutils}/bin/chown -R ${mediaUser}:${mediaGroup} /mnt/fast-nvme/media
+        ${pkgs.acl}/bin/setfacl -Rm g:${mediaGroup}:rwx /mnt/fast-nvme/media
+        ${pkgs.acl}/bin/setfacl -dRm g:${mediaGroup}:rwx /mnt/fast-nvme/media
       fi
     '';
   };
