@@ -209,7 +209,6 @@ in
   # Allow the main interactive user to collaborate on shared media files
   users.users.${mainUser}.extraGroups = [ shareGroup ];
 
-
   systemd.tmpfiles.rules = [
     # qBittorrent state directory
     "Z /var/lib/qBittorrent 2775 ${shareUser} ${shareGroup} -"
