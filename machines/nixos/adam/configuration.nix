@@ -127,7 +127,7 @@ in
     autoaspm.enable = true;
 
     # Enable wrapped services with Caddy integration
-    jellyfin-wrapped.enable = false;  # Using container instead
+    jellyfin-wrapped.enable = false; # Using container instead
     navidrome-wrapped.enable = true;
     vaultwarden-wrapped.enable = true;
     jellyseerr-wrapped.enable = true;
@@ -163,13 +163,13 @@ in
     enable = true;
     wireguardConfigFile = config.sops.secrets.mullvad_wg.path;
     accessibleFrom = [
-      "192.168.0.0/16"  # Adjust to your local network
+      "192.168.0.0/16" # Adjust to your local network
     ];
     portMappings = [
-      { from = 8080; to = 8080; }  # qBittorrent WebUI
+      { from = 8080; to = 8080; } # qBittorrent WebUI
     ];
     openVPNPorts = [
-      { port = 6881; protocol = "both"; }  # qBittorrent incoming connections
+      { port = 6881; protocol = "both"; } # qBittorrent incoming connections
     ];
   };
 
@@ -195,17 +195,17 @@ in
 
   systemd.tmpfiles.rules = [
     # qBittorrent state directory
-    "d /var/lib/qBittorrent 2775 qbittorrent ${mediaGroup} -"
+    "Z /var/lib/qBittorrent 2775 qbittorrent ${mediaGroup} -"
     # Downloads directories on root drive (for transcoding before moving to NVMe)
-    "d /var/downloads 2775 ${mediaUser} ${mediaGroup} -"
-    "d /var/downloads/completed 2775 ${mediaUser} ${mediaGroup} -"
-    "d /var/downloads/completed/sonarr 2775 ${mediaUser} ${mediaGroup} -"
-    "d /var/downloads/completed/radarr 2775 ${mediaUser} ${mediaGroup} -"
-    "d /var/downloads/completed/torrent 2775 ${mediaUser} ${mediaGroup} -"
-    "d /var/downloads/converted 2775 ${mediaUser} ${mediaGroup} -"
-    "d /var/downloads/converted/sonarr 2775 ${mediaUser} ${mediaGroup} -"
-    "d /var/downloads/converted/radarr 2775 ${mediaUser} ${mediaGroup} -"
-    "d /var/downloads/incomplete 2775 ${mediaUser} ${mediaGroup} -"
+    "Z /var/downloads 2775 ${mediaUser} ${mediaGroup} -"
+    "Z /var/downloads/completed 2775 ${mediaUser} ${mediaGroup} -"
+    "Z /var/downloads/completed/sonarr 2775 ${mediaUser} ${mediaGroup} -"
+    "Z /var/downloads/completed/radarr 2775 ${mediaUser} ${mediaGroup} -"
+    "Z /var/downloads/completed/torrent 2775 ${mediaUser} ${mediaGroup} -"
+    "Z /var/downloads/converted 2775 ${mediaUser} ${mediaGroup} -"
+    "Z /var/downloads/converted/sonarr 2775 ${mediaUser} ${mediaGroup} -"
+    "Z /var/downloads/converted/radarr 2775 ${mediaUser} ${mediaGroup} -"
+    "Z /var/downloads/incomplete 2775 ${mediaUser} ${mediaGroup} -"
     # Media directories on NVMe - owned by user but writable by media group
     "z /mnt/fast-nvme/media 2775 ${mediaUser} ${mediaGroup} -"
     "z /mnt/fast-nvme/media/anime 2775 ${mediaUser} ${mediaGroup} -"
