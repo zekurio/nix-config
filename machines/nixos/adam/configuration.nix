@@ -1,9 +1,12 @@
 { config, pkgs, modulesPath, lib, ... }:
 
 let
-  # Media service group for shared access to library files
-  mediaGroup = "media";
-  mediaUser = "zekurio";
+  # Shared service account for media workloads
+  shareGroup = "share";
+  shareGroupGid = 995;
+  shareUser = "share";
+  shareUserUid = 995;
+  mainUser = "zekurio";
 in
 {
   imports = [
@@ -83,7 +86,7 @@ in
   fileSystems."/mnt/fast-nvme" = {
     device = "/dev/nvme0n1p1";
     fsType = "ext4";
-    options = [ "defaults" "noatime" "nodiratime" ];
+    options = [ "defaults" "noatime" "nodiratime" "acl" ];
   };
 
   # SOPS secrets configuration
@@ -92,7 +95,11 @@ in
     age.keyFile = "/var/lib/sops-nix/key.txt";
     secrets = {
       mullvad_wg = { };
-      autobrr_secret = { };
+      autobrr_secret = {
+        owner = shareUser;
+        group = shareGroup;
+        mode = "0400";
+      };
     };
   };
 
@@ -180,38 +187,48 @@ in
       vpnNamespace = "mullvad";
     };
     serviceConfig = {
-      SupplementaryGroups = [ mediaGroup ];
+      User = shareUser;
+      Group = shareGroup;
     };
   };
 
-  # Create media group for shared access
-  users.groups.${mediaGroup} = {
-    gid = 991;
+  # Shared service account providing read/write access for media tooling
+  users.groups.${shareGroup} = {
+    gid = shareGroupGid;
   };
 
-  # Add main user to media group
-  users.users.${mediaUser}.extraGroups = [ mediaGroup ];
+  users.users.${shareUser} = {
+    isSystemUser = true;
+    uid = shareUserUid;
+    group = shareGroup;
+    home = "/var/lib/share";
+    createHome = true;
+    description = "Shared service account for media automation";
+  };
+
+  # Allow the main interactive user to collaborate on shared media files
+  users.users.${mainUser}.extraGroups = [ shareGroup ];
 
 
   systemd.tmpfiles.rules = [
     # qBittorrent state directory
-    "Z /var/lib/qBittorrent 2775 qbittorrent ${mediaGroup} -"
+    "Z /var/lib/qBittorrent 2775 ${shareUser} ${shareGroup} -"
     # Downloads directories on root drive (for transcoding before moving to NVMe)
-    "Z /var/downloads 2775 ${mediaUser} ${mediaGroup} -"
-    "Z /var/downloads/completed 2775 ${mediaUser} ${mediaGroup} -"
-    "Z /var/downloads/completed/sonarr 2775 ${mediaUser} ${mediaGroup} -"
-    "Z /var/downloads/completed/radarr 2775 ${mediaUser} ${mediaGroup} -"
-    "Z /var/downloads/completed/torrent 2775 ${mediaUser} ${mediaGroup} -"
-    "Z /var/downloads/converted 2775 ${mediaUser} ${mediaGroup} -"
-    "Z /var/downloads/converted/sonarr 2775 ${mediaUser} ${mediaGroup} -"
-    "Z /var/downloads/converted/radarr 2775 ${mediaUser} ${mediaGroup} -"
-    "Z /var/downloads/incomplete 2775 ${mediaUser} ${mediaGroup} -"
-    # Media directories on NVMe - owned by user but writable by media group
-    "z /mnt/fast-nvme/media 2775 ${mediaUser} ${mediaGroup} -"
-    "z /mnt/fast-nvme/media/anime 2775 ${mediaUser} ${mediaGroup} -"
-    "z /mnt/fast-nvme/media/movies 2775 ${mediaUser} ${mediaGroup} -"
-    "z /mnt/fast-nvme/media/music 2775 ${mediaUser} ${mediaGroup} -"
-    "z /mnt/fast-nvme/media/tv 2775 ${mediaUser} ${mediaGroup} -"
+    "Z /var/downloads 2775 ${shareUser} ${shareGroup} -"
+    "Z /var/downloads/completed 2775 ${shareUser} ${shareGroup} -"
+    "Z /var/downloads/completed/sonarr 2775 ${shareUser} ${shareGroup} -"
+    "Z /var/downloads/completed/radarr 2775 ${shareUser} ${shareGroup} -"
+    "Z /var/downloads/completed/torrent 2775 ${shareUser} ${shareGroup} -"
+    "Z /var/downloads/converted 2775 ${shareUser} ${shareGroup} -"
+    "Z /var/downloads/converted/sonarr 2775 ${shareUser} ${shareGroup} -"
+    "Z /var/downloads/converted/radarr 2775 ${shareUser} ${shareGroup} -"
+    "Z /var/downloads/incomplete 2775 ${shareUser} ${shareGroup} -"
+    # Media directories on NVMe - owned by shared service account
+    "z /mnt/fast-nvme/media 2775 ${shareUser} ${shareGroup} -"
+    "z /mnt/fast-nvme/media/anime 2775 ${shareUser} ${shareGroup} -"
+    "z /mnt/fast-nvme/media/movies 2775 ${shareUser} ${shareGroup} -"
+    "z /mnt/fast-nvme/media/music 2775 ${shareUser} ${shareGroup} -"
+    "z /mnt/fast-nvme/media/tv 2775 ${shareUser} ${shareGroup} -"
   ];
 
   # Systemd service to fix media and downloads permissions on boot
@@ -226,17 +243,17 @@ in
       # Fix downloads directories
       ${pkgs.findutils}/bin/find /var/downloads -type d -exec ${pkgs.coreutils}/bin/chmod 2775 {} \;
       ${pkgs.findutils}/bin/find /var/downloads -type f -exec ${pkgs.coreutils}/bin/chmod 664 {} \;
-      ${pkgs.coreutils}/bin/chown -R ${mediaUser}:${mediaGroup} /var/downloads
-      ${pkgs.acl}/bin/setfacl -Rm g:${mediaGroup}:rwx /var/downloads
-      ${pkgs.acl}/bin/setfacl -dRm g:${mediaGroup}:rwx /var/downloads
+      ${pkgs.coreutils}/bin/chown -R ${shareUser}:${shareGroup} /var/downloads
+      ${pkgs.acl}/bin/setfacl -Rm g:${shareGroup}:rwx /var/downloads
+      ${pkgs.acl}/bin/setfacl -dRm g:${shareGroup}:rwx /var/downloads
 
       # Fix media directories if they exist
       if [ -d /mnt/fast-nvme/media ]; then
         ${pkgs.findutils}/bin/find /mnt/fast-nvme/media -type d -exec ${pkgs.coreutils}/bin/chmod 2775 {} \;
         ${pkgs.findutils}/bin/find /mnt/fast-nvme/media -type f -exec ${pkgs.coreutils}/bin/chmod 664 {} \;
-        ${pkgs.coreutils}/bin/chown -R ${mediaUser}:${mediaGroup} /mnt/fast-nvme/media
-        ${pkgs.acl}/bin/setfacl -Rm g:${mediaGroup}:rwx /mnt/fast-nvme/media
-        ${pkgs.acl}/bin/setfacl -dRm g:${mediaGroup}:rwx /mnt/fast-nvme/media
+        ${pkgs.coreutils}/bin/chown -R ${shareUser}:${shareGroup} /mnt/fast-nvme/media
+        ${pkgs.acl}/bin/setfacl -Rm g:${shareGroup}:rwx /mnt/fast-nvme/media
+        ${pkgs.acl}/bin/setfacl -dRm g:${shareGroup}:rwx /mnt/fast-nvme/media
       fi
     '';
   };
