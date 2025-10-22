@@ -12,6 +12,7 @@ in
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ./disko.nix
+    ../../../modules/graphics
     ../../../modules/home-manager
     ../../../overlays
     ../../../modules/homelab/podman.nix
@@ -54,13 +55,9 @@ in
       updateMicrocode = true;
       ryzen-smu.enable = true;
     };
-    graphics = {
-      enable = true;
-      extraPackages = with pkgs; [
-        vpl-gpu-rt
-      ];
-    };
   };
+
+  modules.graphics.intelArc.enable = true;
 
   # Networking configuration
   networking = {
