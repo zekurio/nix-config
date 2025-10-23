@@ -16,6 +16,7 @@ in
     ../../../modules/home-manager
     ../../../overlays
     ../../../modules/homelab/podman.nix
+    ../../../modules/homelab/services/backups.nix
     ../../../modules/homelab/services/jellyfin.nix
     ../../../modules/homelab/services/navidrome.nix
     ../../../modules/homelab/services/vaultwarden.nix
@@ -129,6 +130,34 @@ in
       };
     };
     autoaspm.enable = true;
+
+    backups.b2 = {
+      enable = true;
+      repository = "b2:zekurio-homelab:adam";
+      paths = [
+        "/etc/nixos"
+        "/var/lib/autobrr"
+        "/var/lib/jellyseerr"
+        "/var/lib/navidrome"
+        "/var/lib/prowlarr"
+        "/var/lib/qBittorrent"
+        "/var/lib/radarr"
+        "/var/lib/sabnzbd"
+        "/var/lib/sonarr"
+        "/var/lib/vaultwarden"
+      ];
+      excludePaths = [
+        "/var/lib/navidrome/cache"
+      ];
+      extraBackupArgs = [ "--tag adam" ];
+      pruneKeep = {
+        daily = 7;
+        weekly = 4;
+        monthly = 12;
+      };
+      timer = "*-*-* 03:30:00";
+      randomizedDelaySec = "1h";
+    };
 
     # Enable wrapped services with Caddy integration
     jellyfin-wrapped.enable = false; # Using container instead
