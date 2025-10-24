@@ -65,7 +65,10 @@ in
       };
 
       services.seatd.enable = true;
-      security.polkit.enable = true;
+      security = {
+        pam.services.login.enableGnomeKeyring = true;
+        polkit.enable = true;
+      };
 
       services.pipewire = {
         enable = true;
@@ -94,8 +97,6 @@ in
           feishin
           firefox
           ghostty
-          gnome-keyring
-          greetd.tuigreet
           grim
           loupe
           nautilus
@@ -125,6 +126,12 @@ in
 
       home-manager.sharedModules = mkAfter [
         inputs.dankMaterialShell.homeModules.dankMaterialShell.default
+        ({ pkgs, ... }: {
+          services.gnome-keyring.enable = true;
+          home.packages = mkAfter [
+            pkgs.gcr
+          ];
+        })
       ];
 
       home-manager.users.${cfg.user}.programs.dankMaterialShell.enable = true;
