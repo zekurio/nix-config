@@ -15,20 +15,20 @@ in
     ../../../modules/graphics
     ../../../modules/home-manager
     ../../../overlays
-    ../../../modules/homelab/podman.nix
-    ../../../modules/homelab/services/backups.nix
-    ../../../modules/homelab/services/jellyfin.nix
-    ../../../modules/homelab/services/navidrome.nix
-    ../../../modules/homelab/services/vaultwarden.nix
-    ../../../modules/homelab/services/caddy.nix
-    ../../../modules/homelab/services/sonarr.nix
-    ../../../modules/homelab/services/radarr.nix
-    #../../../modules/homelab/services/lidarr.nix
-    ../../../modules/homelab/services/prowlarr.nix
-    ../../../modules/homelab/services/sabnzbd.nix
-    ../../../modules/homelab/services/jellyseerr.nix
-    ../../../modules/homelab/services/autobrr.nix
-    ../../../modules/homelab/services/qbittorrent.nix
+    ../../../modules/services/podman.nix
+    ../../../modules/services/backups.nix
+    ../../../modules/services/jellyfin.nix
+    ../../../modules/services/navidrome.nix
+    ../../../modules/services/vaultwarden.nix
+    ../../../modules/services/caddy.nix
+    ../../../modules/services/sonarr.nix
+    ../../../modules/services/radarr.nix
+    #../../../modules/services/lidarr.nix
+    ../../../modules/services/prowlarr.nix
+    ../../../modules/services/sabnzbd.nix
+    ../../../modules/services/jellyseerr.nix
+    ../../../modules/services/autobrr.nix
+    ../../../modules/services/qbittorrent.nix
   ];
 
   # Boot configuration
