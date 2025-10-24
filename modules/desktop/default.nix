@@ -92,12 +92,16 @@ in
 
       environment = {
         systemPackages = mkAfter (with pkgs; [
+          adw-gtk3
+          brightnessctl
           bitwarden
+          blueman
           feishin
           firefox
           ghostty
           grim
           loupe
+          matugen
           nautilus
           vesktop
           seahorse
