@@ -100,6 +100,7 @@ in
           grim
           loupe
           nautilus
+          vesktop
           seahorse
           showtime
           slurp
