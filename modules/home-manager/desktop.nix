@@ -60,12 +60,20 @@ in
 
       programs.hyprland = {
         enable = true;
+        withUWSM = true;
         xwayland.enable = true;
+      };
+
+      programs.firefox = {
+        enable = true;
+        package = pkgs.firefox.overrideAttrs (_old: {
+          extraNativeMessagingHosts = with pkgs; [pywalfox-native];
+        });
       };
 
       services.seatd.enable = true;
       security = {
-        pam.services.login.enableGnomeKeyring = true;
+        pam.services.greetd.enableGnomeKeyring = true;
         polkit.enable = true;
       };
 
@@ -94,15 +102,14 @@ in
         systemPackages = mkAfter (with pkgs; [
           accountsservice
           adw-gtk3
+          aonsoku
+          bibata-cursors
           bitwarden
           blueman
           brightnessctl
-          feishin
           firefox
           fira-code
-          geist-font
           ghostty
-          gcr
           grim
           grimblast
           inter
@@ -111,15 +118,17 @@ in
           mate.mate-polkit
           matugen
           nautilus
-          nerd-fonts.geist-mono
+          papirus-icon-theme
+          papirus-folders
+          pywalfox-native
           seahorse
           showtime
           slurp
-          vesktop
+          pkgs.unstable.vesktop
           wayland-utils
           wl-clipboard
           xwayland-satellite
-          zed-editor
+          pkgs.unstable.zed-editor
         ]);
         sessionVariables = {
           NIXOS_OZONE_WL = "1";
@@ -148,7 +157,16 @@ in
         })
       ];
 
-      home-manager.users.${cfg.user}.programs.dankMaterialShell.enable = true;
+      home-manager.users.${cfg.user} = {
+        home.pointerCursor = {
+          gtk.enable = true;
+          # x11.enable = true;
+          package = pkgs.bibata-cursors;
+          name = "Bibata-Modern-Classic";
+          size = 16;
+        };
+        programs.dankMaterialShell.enable = true;
+      };
     }
   );
 }
