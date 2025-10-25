@@ -3,6 +3,7 @@
   config,
   pkgs,
   inputs,
+  pkgsUnstable,
   ...
 }:
 let
@@ -97,16 +98,17 @@ in
       };
 
       services.dbus.enable = true;
+      services.accounts-daemon.enable = true;
 
       environment = {
         systemPackages = mkAfter (with pkgs; [
           accountsservice
           adw-gtk3
-          aonsoku
           bibata-cursors
           bitwarden
           blueman
           brightnessctl
+          delfin
           firefox
           fira-code
           ghostty
@@ -117,22 +119,32 @@ in
           material-symbols
           mate.mate-polkit
           matugen
-          nautilus
+          nemo
+          nemo-fileroller
           papirus-icon-theme
           papirus-folders
           pywalfox-native
           seahorse
           showtime
           slurp
-          pkgs.unstable.vesktop
+          pkgsUnstable.vesktop
           wayland-utils
           wl-clipboard
+          xdg-user-dirs
+          xdg-user-dirs-gtk
           xwayland-satellite
-          pkgs.unstable.zed-editor
+          pkgsUnstable.zed-editor
         ]);
         sessionVariables = {
           NIXOS_OZONE_WL = "1";
         };
+        variables = { XCURSOR_THEME = "Bibata-Modern-Classic"; XCURSOR_SIZE = "16"; };
+      };
+
+      systemd.services.greetd.environment = {
+        XCURSOR_THEME = "Bibata-Modern-Classic";
+        XCURSOR_SIZE  = "16";
+        XCURSOR_PATH  = "${pkgs.bibata-cursors}/share/icons";
       };
 
       users.users.${cfg.user}.extraGroups = mkAfter [
@@ -158,9 +170,21 @@ in
       ];
 
       home-manager.users.${cfg.user} = {
+        xdg.userDirs = {
+          enable = true;
+          desktop = "$HOME/desktop";
+          documents = "$HOME/documents";
+          download = "$HOME/downloads";
+          music = "$HOME/music";
+          pictures = "$HOME/pictures";
+          publicShare = "$HOME/public";
+          templates = "$HOME/templates";
+          videos = "$HOME/videos";
+        };
+
         home.pointerCursor = {
           gtk.enable = true;
-          # x11.enable = true;
+          x11.enable = true;
           package = pkgs.bibata-cursors;
           name = "Bibata-Modern-Classic";
           size = 16;
