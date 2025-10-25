@@ -98,11 +98,13 @@ in
           blueman
           feishin
           firefox
+          geist-font
           ghostty
           grim
           loupe
           matugen
           nautilus
+          nerd-fonts.geist-mono
           vesktop
           seahorse
           showtime
