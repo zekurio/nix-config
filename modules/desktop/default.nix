@@ -92,25 +92,33 @@ in
 
       environment = {
         systemPackages = mkAfter (with pkgs; [
+          accountsservice
           adw-gtk3
-          brightnessctl
           bitwarden
           blueman
+          brightnessctl
           feishin
           firefox
+          fira-code
           geist-font
           ghostty
+          gcr
           grim
+          grimblast
+          inter
           loupe
+          material-symbols
+          mate.mate-polkit
           matugen
           nautilus
           nerd-fonts.geist-mono
-          vesktop
           seahorse
           showtime
           slurp
+          vesktop
           wayland-utils
           wl-clipboard
+          xwayland-satellite
           zed-editor
         ]);
         sessionVariables = {
