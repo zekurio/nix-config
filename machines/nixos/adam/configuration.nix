@@ -1,4 +1,4 @@
-{ config, pkgs, modulesPath, lib, ... }:
+{ config, pkgs, modulesPath, ... }:
 
 let
   # Shared service account for media workloads
@@ -29,6 +29,7 @@ in
     ../../../modules/services/jellyseerr.nix
     ../../../modules/services/autobrr.nix
     ../../../modules/services/qbittorrent.nix
+    ../default.nix
   ];
 
   # Boot configuration
@@ -101,17 +102,7 @@ in
     };
   };
 
-  # Nix configuration
-  nix = {
-    gc = {
-      automatic = true;
-      dates = "weekly";
-      options = lib.mkForce "--delete-older-than 7d";
-    };
-    settings = {
-      auto-optimise-store = true;
-    };
-  };
+
 
   # System packages
   environment.systemPackages = with pkgs; [
