@@ -18,7 +18,6 @@ in
     ../../../overlays
     ../../../modules/services/podman.nix
     ../../../modules/services/backups.nix
-    ../../../modules/services/jellyfin.nix
     ../../../modules/services/navidrome.nix
     ../../../modules/services/vaultwarden.nix
     ../../../modules/services/caddy.nix
@@ -103,8 +102,6 @@ in
     };
   };
 
-
-
   # System packages
   environment.systemPackages = with pkgs; [
     streamrip
@@ -151,10 +148,15 @@ in
     };
 
     # Enable wrapped services with Caddy integration
-    jellyfin-wrapped.enable = false; # Using container instead
     navidrome-wrapped.enable = true;
     vaultwarden-wrapped.enable = true;
     jellyseerr-wrapped.enable = true;
+
+    # Caddy virtual host for Jellyfin
+    caddy-wrapper.virtualHosts."jellyfin" = {
+      domain = "schnitzelflix.xyz";
+      reverseProxy = "localhost:8096";
+    };
 
     # Enable arr stack services
     sonarr-wrapped.enable = true;
@@ -166,12 +168,6 @@ in
 
     # qBittorrent with VPN confinement
     qbittorrent-wrapped.enable = true;
-
-    # Caddy reverse proxy for Jellyfin container
-    caddy-wrapper.virtualHosts."jellyfin-container" = {
-      domain = "schnitzelflix.xyz";
-      reverseProxy = "localhost:8096";
-    };
   };
 
   # Podman containers
