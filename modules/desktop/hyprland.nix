@@ -1,10 +1,9 @@
-{
-  lib,
-  config,
-  pkgs,
-  inputs,
-  pkgsUnstable,
-  ...
+{ lib
+, config
+, pkgs
+, inputs
+, pkgsUnstable
+, ...
 }:
 let
   inherit (lib)
@@ -68,7 +67,7 @@ in
       programs.firefox = {
         enable = true;
         package = pkgs.firefox.overrideAttrs (_old: {
-          extraNativeMessagingHosts = with pkgs; [pywalfox-native];
+          extraNativeMessagingHosts = with pkgs; [ pywalfox-native ];
         });
       };
 
@@ -88,9 +87,9 @@ in
 
       xdg.portal = {
         enable = true;
-        extraPortals = with pkgs; [
-          xdg-desktop-portal-hyprland
-          xdg-desktop-portal-gtk
+        extraPortals = [
+          pkgs.xdg-desktop-portal-hyprland
+          pkgs.xdg-desktop-portal-gtk
         ];
         config.common = {
           default = [ "hyprland" "gtk" ];
@@ -101,50 +100,52 @@ in
       services.accounts-daemon.enable = true;
 
       environment = {
-        systemPackages = mkAfter (with pkgs; [
-          accountsservice
-          adw-gtk3
-          bibata-cursors
-          bitwarden
-          blueman
-          brightnessctl
-          delfin
-          firefox
-          fira-code
-          ghostty
-          grim
-          grimblast
-          inter
-          loupe
-          material-symbols
-          mate.mate-polkit
-          matugen
-          nemo
-          nemo-fileroller
-          papirus-icon-theme
-          papirus-folders
-          pywalfox-native
-          seahorse
-          showtime
-          slurp
+        systemPackages = mkAfter [
+          pkgs.accountsservice
+          pkgs.adw-gtk3
+          pkgs.bibata-cursors
+          pkgs.bitwarden
+          pkgs.blueman
+          pkgs.brightnessctl
+          pkgs.cliphist
+          pkgs.delfin
+          pkgs.firefox
+          pkgs.fira-code
+          pkgs.ghostty
+          pkgs.grim
+          pkgs.grimblast
+          pkgs.inter
+          pkgs.loupe
+          pkgs.material-symbols
+          pkgs.mate.mate-polkit
+          pkgs.matugen
+          pkgs.nemo
+          pkgs.nemo-fileroller
+          pkgs.papirus-icon-theme
+          pkgs.papirus-folders
+          pkgs.pywalfox-native
+          pkgs.seahorse
+          pkgs.showtime
+          pkgs.slurp
           pkgsUnstable.vesktop
-          wayland-utils
-          wl-clipboard
-          xdg-user-dirs
-          xdg-user-dirs-gtk
-          xwayland-satellite
+          pkgs.wayland-utils
+          pkgs.wl-clipboard
+          pkgs.wl-clip-persist
+          pkgs.xdg-user-dirs
+          pkgs.xdg-user-dirs-gtk
+          pkgs.xwayland-satellite
           pkgsUnstable.zed-editor
-        ]);
+        ];
         sessionVariables = {
           NIXOS_OZONE_WL = "1";
         };
-        variables = { XCURSOR_THEME = "Bibata-Modern-Classic"; XCURSOR_SIZE = "16"; };
+        variables = { XCURSOR_THEME = "Bibata-Modern-Classic"; XCURSOR_SIZE = "20"; };
       };
 
       systemd.services.greetd.environment = {
         XCURSOR_THEME = "Bibata-Modern-Classic";
-        XCURSOR_SIZE  = "16";
-        XCURSOR_PATH  = "${pkgs.bibata-cursors}/share/icons";
+        XCURSOR_SIZE = "20";
+        XCURSOR_PATH = "${pkgs.bibata-cursors}/share/icons";
       };
 
       users.users.${cfg.user}.extraGroups = mkAfter [
@@ -187,7 +188,7 @@ in
           x11.enable = true;
           package = pkgs.bibata-cursors;
           name = "Bibata-Modern-Classic";
-          size = 16;
+          size = 20;
         };
         programs.dankMaterialShell.enable = true;
       };

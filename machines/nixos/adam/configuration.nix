@@ -14,6 +14,7 @@ in
     ./disko.nix
     ../../../modules/graphics
     ../../../modules/home-manager
+    ../../../modules/users
     ../../../overlays
     ../../../modules/services/podman.nix
     ../../../modules/services/backups.nix
