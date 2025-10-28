@@ -1,14 +1,16 @@
-{ config, pkgs, modulesPath, ... }:
-
-let
+{
+  config,
+  pkgs,
+  modulesPath,
+  ...
+}: let
   # Shared service account for media workloads
   shareGroup = "share";
   shareGroupGid = 995;
   shareUser = "share";
   shareUserUid = 995;
   mainUser = "zekurio";
-in
-{
+in {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ./disko.nix
@@ -67,15 +69,15 @@ in
     useDHCP = true;
     networkmanager.enable = false;
     firewall.enable = true;
-    firewall.allowedTCPPorts = [ 8096 19200 ];
+    firewall.allowedTCPPorts = [8096 19200];
   };
 
   # DNS over TLS with Cloudflare
   services.resolved = {
     enable = true;
     dnssec = "true";
-    domains = [ "~." ];
-    fallbackDns = [ "1.1.1.1#cloudflare-dns.com" "1.0.0.1#cloudflare-dns.com" ];
+    domains = ["~."];
+    fallbackDns = ["1.1.1.1#cloudflare-dns.com" "1.0.0.1#cloudflare-dns.com"];
     extraConfig = ''
       DNSOverTLS=yes
     '';
@@ -85,7 +87,7 @@ in
   fileSystems."/mnt/fast-nvme" = {
     device = "/dev/nvme0n1p1";
     fsType = "ext4";
-    options = [ "defaults" "noatime" "nodiratime" "acl" ];
+    options = ["defaults" "noatime" "nodiratime" "acl"];
   };
 
   # SOPS secrets configuration
@@ -93,7 +95,7 @@ in
     defaultSopsFile = ../../../secrets/adam.yaml;
     age.keyFile = "/var/lib/sops-nix/key.txt";
     secrets = {
-      mullvad_wg = { };
+      mullvad_wg = {};
       autobrr_secret = {
         owner = shareUser;
         group = shareGroup;
@@ -137,7 +139,7 @@ in
       excludePaths = [
         "/var/lib/navidrome/cache"
       ];
-      extraBackupArgs = [ "--tag adam" ];
+      extraBackupArgs = ["--tag adam"];
       pruneKeep = {
         daily = 7;
         weekly = 4;
@@ -186,10 +188,16 @@ in
       "192.168.0.0/16" # Adjust to your local network
     ];
     portMappings = [
-      { from = 8080; to = 8080; } # qBittorrent WebUI
+      {
+        from = 8080;
+        to = 8080;
+      } # qBittorrent WebUI
     ];
     openVPNPorts = [
-      { port = 6881; protocol = "both"; } # qBittorrent incoming connections
+      {
+        port = 6881;
+        protocol = "both";
+      } # qBittorrent incoming connections
     ];
   };
 
@@ -220,7 +228,7 @@ in
   };
 
   # Allow the main interactive user to collaborate on shared media files
-  users.users.${mainUser}.extraGroups = [ shareGroup ];
+  users.users.${mainUser}.extraGroups = [shareGroup];
 
   systemd.tmpfiles.rules = [
     # qBittorrent state directory
@@ -246,8 +254,8 @@ in
   # Systemd service to fix media and downloads permissions on boot
   systemd.services.fix-media-permissions = {
     description = "Fix permissions on media and downloads directories";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "local-fs.target" ];
+    wantedBy = ["multi-user.target"];
+    after = ["local-fs.target"];
     serviceConfig = {
       Type = "oneshot";
     };
