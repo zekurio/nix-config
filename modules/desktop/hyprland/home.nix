@@ -43,7 +43,6 @@ in {
             "uwsm app -- dms run"
             "uwsm app -- /usr/lib/mate-polkit/polkit-mate-authentication-agent-1"
             "uwsm app -- ghostty --gtk-single-instance=true --quit-after-last-window-closed=false --initial-window=false"
-            "[workspace special:term silent] uwsm app -- ghostty --class=com.mitchellh.ghostty.zellij -e zellij"
           ];
 
           input = {
@@ -150,7 +149,7 @@ in {
           bind = [
             "$mainMod, Return, exec, ghostty"
             "$mainMod, E, exec, nemo"
-            "$mainMod, space, exec, dms ipc call spotlight toggle"
+            "$mainMod, Space, exec, dms ipc call spotlight toggle"
             "$mainMod, V, exec, dms ipc call clipboard toggle"
             "$mainMod, M, exec, dms ipc call processlist toggle"
             "$mainMod, comma, exec, dms ipc call settings toggle"
@@ -222,7 +221,7 @@ in {
             "$altMod, T, togglespecialworkspace, term"
             "$altMod, M, togglespecialworkspace, music"
             "$altMod, C, togglespecialworkspace, comms"
-            "$altMod, N, togglespecialworkspace, notes"
+            "$altMod, S, togglespecialworkspace, scratchpad"
             '' , Print, exec, bash -lc 'd="$(xdg-user-dir PICTURES)/Screenshots"; mkdir -p "$d"; f="$d/$(date +%F_%H-%M-%S).png"; grimblast copysave area "$f" && notify-send -i "$f" "Screenshot saved" "$f"' ''
             '' $mainMod, Print, exec, bash -lc 'd="$(xdg-user-dir PICTURES)/Screenshots"; mkdir -p "$d"; f="$d/$(date +%F_%H-%M-%S).png"; grimblast copysave screen "$f" && notify-send -i "$f" "Screenshot saved" "$f"' ''
             ", XF86AudioPlay, exec, dms ipc call mpris playPause"

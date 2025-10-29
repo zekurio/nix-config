@@ -17,7 +17,13 @@ in {
 
   config = mkIf cfg.enable {
     environment.systemPackages = mkAfter [
-      pkgs.brave
+      (pkgs.brave.override {
+        commandLineArgs = [
+          "--enable-features=AcceleratedVideoDecodeLinuxGL,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks"
+          "--ignore-gpu-blocklist"
+          "--enable-zero-copy"
+        ];
+      })
     ];
 
     environment.etc."brave/policies/managed/policies.json".text = ''
