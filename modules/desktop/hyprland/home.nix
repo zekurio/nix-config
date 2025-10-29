@@ -118,8 +118,6 @@ in {
             "size 1280 720, class:^(Bitwarden)$"
             "float, class:^(nemo)$"
             "size 1280 720, class:^(nemo)$"
-            "float, class:^(com.network.manager)$"
-            "size 720 480, class:^(com.network.manager)$"
             "float, class:^(com.saivert.pwvucontrol)$"
             "size 1280 720, class:^(com.saivert.pwvucontrol)$"
             "float, class:^(org\\.coolercontrol\\.CoolerControl)$"
@@ -259,7 +257,7 @@ in {
       programs.ghostty = {
         enable = true;
         settings = {
-          font-family = "Fira Code";
+          font-family = "GeistMono Nerd Font Mono";
           font-size = 12;
           window-decoration = false;
           window-padding-x = 12;

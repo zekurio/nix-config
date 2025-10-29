@@ -60,17 +60,14 @@ in {
         pkgs.cliphist
         pkgs.delfin
         pkgsUnstable.feishin
-        pkgs.ghostty
+        pkgsUnstable.ghostty
         pkgs.grim
         pkgs.grimblast
-        pkgs.inter
         pkgs.loupe
-        pkgs.material-symbols
         pkgs.mate.mate-polkit
         pkgs.matugen
         pkgs.nemo
         pkgs.nemo-fileroller
-        pkgsUnstable.nmgui
         pkgs.papirus-icon-theme
         pkgs.papirus-folders
         pkgs.pwvucontrol
@@ -94,6 +91,15 @@ in {
         XCURSOR_SIZE = "20";
       };
     };
+
+    fonts.packages = with pkgs; [
+      noto-fonts
+      noto-fonts-cjk-sans
+      noto-fonts-emoji
+      material-symbols
+      nerd-fonts.geist-mono
+      geist-font
+    ];
 
     systemd.services.greetd.environment = {
       XCURSOR_THEME = "Bibata-Modern-Classic";
