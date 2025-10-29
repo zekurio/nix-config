@@ -68,12 +68,11 @@ in {
         pkgs.matugen
         pkgs.nemo
         pkgs.nemo-fileroller
-        pkgs.papirus-icon-theme
-        pkgs.papirus-folders
         pkgs.pwvucontrol
         pkgs.seahorse
         pkgs.showtime
         pkgs.slurp
+        pkgs.papirus-icon-theme
         pkgsUnstable.vesktop
         pkgs.wayland-utils
         pkgs.wl-clipboard
@@ -105,6 +104,12 @@ in {
       XCURSOR_THEME = "Bibata-Modern-Classic";
       XCURSOR_SIZE = "20";
       XCURSOR_PATH = "${pkgs.bibata-cursors}/share/icons";
+    };
+
+    programs.dankMaterialShell.greeter = {
+      enable = true;
+      compositor.name = "hyprland";
+      configHome = "/home/${cfg.user}";
     };
 
     users.users.${cfg.user}.extraGroups = mkAfter [

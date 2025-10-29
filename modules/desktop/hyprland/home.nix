@@ -220,8 +220,8 @@ in {
             "$altMod, M, togglespecialworkspace, music"
             "$altMod, C, togglespecialworkspace, comms"
             "$altMod, S, togglespecialworkspace, scratchpad"
-            '' , Print, exec, bash -lc 'd="$(xdg-user-dir PICTURES)/Screenshots"; mkdir -p "$d"; f="$d/$(date +%F_%H-%M-%S).png"; grimblast copysave area "$f" && notify-send -i "$f" "Screenshot saved" "$f"' ''
-            '' $mainMod, Print, exec, bash -lc 'd="$(xdg-user-dir PICTURES)/Screenshots"; mkdir -p "$d"; f="$d/$(date +%F_%H-%M-%S).png"; grimblast copysave screen "$f" && notify-send -i "$f" "Screenshot saved" "$f"' ''
+            '' , Print, exec, bash -lc 'd="$(xdg-user-dir PICTURES)/screenshots"; mkdir -p "$d"; f="$d/$(date +%F_%H-%M-%S).png"; grimblast copysave area "$f" && notify-send -i "$f" "Screenshot saved" "$f"' ''
+            '' $mainMod, Print, exec, bash -lc 'd="$(xdg-user-dir PICTURES)/screenshots"; mkdir -p "$d"; f="$d/$(date +%F_%H-%M-%S).png"; grimblast copysave screen "$f" && notify-send -i "$f" "Screenshot saved" "$f"' ''
             ", XF86AudioPlay, exec, dms ipc call mpris playPause"
             ", XF86AudioPause, exec, dms ipc call mpris playPause"
             ", XF86AudioNext, exec, dms ipc call mpris next"
@@ -287,16 +287,51 @@ in {
         };
       };
 
-      xdg.userDirs = {
+      gtk = {
         enable = true;
-        desktop = "$HOME/desktop";
-        documents = "$HOME/documents";
-        download = "$HOME/downloads";
-        music = "$HOME/music";
-        pictures = "$HOME/pictures";
-        publicShare = "$HOME/public";
-        templates = "$HOME/templates";
-        videos = "$HOME/videos";
+        font = {
+          name = "Geist 11";
+        };
+        iconTheme = {
+          name = "Papirus-Dark";
+          package = pkgs.papirus-icon-theme;
+        };
+      };
+
+      xdg = {
+        userDirs = {
+          enable = true;
+          desktop = "$HOME/desktop";
+          documents = "$HOME/documents";
+          download = "$HOME/downloads";
+          music = "$HOME/music";
+          pictures = "$HOME/pictures";
+          publicShare = "$HOME/public";
+          templates = "$HOME/templates";
+          videos = "$HOME/videos";
+        };
+
+        mimeApps = {
+          enable = true;
+          defaultApplications = {
+            "image/gif" = ["org.gnome.Loupe.desktop"];
+            "image/jpeg" = ["org.gnome.Loupe.desktop"];
+            "image/png" = ["org.gnome.Loupe.desktop"];
+            "image/webp" = ["org.gnome.Loupe.desktop"];
+            "video/mp4" = ["org.gnome.Showtime.desktop"];
+            "video/webm" = ["org.gnome.Showtime.desktop"];
+            "video/x-matroska" = ["org.gnome.Showtime.desktop"];
+          };
+          associations.added = {
+            "image/gif" = ["org.gnome.Loupe.desktop"];
+            "image/jpeg" = ["org.gnome.Loupe.desktop"];
+            "image/png" = ["org.gnome.Loupe.desktop"];
+            "image/webp" = ["org.gnome.Loupe.desktop"];
+            "video/mp4" = ["org.gnome.Showtime.desktop"];
+            "video/webm" = ["org.gnome.Showtime.desktop"];
+            "video/x-matroska" = ["org.gnome.Showtime.desktop"];
+          };
+        };
       };
 
       home.pointerCursor = {
@@ -307,7 +342,10 @@ in {
         size = 20;
       };
 
-      programs.dankMaterialShell.enable = true;
+      programs.dankMaterialShell = {
+        enable = true;
+        quickshell.package = inputs.quickshell.packages.${pkgs.system}.default;
+      };
     };
   };
 }
