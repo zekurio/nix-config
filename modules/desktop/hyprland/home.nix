@@ -288,7 +288,7 @@ in {
       gtk = {
         enable = true;
         font = {
-          name = "Geist 11";
+          name = "Geist";
         };
         iconTheme = {
           name = "Papirus-Dark";
