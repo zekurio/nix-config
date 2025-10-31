@@ -60,14 +60,15 @@ in {
         pkgs.cliphist
         pkgs.delfin
         pkgsUnstable.feishin
+        pkgs.file-roller
         pkgsUnstable.ghostty
         pkgs.grim
         pkgs.grimblast
         pkgs.loupe
         pkgs.mate.mate-polkit
         pkgs.matugen
-        pkgs.nemo
         pkgs.nemo-fileroller
+        pkgs.nemo-with-extensions
         pkgs.pwvucontrol
         pkgs.seahorse
         pkgs.showtime
