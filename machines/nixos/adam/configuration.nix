@@ -1,35 +1,21 @@
-{
-  config,
-  pkgs,
-  modulesPath,
-  ...
-}: let
+{ config
+, pkgs
+, modulesPath
+, ...
+}:
+let
   # Shared service account for media workloads
   shareGroup = "share";
   shareGroupGid = 995;
   shareUser = "share";
   shareUserUid = 995;
   mainUser = "zekurio";
-in {
+in
+{
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ./disko.nix
     ../../../modules/graphics
-    ../../../modules/home-manager
-    ../../../modules/users
-    ../../../modules/services/podman.nix
-    ../../../modules/services/backups.nix
-    ../../../modules/services/navidrome.nix
-    ../../../modules/services/vaultwarden.nix
-    ../../../modules/services/caddy.nix
-    ../../../modules/services/sonarr.nix
-    ../../../modules/services/radarr.nix
-    #../../../modules/services/lidarr.nix
-    ../../../modules/services/prowlarr.nix
-    ../../../modules/services/sabnzbd.nix
-    ../../../modules/services/jellyseerr.nix
-    ../../../modules/services/autobrr.nix
-    ../../../modules/services/qbittorrent.nix
     ../default.nix
   ];
 
@@ -68,15 +54,15 @@ in {
     useDHCP = true;
     networkmanager.enable = false;
     firewall.enable = true;
-    firewall.allowedTCPPorts = [8096 19200];
+    firewall.allowedTCPPorts = [ 8096 19200 ];
   };
 
   # DNS over TLS with Cloudflare
   services.resolved = {
     enable = true;
     dnssec = "true";
-    domains = ["~."];
-    fallbackDns = ["1.1.1.1#cloudflare-dns.com" "1.0.0.1#cloudflare-dns.com"];
+    domains = [ "~." ];
+    fallbackDns = [ "1.1.1.1#cloudflare-dns.com" "1.0.0.1#cloudflare-dns.com" ];
     extraConfig = ''
       DNSOverTLS=yes
     '';
@@ -86,7 +72,7 @@ in {
   fileSystems."/mnt/fast-nvme" = {
     device = "/dev/nvme0n1p1";
     fsType = "ext4";
-    options = ["defaults" "noatime" "nodiratime" "acl"];
+    options = [ "defaults" "noatime" "nodiratime" "acl" ];
   };
 
   # SOPS secrets configuration
@@ -94,7 +80,7 @@ in {
     defaultSopsFile = ../../../secrets/adam.yaml;
     age.keyFile = "/var/lib/sops-nix/key.txt";
     secrets = {
-      mullvad_wg = {};
+      mullvad_wg = { };
       autobrr_secret = {
         owner = shareUser;
         group = shareGroup;
@@ -138,7 +124,7 @@ in {
       excludePaths = [
         "/var/lib/navidrome/cache"
       ];
-      extraBackupArgs = ["--tag adam"];
+      extraBackupArgs = [ "--tag adam" ];
       pruneKeep = {
         daily = 7;
         weekly = 4;
@@ -227,7 +213,7 @@ in {
   };
 
   # Allow the main interactive user to collaborate on shared media files
-  users.users.${mainUser}.extraGroups = [shareGroup];
+  users.users.${mainUser}.extraGroups = [ shareGroup ];
 
   systemd.tmpfiles.rules = [
     # qBittorrent state directory
@@ -253,8 +239,8 @@ in {
   # Systemd service to fix media and downloads permissions on boot
   systemd.services.fix-media-permissions = {
     description = "Fix permissions on media and downloads directories";
-    wantedBy = ["multi-user.target"];
-    after = ["local-fs.target"];
+    wantedBy = [ "multi-user.target" ];
+    after = [ "local-fs.target" ];
     serviceConfig = {
       Type = "oneshot";
     };
