@@ -54,7 +54,7 @@ in
     useDHCP = true;
     networkmanager.enable = false;
     firewall.enable = true;
-    firewall.allowedTCPPorts = [ 8096 19200 ];
+    firewall.allowedTCPPorts = [ 19200 ];
   };
 
   # DNS over TLS with Cloudflare
