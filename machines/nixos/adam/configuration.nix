@@ -206,6 +206,10 @@ in
     isSystemUser = true;
     uid = shareUserUid;
     group = shareGroup;
+    extraGroups = [
+      "video"
+      "render"
+    ];
     home = "/var/lib/share";
     createHome = true;
     description = "Shared service account for media automation";
