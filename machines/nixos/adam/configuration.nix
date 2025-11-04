@@ -112,6 +112,8 @@ in
       paths = [
         "/etc/nixos"
         "/var/lib/autobrr"
+        "/var/lib/configarr"
+        "/var/lib/fileflows"
         "/var/lib/jellyfin"
         "/var/lib/jellyseerr"
         "/var/lib/navidrome"
@@ -140,12 +142,7 @@ in
     navidrome-wrapped.enable = true;
     vaultwarden-wrapped.enable = true;
     jellyseerr-wrapped.enable = true;
-
-    # Caddy virtual host for Jellyfin
-    caddy-wrapper.virtualHosts."jellyfin" = {
-      domain = "schnitzelflix.xyz";
-      reverseProxy = "localhost:8096";
-    };
+    jellyfin-wrapped.enable = true;
 
     # Enable arr stack services
     sonarr-wrapped.enable = true;
@@ -163,7 +160,6 @@ in
   # Podman containers
   virtualisation.podman-homelab = {
     enable = true;
-    jellyfin.enable = true;
     fileflows.enable = true;
     configarr.enable = true;
   };
