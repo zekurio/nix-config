@@ -112,11 +112,13 @@ in
       paths = [
         "/etc/nixos"
         "/var/lib/autobrr"
+        "/var/lib/jellyfin"
         "/var/lib/jellyseerr"
         "/var/lib/navidrome"
         "/var/lib/prowlarr"
         "/var/lib/qBittorrent"
         "/var/lib/radarr"
+        "/var/lib/whisparr"
         "/var/lib/sabnzbd"
         "/var/lib/sonarr"
         "/var/lib/vaultwarden"
@@ -148,6 +150,7 @@ in
     # Enable arr stack services
     sonarr-wrapped.enable = true;
     radarr-wrapped.enable = true;
+    whisparr-wrapped.enable = true;
     #lidarr-wrapped.enable = true;
     prowlarr-wrapped.enable = true;
     sabnzbd-wrapped.enable = true;
@@ -223,10 +226,12 @@ in
     "Z /var/downloads/completed 2775 ${shareUser} ${shareGroup} -"
     "Z /var/downloads/completed/sonarr 2775 ${shareUser} ${shareGroup} -"
     "Z /var/downloads/completed/radarr 2775 ${shareUser} ${shareGroup} -"
+    "Z /var/downloads/completed/whisparr 2775 ${shareUser} ${shareGroup} -"
     "Z /var/downloads/completed/torrent 2775 ${shareUser} ${shareGroup} -"
     "Z /var/downloads/converted 2775 ${shareUser} ${shareGroup} -"
     "Z /var/downloads/converted/sonarr 2775 ${shareUser} ${shareGroup} -"
     "Z /var/downloads/converted/radarr 2775 ${shareUser} ${shareGroup} -"
+    "Z /var/downloads/converted/whisparr 2775 ${shareUser} ${shareGroup} -"
     "Z /var/downloads/incomplete 2775 ${shareUser} ${shareGroup} -"
     # Media directories on NVMe - owned by shared service account
     "z /mnt/fast-nvme/media 2775 ${shareUser} ${shareGroup} -"
@@ -234,6 +239,7 @@ in
     "z /mnt/fast-nvme/media/movies 2775 ${shareUser} ${shareGroup} -"
     "z /mnt/fast-nvme/media/music 2775 ${shareUser} ${shareGroup} -"
     "z /mnt/fast-nvme/media/tv 2775 ${shareUser} ${shareGroup} -"
+    "z /mnt/fast-nvme/media/smut 2775 ${shareUser} ${shareGroup} -"
   ];
 
   # Systemd service to fix media and downloads permissions on boot
