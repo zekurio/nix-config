@@ -16,6 +16,7 @@ in
     (modulesPath + "/installer/scan/not-detected.nix")
     ./disko.nix
     ../../../modules/graphics
+    ../../../modules/virtualization
     ../default.nix
   ];
 
@@ -47,6 +48,7 @@ in
   };
 
   modules.graphics.intelArc.enable = true;
+  modules.virtualization.enable = true;
 
   # Networking configuration
   networking = {
@@ -155,13 +157,6 @@ in
 
     # qBittorrent with VPN confinement
     qbittorrent-wrapped.enable = true;
-  };
-
-  # Podman containers
-  virtualisation.podman-homelab = {
-    enable = true;
-    fileflows.enable = true;
-    configarr.enable = true;
   };
 
   # VPN namespace configuration for qBittorrent
