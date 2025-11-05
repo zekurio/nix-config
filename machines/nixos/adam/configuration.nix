@@ -157,6 +157,10 @@ in
 
     # qBittorrent with VPN confinement
     qbittorrent-wrapped.enable = true;
+
+    fileflows-wrapped = {
+      enable = true;
+    };
   };
 
   # VPN namespace configuration for qBittorrent
