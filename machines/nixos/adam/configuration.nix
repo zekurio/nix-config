@@ -116,7 +116,6 @@ in
         "/var/lib/autobrr"
         "/var/lib/configarr"
         "/var/lib/fileflows"
-        "/var/lib/wizarr"
         "/var/lib/jellyfin"
         "/var/lib/jellyseerr"
         "/var/lib/navidrome"
@@ -162,7 +161,6 @@ in
     fileflows-wrapped = {
       enable = true;
     };
-    wizarr-wrapped.enable = true;
   };
 
   # VPN namespace configuration for qBittorrent
