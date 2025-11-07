@@ -13,6 +13,5 @@
     ./sabnzbd.nix
     ./sonarr.nix
     ./vaultwarden.nix
-    ./whisparr.nix
   ];
 }
