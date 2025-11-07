@@ -120,6 +120,7 @@ in
         "/var/lib/fileflows"
         "/var/lib/jellyfin"
         "/var/lib/jellyseerr"
+        "/var/lib/lidarr"
         "/var/lib/navidrome"
         "/var/lib/prowlarr"
         "/var/lib/qBittorrent"
@@ -150,6 +151,7 @@ in
     # Enable arr stack services
     sonarr-wrapped.enable = true;
     radarr-wrapped.enable = true;
+    lidarr-wrapped.enable = true;
     prowlarr-wrapped.enable = true;
     sabnzbd-wrapped.enable = true;
     autobrr-wrapped.enable = true;

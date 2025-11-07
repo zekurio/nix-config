@@ -116,8 +116,8 @@ in {
               "size 1280 720, class:^(org.gnome.Loupe)$"
               "float, class:^(Bitwarden)$"
               "size 1280 720, class:^(Bitwarden)$"
-              "float, class:^(cosmic-files)$"
-              "size 1280 720, class:^(cosmic-files)$"
+              "float, class:^(org.gnome.Nautilus)$"
+              "size 1280 720, class:^(org.gnome.Nautilus)$"
               "float, class:^(com.saivert.pwvucontrol)$"
               "size 1280 720, class:^(com.saivert.pwvucontrol)$"
               "float, class:^(org.coolercontrol.CoolerControl)$"
@@ -146,7 +146,7 @@ in {
 
             bind = [
               "$mainMod, Return, exec, ghostty"
-              "$mainMod, E, exec, cosmic-files"
+              "$mainMod, E, exec, nautilus"
               "$mainMod, Space, exec, dms ipc call spotlight toggle"
               "$mainMod, V, exec, dms ipc call clipboard toggle"
               "$mainMod, M, exec, dms ipc call processlist toggle"

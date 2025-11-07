@@ -67,7 +67,7 @@ in {
         pkgs.loupe
         pkgs.mate.mate-polkit
         pkgs.matugen
-        pkgs.cosmic-files
+        pkgs.nautilus
         pkgs.seahorse
         pkgs.showtime
         pkgs.slurp
