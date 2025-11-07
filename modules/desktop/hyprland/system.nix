@@ -67,9 +67,7 @@ in {
         pkgs.loupe
         pkgs.mate.mate-polkit
         pkgs.matugen
-        pkgs.nemo-fileroller
-        pkgs.nemo-with-extensions
-        pkgs.pwvucontrol
+        pkgs.cosmic-files
         pkgs.seahorse
         pkgs.showtime
         pkgs.slurp

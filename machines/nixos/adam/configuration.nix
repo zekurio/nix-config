@@ -29,8 +29,10 @@ in
     ];
     kernelModules = [
       "kvm-amd"
-      "k10temp"
+      "zenpower"
     ];
+    extraModulePackages = [ config.boot.kernelPackages.zenpower ];
+    blacklistedKernelModules = [ "k10temp" ];
     loader = {
       timeout = 0;
       efi.canTouchEfiVariables = true;
@@ -276,7 +278,7 @@ in
   system.autoUpgrade = {
     enable = true;
     allowReboot = true;
-    dates = "*-*-* 03:00:00";
+    dates = "Sun 03:00";
     randomizedDelaySec = "1h";
     flake = "github:zekurio/nix-config#adam";
   };
