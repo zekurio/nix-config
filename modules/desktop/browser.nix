@@ -25,6 +25,7 @@ in {
       #   ];
       # })
       pkgs.brave
+      pkgs.firefox
     ];
 
     environment.etc."brave/policies/managed/policies.json".text = ''

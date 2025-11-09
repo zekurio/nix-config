@@ -58,7 +58,7 @@ in {
         pkgs.blueman
         pkgs.brightnessctl
         pkgs.cliphist
-        pkgs.delfin
+        pkgs.tsukimi
         pkgsUnstable.feishin
         pkgs.file-roller
         pkgsUnstable.ghostty
