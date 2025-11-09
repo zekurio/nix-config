@@ -118,10 +118,12 @@ in
         "/var/lib/autobrr"
         "/var/lib/configarr"
         "/var/lib/fileflows"
+        "/var/lib/immich"
         "/var/lib/jellyfin"
         "/var/lib/jellyseerr"
         "/var/lib/lidarr"
         "/var/lib/navidrome"
+        "/var/lib/paperless"
         "/var/lib/prowlarr"
         "/var/lib/qBittorrent"
         "/var/lib/radarr"
@@ -143,7 +145,9 @@ in
     };
 
     # Enable wrapped services with Caddy integration
+    immich-wrapped.enable = true;
     navidrome-wrapped.enable = true;
+    paperless-ngx-wrapped.enable = true;
     vaultwarden-wrapped.enable = true;
     jellyseerr-wrapped.enable = true;
     jellyfin-wrapped.enable = true;

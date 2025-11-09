@@ -2,7 +2,6 @@
   lib,
   config,
   pkgs,
-  pkgsUnstable,
   ...
 }: let
   inherit
@@ -59,9 +58,9 @@ in {
         pkgs.brightnessctl
         pkgs.cliphist
         pkgs.tsukimi
-        pkgsUnstable.feishin
+        pkgs.unstable.feishin
         pkgs.file-roller
-        pkgsUnstable.ghostty
+        pkgs.unstable.ghostty
         pkgs.grim
         pkgs.grimblast
         pkgs.loupe
@@ -72,14 +71,14 @@ in {
         pkgs.showtime
         pkgs.slurp
         pkgs.papirus-icon-theme
-        pkgsUnstable.vesktop
+        pkgs.unstable.vesktop
         pkgs.wayland-utils
         pkgs.wl-clipboard
         pkgs.wl-clip-persist
         pkgs.xdg-user-dirs
         pkgs.xdg-user-dirs-gtk
         pkgs.xwayland-satellite
-        pkgsUnstable.zed-editor
+        pkgs.unstable.zed-editor
       ];
       sessionVariables = {
         NIXOS_OZONE_WL = "1";
