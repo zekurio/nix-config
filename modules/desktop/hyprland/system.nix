@@ -53,7 +53,7 @@ in {
         pkgs.accountsservice
         pkgs.adw-gtk3
         pkgs.bibata-cursors
-        pkgs.bitwarden
+        pkgs.unstable.bitwarden-desktop
         pkgs.blueman
         pkgs.brightnessctl
         pkgs.cliphist
