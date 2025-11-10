@@ -46,7 +46,6 @@ in {
         pkgs.unstable.ghostty
         pkgs.grim
         pkgs.grimblast
-        pkgs.unstable.immich-go
         pkgs.loupe
         pkgs.mate.mate-polkit
         pkgs.matugen
