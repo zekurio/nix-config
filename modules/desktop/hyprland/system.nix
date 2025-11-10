@@ -53,12 +53,12 @@ in {
         pkgs.accountsservice
         pkgs.adw-gtk3
         pkgs.bibata-cursors
-        pkgs.unstable.bitwarden-desktop
+        #pkgs.unstable.bitwarden-desktop
         pkgs.blueman
         pkgs.brightnessctl
         pkgs.cliphist
         pkgs.tsukimi
-        pkgs.unstable.feishin
+        #pkgs.unstable.feishin
         pkgs.file-roller
         pkgs.unstable.ghostty
         pkgs.grim
@@ -71,7 +71,7 @@ in {
         pkgs.showtime
         pkgs.slurp
         pkgs.papirus-icon-theme
-        pkgs.unstable.vesktop
+        #pkgs.unstable.vesktop
         pkgs.wayland-utils
         pkgs.wl-clipboard
         pkgs.wl-clip-persist
