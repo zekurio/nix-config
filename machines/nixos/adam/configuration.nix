@@ -241,6 +241,7 @@ in
     "z /mnt/fast-nvme/media/movies 2775 ${shareUser} ${shareGroup} -"
     "z /mnt/fast-nvme/media/music 2775 ${shareUser} ${shareGroup} -"
     "z /mnt/fast-nvme/media/tv 2775 ${shareUser} ${shareGroup} -"
+    "z /mnt/fast-nvme/media/immich 2775 immich ${shareGroup} -"
   ];
 
   # Systemd service to fix media and downloads permissions on boot

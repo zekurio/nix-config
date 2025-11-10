@@ -7,6 +7,7 @@
   inherit
     (lib)
     mkAfter
+    mkBefore
     mkIf
     ;
   cfg = config.modules.desktop.hyprland;
@@ -19,84 +20,16 @@ in {
     };
 
     services.seatd.enable = true;
-    security = {
-      pam.services.greetd.enableGnomeKeyring = true;
-      polkit.enable = true;
-    };
-
-    services.pipewire = {
-      enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
-      wireplumber = {
-        enable = true;
-      };
-    };
+    security.pam.services.greetd.enableGnomeKeyring = true;
 
     xdg.portal = {
-      enable = true;
-      extraPortals = [
+      extraPortals = mkAfter [
         pkgs.xdg-desktop-portal-hyprland
-        pkgs.xdg-desktop-portal-gtk
       ];
-      config.common = {
-        default = ["hyprland" "gtk"];
-      };
-    };
-
-    services.dbus.enable = true;
-    services.accounts-daemon.enable = true;
-
-    environment = {
-      systemPackages = mkAfter [
-        pkgs.accountsservice
-        pkgs.adw-gtk3
-        pkgs.bibata-cursors
-        #pkgs.unstable.bitwarden-desktop
-        pkgs.blueman
-        pkgs.brightnessctl
-        pkgs.cliphist
-        pkgs.tsukimi
-        #pkgs.unstable.feishin
-        pkgs.file-roller
-        pkgs.unstable.ghostty
-        pkgs.grim
-        pkgs.grimblast
-        pkgs.loupe
-        pkgs.mate.mate-polkit
-        pkgs.matugen
-        pkgs.nautilus
-        pkgs.seahorse
-        pkgs.showtime
-        pkgs.slurp
-        pkgs.papirus-icon-theme
-        #pkgs.unstable.vesktop
-        pkgs.wayland-utils
-        pkgs.wl-clipboard
-        pkgs.wl-clip-persist
-        pkgs.xdg-user-dirs
-        pkgs.xdg-user-dirs-gtk
-        pkgs.xwayland-satellite
-        pkgs.unstable.zed-editor
+      config.common.default = mkBefore [
+        "hyprland"
       ];
-      sessionVariables = {
-        NIXOS_OZONE_WL = "1";
-      };
-      variables = {
-        XCURSOR_THEME = "Bibata-Modern-Classic";
-        XCURSOR_SIZE = "20";
-      };
     };
-
-    fonts.packages = with pkgs; [
-      noto-fonts
-      noto-fonts-cjk-sans
-      noto-fonts-emoji
-      material-symbols
-      nerd-fonts.geist-mono
-      geist-font
-    ];
 
     systemd.services.greetd.environment = {
       XCURSOR_THEME = "Bibata-Modern-Classic";

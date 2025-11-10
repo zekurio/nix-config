@@ -26,6 +26,7 @@ in {
       # })
       pkgs.brave
       pkgs.firefox
+      pkgs.pywalfox-native
     ];
 
     environment.etc."brave/policies/managed/policies.json".text = ''
