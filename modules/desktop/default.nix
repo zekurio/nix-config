@@ -1,7 +1,6 @@
 { lib, ... }: {
   imports = [
     ./common.nix
-    ./bottles.nix
     ./browser.nix
     ./hyprland
   ];
