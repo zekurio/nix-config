@@ -56,7 +56,7 @@ in {
             };
 
             decoration = {
-              rounding = 6;
+              rounding = 18;
               shadow = {
                 enabled = true;
                 range = 30;
@@ -93,7 +93,7 @@ in {
             };
 
             windowrulev2 = [
-              "rounding 6, class:^(org.gnome.)"
+              "rounding 18, class:^(org.gnome.)"
               "noborder, class:^(org.gnome.)"
               "float, class:^(.blueman-manager-wrapped)$"
               "size 720 480, class:^(.blueman-manager-wrapped)$"
