@@ -109,6 +109,7 @@ in
       };
     };
     autoaspm.enable = true;
+    tailscale.enable = true;
 
     backups.b2 = {
       enable = true;
