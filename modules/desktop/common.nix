@@ -46,6 +46,8 @@ in {
         pkgs.unstable.ghostty
         pkgs.grim
         pkgs.grimblast
+        pkgs.unstable.jetbrains.idea-ultimate
+        pkgs.unstable.jetbrains.goland
         pkgs.loupe
         pkgs.mate.mate-polkit
         pkgs.matugen

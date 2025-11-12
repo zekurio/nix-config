@@ -17,16 +17,13 @@ in {
 
   config = mkIf cfg.enable {
     environment.systemPackages = mkAfter [
-      # (pkgs.brave.override {
-      #   commandLineArgs = [
-      #     "--enable-features=AcceleratedVideoDecodeLinuxGL,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks"
-      #     "--ignore-gpu-blocklist"
-      #     "--enable-zero-copy"
-      #   ];
-      # })
-      pkgs.brave
-      pkgs.firefox
-      pkgs.pywalfox-native
+      (pkgs.brave.override {
+        commandLineArgs = [
+          "--enable-features=AcceleratedVideoDecodeLinuxGL,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks"
+          "--ignore-gpu-blocklist"
+          "--enable-zero-copy"
+        ];
+      })
     ];
 
     environment.etc."brave/policies/managed/policies.json".text = ''

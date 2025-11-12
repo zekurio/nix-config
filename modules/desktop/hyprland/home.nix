@@ -57,8 +57,6 @@ in {
 
             decoration = {
               rounding = 6;
-              active_opacity = 1.0;
-              inactive_opacity = 0.9;
               shadow = {
                 enabled = true;
                 range = 30;
@@ -123,7 +121,6 @@ in {
               "float, class:^(org.coolercontrol.CoolerControl)$"
               "size 1280 720, class:^(org.coolercontrol.CoolerControl)$"
               "noborder, class:^(com.mitchellh.ghostty)$"
-              "opacity 0.9 0.9, floating:0, focus:0"
               "workspace special:term, class:^(com.mitchellh.ghostty.zellij)$"
               "workspace special:comms, class:^(vesktop)$"
               "workspace special:music, class:^(feishin)$"
@@ -304,36 +301,14 @@ in {
       xdg = {
         userDirs = {
           enable = true;
-          desktop = "$HOME/desktop";
-          documents = "$HOME/documents";
-          download = "$HOME/downloads";
-          music = "$HOME/music";
-          pictures = "$HOME/pictures";
-          publicShare = "$HOME/public";
-          templates = "$HOME/templates";
-          videos = "$HOME/videos";
-        };
-
-        mimeApps = {
-          enable = true;
-          defaultApplications = {
-            "image/gif" = ["org.gnome.Loupe.desktop"];
-            "image/jpeg" = ["org.gnome.Loupe.desktop"];
-            "image/png" = ["org.gnome.Loupe.desktop"];
-            "image/webp" = ["org.gnome.Loupe.desktop"];
-            "video/mp4" = ["org.gnome.Showtime.desktop"];
-            "video/webm" = ["org.gnome.Showtime.desktop"];
-            "video/x-matroska" = ["org.gnome.Showtime.desktop"];
-          };
-          associations.added = {
-            "image/gif" = ["org.gnome.Loupe.desktop"];
-            "image/jpeg" = ["org.gnome.Loupe.desktop"];
-            "image/png" = ["org.gnome.Loupe.desktop"];
-            "image/webp" = ["org.gnome.Loupe.desktop"];
-            "video/mp4" = ["org.gnome.Showtime.desktop"];
-            "video/webm" = ["org.gnome.Showtime.desktop"];
-            "video/x-matroska" = ["org.gnome.Showtime.desktop"];
-          };
+          desktop = "$HOME/Desktop";
+          documents = "$HOME/Documents";
+          download = "$HOME/Downloads";
+          music = "$HOME/Music";
+          pictures = "$HOME/Pictures";
+          publicShare = "$HOME/Public";
+          templates = "$HOME/Templates";
+          videos = "$HOME/Videos";
         };
       };
 
