@@ -269,9 +269,6 @@ in
     '';
   };
 
-  # User configuration
-  modules.homeManager.git.enable = true;
-
   # System configuration
   time.timeZone = "Europe/Vienna";
   system.autoUpgrade = {
