@@ -140,7 +140,7 @@ in
         weekly = 4;
         monthly = 12;
       };
-      timer = "*-*-* 03:30:00";
+      timer = "*-*-* 01:00:00";
       randomizedDelaySec = "1h";
     };
 
@@ -274,7 +274,7 @@ in
   system.autoUpgrade = {
     enable = true;
     allowReboot = true;
-    dates = "Sun 03:00";
+    dates = "Sun 04:00";
     randomizedDelaySec = "1h";
     flake = "github:zekurio/nix-config#adam";
   };
