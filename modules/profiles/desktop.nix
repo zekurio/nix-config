@@ -7,19 +7,18 @@
 let
   inherit
     (lib)
-    hasAttrByPath
     mkAfter
     mkBefore
-    mkDefault
     mkEnableOption
     mkIf
     mkMerge
     mkOption
+    mkDefault
     optionalAttrs
     types
     ;
 
-  cfg = config.profiles.workstation;
+  cfg = config.profiles.desktop;
   hyprCfg = cfg.hyprland;
   hyprEnabled = hyprCfg.enable;
 
@@ -32,76 +31,64 @@ let
       ];
     };
 
-  basePackages = pkgs': [
-    pkgs'.age
-    pkgs'.bat
-    pkgs'.btop
-    pkgs'.eza
-    pkgs'.envsubst
-    pkgs'.fastfetch
-    pkgs'.git
-    pkgs'.jq
-    pkgs'.nil
-    pkgs'.nixd
-    pkgs'.sops
-    pkgs'.zellij
-  ];
-
-  desktopPackages = pkgs': [
-    pkgs'.accountsservice
-    pkgs'.adw-gtk3
-    pkgs'.bibata-cursors
-    pkgs'.blueman
-    pkgs'.brightnessctl
-    (bravePackage pkgs')
-    pkgs'.cliphist
-    pkgs'.gcr
-    pkgs'.grim
-    pkgs'.grimblast
-    pkgs'.loupe
-    pkgs'.matugen
-    pkgs'.nautilus
-    pkgs'.seahorse
-    pkgs'.showtime
-    pkgs'.slurp
-    pkgs'.wayland-utils
-    pkgs'.wl-clip-persist
-    pkgs'.wl-clipboard
-    pkgs'.xdg-user-dirs
-    pkgs'.xdg-user-dirs-gtk
-    pkgs'.xwayland-satellite
-    pkgs'.unstable.bitwarden-desktop
-    pkgs'.unstable.feishin
-    pkgs'.unstable.ghostty
-    pkgs'.unstable.jetbrains.goland
-    pkgs'.unstable.jetbrains.idea-ultimate
-    pkgs'.unstable.tsukimi
-    pkgs'.unstable.vesktop
-    pkgs'.unstable.zed-editor
-  ];
+  desktopPackages = pkgs': desktopSet:
+    (with pkgs'; [
+      accountsservice
+      adw-gtk3
+      bibata-cursors
+      blueman
+      brightnessctl
+      (bravePackage pkgs')
+      cliphist
+      gcr
+      grim
+      grimblast
+      loupe
+      matugen
+      nautilus
+      seahorse
+      showtime
+      slurp
+      wayland-utils
+      wl-clip-persist
+      wl-clipboard
+      xdg-user-dirs
+      xdg-user-dirs-gtk
+      xwayland-satellite
+    ])
+    ++ (with desktopSet; [
+      bitwarden-desktop
+      feishin
+      ghostty
+      jetbrains.goland
+      jetbrains.idea-ultimate
+      tsukimi
+      vesktop
+      zed-editor
+    ]);
 in
 {
   imports = [
     inputs.dankMaterialShell.nixosModules.greeter
   ];
 
-  options.profiles.workstation = {
-    enable =
-      mkEnableOption "Managed workstation profile powered by Home Manager"
-      // {
-        default = true;
-      };
+  options.profiles.desktop = {
+    enable = mkEnableOption "Graphical desktop profile";
 
     user = mkOption {
       type = types.str;
-      default = "zekurio";
-      description = "Primary user account managed by the workstation profile.";
+      default = config.profiles.dev.user;
+      description = "User that receives the desktop configuration.";
     };
 
-    stateVersion = mkOption {
-      type = types.str;
-      default = "25.05";
-      description = "Home Manager stateVersion for the managed user.";
+    desktopPackageSet = mkOption {
+      type = types.lazyAttrsOf types.anything;
+      default = if pkgs ? unstable then pkgs.unstable else pkgs;
+      description = ''
+        Package set to use for desktop applications that need newer builds.
+        Override this on hosts that already follow an unstable channel to avoid
+        importing it twice.
+      '';
     };
 
     hyprland = {
@@ -127,82 +114,21 @@ in
         {
           assertions = [
             {
-              assertion = hasAttrByPath [ cfg.user ] config.users.users;
-              message = "profiles.workstation.user must reference an existing entry in users.users";
+              assertion = config.profiles.dev.enable;
+              message = "profiles.desktop requires profiles.dev to be enabled";
             }
           ];
 
-          home-manager = {
-            useGlobalPkgs = true;
-            useUserPackages = true;
-            backupFileExtension = "backup";
-          };
-
-          home-manager.sharedModules = [
-            inputs.dankMaterialShell.homeModules.dankMaterialShell.default
-          ];
+          home-manager.sharedModules =
+            mkAfter [
+              inputs.dankMaterialShell.homeModules.dankMaterialShell.default
+            ];
 
           home-manager.users.${cfg.user} = { pkgs, ... }:
             mkMerge [
               {
-                home = {
-                  username = cfg.user;
-                  homeDirectory = "/home/${cfg.user}";
-                  stateVersion = cfg.stateVersion;
-                  enableNixpkgsReleaseCheck = false;
-                  packages =
-                    basePackages pkgs
-                    ++ lib.optionals hyprEnabled (desktopPackages pkgs);
-                };
-
-                programs = {
-                  direnv = {
-                    enable = true;
-                    nix-direnv.enable = true;
-                  };
-
-                  eza = {
-                    enable = true;
-                    extraOptions = [
-                      "--group-directories-first"
-                      "--icons=auto"
-                    ];
-                  };
-
-                  fish = {
-                    enable = true;
-                    interactiveShellInit = ''
-                      set -g fish_greeting
-                    '';
-                    plugins = [
-                      {
-                        name = "pure";
-                        src = pkgs.fishPlugins.pure.src;
-                      }
-                    ];
-                  };
-
-                  git = {
-                    enable = true;
-                    settings = {
-                      user.name = "Michael Schwieger";
-                      user.email = "git@zekurio.xyz";
-                      init.defaultBranch = "main";
-                      pull.rebase = true;
-                      rebase.autoStash = true;
-                      gpg.format = "ssh";
-                      gpg.ssh.program = "${pkgs.openssh}/bin/ssh-keygen";
-                      user.signingKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOCcQoZiY9wkJ+U93isE8B3CKLmzL7TPzVh3ugE1WPJq";
-                      commit.gpgSign = true;
-                    };
-                  };
-
-                  ssh = {
-                    enable = true;
-                    enableDefaultConfig = false;
-                    matchBlocks."*".compression = true;
-                  };
-                };
+                home.packages =
+                  mkAfter (desktopPackages pkgs cfg.desktopPackageSet);
               }
               (mkIf hyprEnabled {
                 services.gnome-keyring.enable = true;
@@ -433,6 +359,12 @@ in
                       }
                       (optionalAttrs (hyprCfg.monitors != [ ]) { monitor = hyprCfg.monitors; })
                       (optionalAttrs (hyprCfg.input != { }) { input = hyprCfg.input; })
+                      {
+                        exec-once = [
+                          "uwsm app -- nm-applet --indicator"
+                          "uwsm app -- blueman-applet"
+                        ];
+                      }
                     ];
                 };
 
