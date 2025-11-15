@@ -1,6 +1,5 @@
 { config
 , pkgs
-, lib
 , modulesPath
 , ...
 }:
@@ -41,7 +40,6 @@ let
       { path = "/tank/media"; }
     ];
     stateDirectories = [
-      "/var/lib/fileflows"
       "/var/lib/jellyfin"
       "/var/lib/lidarr"
       "/var/lib/navidrome"
