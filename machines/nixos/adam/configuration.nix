@@ -5,12 +5,44 @@
 , ...
 }:
 let
-  # Shared service account for media workloads
-  shareGroup = "share";
-  shareGroupGid = 2999;
-  shareUser = "share";
-  shareUserUid = 2999;
   mainUser = "zekurio";
+  mediaShareConfig = {
+    enable = true;
+    user = "share";
+    group = "share";
+    uid = 2999;
+    gid = 2999;
+    home = "/var/lib/share";
+    description = "Shared service account for media automation";
+    extraGroups = [
+      "video"
+      "render"
+    ];
+    collaborators = [ mainUser ];
+    tmpfilesDirectories = [
+      { path = "/var/lib/qBittorrent"; }
+      { path = "/mnt/downloads"; }
+      { path = "/mnt/downloads/completed"; }
+      { path = "/mnt/downloads/completed/sonarr"; }
+      { path = "/mnt/downloads/completed/radarr"; }
+      { path = "/mnt/downloads/completed/torrent"; }
+      { path = "/mnt/downloads/converted"; }
+      { path = "/mnt/downloads/converted/sonarr"; }
+      { path = "/mnt/downloads/converted/radarr"; }
+      { path = "/mnt/downloads/incomplete"; }
+      { path = "/tank/media"; kind = "z"; }
+      { path = "/tank/media/anime"; kind = "z"; }
+      { path = "/tank/media/movies"; kind = "z"; }
+      { path = "/tank/media/music"; kind = "z"; }
+      { path = "/tank/media/tv"; kind = "z"; }
+    ];
+    permissionProfiles = [
+      { path = "/mnt/downloads"; }
+      { path = "/tank/media"; }
+    ];
+  };
+  shareUser = mediaShareConfig.user;
+  shareGroup = mediaShareConfig.group;
 in
 {
   imports = [
@@ -53,6 +85,7 @@ in
 
   modules.graphics.intelArc.enable = true;
   modules.virtualization.enable = true;
+  modules.homelab.mediaShare = mediaShareConfig;
 
   # Networking configuration
   networking = {
@@ -209,89 +242,8 @@ in
 
   users.mutableUsers = false;
 
-  # Shared service account providing read/write access for media tooling
-  users.groups.${shareGroup} = {
-    gid = shareGroupGid;
-  };
-
-  users.users.${shareUser} = {
-    isSystemUser = true;
-    uid = shareUserUid;
-    group = shareGroup;
-    extraGroups = [
-      "video"
-      "render"
-    ];
-    home = "/var/lib/share";
-    createHome = true;
-    description = "Shared service account for media automation";
-  };
-
-  # Allow the main interactive user to collaborate on shared media files
-  users.users.${mainUser}.extraGroups = [ shareGroup ];
-
-  systemd.tmpfiles.rules = [
-    # qBittorrent state directory
-    "Z /var/lib/qBittorrent 2775 ${shareUser} ${shareGroup} -"
-
-    # Downloads directories on NVMe
-    "Z /mnt/downloads 2775 ${shareUser} ${shareGroup} -"
-    "Z /mnt/downloads/completed 2775 ${shareUser} ${shareGroup} -"
-    "Z /mnt/downloads/completed/sonarr 2775 ${shareUser} ${shareGroup} -"
-    "Z /mnt/downloads/completed/radarr 2775 ${shareUser} ${shareGroup} -"
-    "Z /mnt/downloads/completed/torrent 2775 ${shareUser} ${shareGroup} -"
-    "Z /mnt/downloads/converted 2775 ${shareUser} ${shareGroup} -"
-    "Z /mnt/downloads/converted/sonarr 2775 ${shareUser} ${shareGroup} -"
-    "Z /mnt/downloads/converted/radarr 2775 ${shareUser} ${shareGroup} -"
-    "Z /mnt/downloads/incomplete 2775 ${shareUser} ${shareGroup} -"
-
-    # Media directories on ZFS - owned by shared service account
-    "z /tank/media           2775 ${shareUser} ${shareGroup} -"
-    "z /tank/media/anime     2775 ${shareUser} ${shareGroup} -"
-    "z /tank/media/movies    2775 ${shareUser} ${shareGroup} -"
-    "z /tank/media/music     2775 ${shareUser} ${shareGroup} -"
-    "z /tank/media/tv        2775 ${shareUser} ${shareGroup} -"
-  ];
-
-  # Systemd service to fix media and downloads permissions on boot
-  systemd.services.fix-media-permissions =
-    let
-      mediaStateDirs =
-        builtins.filter (dir: lib.hasPrefix "/var/lib" dir)
-          (config.services.backups.b2.paths or [ ]);
-      chownMediaDirs =
-        lib.concatMapStrings (dir: ''
-          if [ -d ${dir} ]; then
-            ${pkgs.coreutils}/bin/chown -R ${shareUser}:${shareGroup} ${dir}
-          fi
-        '') mediaStateDirs;
-    in
-    {
-      description = "Fix permissions on media and downloads directories";
-      wantedBy = [ "multi-user.target" ];
-      after = [ "local-fs.target" ];
-      serviceConfig.Type = "oneshot";
-      script = ''
-        # Fix downloads directories
-        ${pkgs.findutils}/bin/find /mnt/downloads -type d -exec ${pkgs.coreutils}/bin/chmod 2775 {} \;
-        ${pkgs.findutils}/bin/find /mnt/downloads -type f -exec ${pkgs.coreutils}/bin/chmod 664 {} \;
-        ${pkgs.coreutils}/bin/chown -R ${shareUser}:${shareGroup} /mnt/downloads
-        ${pkgs.acl}/bin/setfacl -Rm g:${shareGroup}:rwx /mnt/downloads
-        ${pkgs.acl}/bin/setfacl -dRm g:${shareGroup}:rwx /mnt/downloads
-
-        # Fix media directories if they exist
-        if [ -d /tank/media ]; then
-          ${pkgs.findutils}/bin/find /tank/media -type d -exec ${pkgs.coreutils}/bin/chmod 2775 {} \;
-          ${pkgs.findutils}/bin/find /tank/media -type f -exec ${pkgs.coreutils}/bin/chmod 664 {} \;
-          ${pkgs.coreutils}/bin/chown -R ${shareUser}:${shareGroup} /tank/media
-          ${pkgs.acl}/bin/setfacl -Rm g:${shareGroup}:rwx /tank/media
-          ${pkgs.acl}/bin/setfacl -dRm g:${shareGroup}:rwx /tank/media
-        fi
-
-        # Fix state directories for media services
-        ${chownMediaDirs}
-      '';
-    };
+  # Shared media user, directories, and permission remediation
+  # are defined in modules.homelab.mediaShare.
 
   # System configuration
   time.timeZone = "Europe/Vienna";
