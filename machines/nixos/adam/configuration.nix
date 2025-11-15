@@ -38,6 +38,7 @@ in
       efi.canTouchEfiVariables = true;
       systemd-boot.enable = true;
     };
+    supportedFilesystems = [ "zfs" ];
   };
 
   # Hardware configuration
@@ -58,7 +59,7 @@ in
     useDHCP = true;
     networkmanager.enable = false;
     firewall.enable = true;
-    firewall.allowedTCPPorts = [ 19200 ];
+    hostId = "eab7e93e";
   };
 
   # DNS over TLS with Cloudflare
@@ -72,11 +73,15 @@ in
     '';
   };
 
-  # NVMe media drive - existing partition, not managed by disko
-  fileSystems."/mnt/fast-nvme" = {
-    device = "/dev/nvme0n1p1";
+  fileSystems."/mnt/downloads" = {
+    device = "/dev/disk/by-uuid/b036ac8f-cb3c-468f-9a37-80351abe887c";
     fsType = "ext4";
-    options = [ "defaults" "noatime" "nodiratime" "acl" ];
+    options = [ "noatime" "nodiratime" ];
+  };
+
+  fileSystems."/tank" = {
+    device = "tank";
+    fsType = "zfs";
   };
 
   # SOPS secrets configuration
@@ -98,6 +103,7 @@ in
     streamrip
     beets
     ryzen-monitor-ng
+    zfs
   ];
 
   services = {
@@ -224,22 +230,24 @@ in
   systemd.tmpfiles.rules = [
     # qBittorrent state directory
     "Z /var/lib/qBittorrent 2775 ${shareUser} ${shareGroup} -"
-    # Downloads directories on root drive (for transcoding before moving to NVMe)
-    "Z /var/downloads 2775 ${shareUser} ${shareGroup} -"
-    "Z /var/downloads/completed 2775 ${shareUser} ${shareGroup} -"
-    "Z /var/downloads/completed/sonarr 2775 ${shareUser} ${shareGroup} -"
-    "Z /var/downloads/completed/radarr 2775 ${shareUser} ${shareGroup} -"
-    "Z /var/downloads/completed/torrent 2775 ${shareUser} ${shareGroup} -"
-    "Z /var/downloads/converted 2775 ${shareUser} ${shareGroup} -"
-    "Z /var/downloads/converted/sonarr 2775 ${shareUser} ${shareGroup} -"
-    "Z /var/downloads/converted/radarr 2775 ${shareUser} ${shareGroup} -"
-    "Z /var/downloads/incomplete 2775 ${shareUser} ${shareGroup} -"
-    # Media directories on NVMe - owned by shared service account
-    "z /mnt/fast-nvme/media 2775 ${shareUser} ${shareGroup} -"
-    "z /mnt/fast-nvme/media/anime 2775 ${shareUser} ${shareGroup} -"
-    "z /mnt/fast-nvme/media/movies 2775 ${shareUser} ${shareGroup} -"
-    "z /mnt/fast-nvme/media/music 2775 ${shareUser} ${shareGroup} -"
-    "z /mnt/fast-nvme/media/tv 2775 ${shareUser} ${shareGroup} -"
+
+    # Downloads directories on NVMe
+    "Z /mnt/downloads 2775 ${shareUser} ${shareGroup} -"
+    "Z /mnt/downloads/completed 2775 ${shareUser} ${shareGroup} -"
+    "Z /mnt/downloads/completed/sonarr 2775 ${shareUser} ${shareGroup} -"
+    "Z /mnt/downloads/completed/radarr 2775 ${shareUser} ${shareGroup} -"
+    "Z /mnt/downloads/completed/torrent 2775 ${shareUser} ${shareGroup} -"
+    "Z /mnt/downloads/converted 2775 ${shareUser} ${shareGroup} -"
+    "Z /mnt/downloads/converted/sonarr 2775 ${shareUser} ${shareGroup} -"
+    "Z /mnt/downloads/converted/radarr 2775 ${shareUser} ${shareGroup} -"
+    "Z /mnt/downloads/incomplete 2775 ${shareUser} ${shareGroup} -"
+
+    # Media directories on ZFS - owned by shared service account
+    "z /tank/media           2775 ${shareUser} ${shareGroup} -"
+    "z /tank/media/anime     2775 ${shareUser} ${shareGroup} -"
+    "z /tank/media/movies    2775 ${shareUser} ${shareGroup} -"
+    "z /tank/media/music     2775 ${shareUser} ${shareGroup} -"
+    "z /tank/media/tv        2775 ${shareUser} ${shareGroup} -"
   ];
 
   # Systemd service to fix media and downloads permissions on boot
@@ -247,24 +255,22 @@ in
     description = "Fix permissions on media and downloads directories";
     wantedBy = [ "multi-user.target" ];
     after = [ "local-fs.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-    };
+    serviceConfig.Type = "oneshot";
     script = ''
       # Fix downloads directories
-      ${pkgs.findutils}/bin/find /var/downloads -type d -exec ${pkgs.coreutils}/bin/chmod 2775 {} \;
-      ${pkgs.findutils}/bin/find /var/downloads -type f -exec ${pkgs.coreutils}/bin/chmod 664 {} \;
-      ${pkgs.coreutils}/bin/chown -R ${shareUser}:${shareGroup} /var/downloads
-      ${pkgs.acl}/bin/setfacl -Rm g:${shareGroup}:rwx /var/downloads
-      ${pkgs.acl}/bin/setfacl -dRm g:${shareGroup}:rwx /var/downloads
+      ${pkgs.findutils}/bin/find /mnt/downloads -type d -exec ${pkgs.coreutils}/bin/chmod 2775 {} \;
+      ${pkgs.findutils}/bin/find /mnt/downloads -type f -exec ${pkgs.coreutils}/bin/chmod 664 {} \;
+      ${pkgs.coreutils}/bin/chown -R ${shareUser}:${shareGroup} /mnt/downloads
+      ${pkgs.acl}/bin/setfacl -Rm g:${shareGroup}:rwx /mnt/downloads
+      ${pkgs.acl}/bin/setfacl -dRm g:${shareGroup}:rwx /mnt/downloads
 
       # Fix media directories if they exist
-      if [ -d /mnt/fast-nvme/media ]; then
-        ${pkgs.findutils}/bin/find /mnt/fast-nvme/media -type d -exec ${pkgs.coreutils}/bin/chmod 2775 {} \;
-        ${pkgs.findutils}/bin/find /mnt/fast-nvme/media -type f -exec ${pkgs.coreutils}/bin/chmod 664 {} \;
-        ${pkgs.coreutils}/bin/chown -R ${shareUser}:${shareGroup} /mnt/fast-nvme/media
-        ${pkgs.acl}/bin/setfacl -Rm g:${shareGroup}:rwx /mnt/fast-nvme/media
-        ${pkgs.acl}/bin/setfacl -dRm g:${shareGroup}:rwx /mnt/fast-nvme/media
+      if [ -d /tank/media ]; then
+        ${pkgs.findutils}/bin/find /tank/media -type d -exec ${pkgs.coreutils}/bin/chmod 2775 {} \;
+        ${pkgs.findutils}/bin/find /tank/media -type f -exec ${pkgs.coreutils}/bin/chmod 664 {} \;
+        ${pkgs.coreutils}/bin/chown -R ${shareUser}:${shareGroup} /tank/media
+        ${pkgs.acl}/bin/setfacl -Rm g:${shareGroup}:rwx /tank/media
+        ${pkgs.acl}/bin/setfacl -dRm g:${shareGroup}:rwx /tank/media
       fi
     '';
   };
