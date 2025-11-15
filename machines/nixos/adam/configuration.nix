@@ -1,14 +1,15 @@
 { config
 , pkgs
+, lib
 , modulesPath
 , ...
 }:
 let
   # Shared service account for media workloads
   shareGroup = "share";
-  shareGroupGid = 995;
+  shareGroupGid = 2999;
   shareUser = "share";
-  shareUserUid = 995;
+  shareUserUid = 2999;
   mainUser = "zekurio";
 in
 {
@@ -251,29 +252,44 @@ in
   ];
 
   # Systemd service to fix media and downloads permissions on boot
-  systemd.services.fix-media-permissions = {
-    description = "Fix permissions on media and downloads directories";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "local-fs.target" ];
-    serviceConfig.Type = "oneshot";
-    script = ''
-      # Fix downloads directories
-      ${pkgs.findutils}/bin/find /mnt/downloads -type d -exec ${pkgs.coreutils}/bin/chmod 2775 {} \;
-      ${pkgs.findutils}/bin/find /mnt/downloads -type f -exec ${pkgs.coreutils}/bin/chmod 664 {} \;
-      ${pkgs.coreutils}/bin/chown -R ${shareUser}:${shareGroup} /mnt/downloads
-      ${pkgs.acl}/bin/setfacl -Rm g:${shareGroup}:rwx /mnt/downloads
-      ${pkgs.acl}/bin/setfacl -dRm g:${shareGroup}:rwx /mnt/downloads
+  systemd.services.fix-media-permissions =
+    let
+      mediaStateDirs =
+        builtins.filter (dir: lib.hasPrefix "/var/lib" dir)
+          (config.services.backups.b2.paths or [ ]);
+      chownMediaDirs =
+        lib.concatMapStrings (dir: ''
+          if [ -d ${dir} ]; then
+            ${pkgs.coreutils}/bin/chown -R ${shareUser}:${shareGroup} ${dir}
+          fi
+        '') mediaStateDirs;
+    in
+    {
+      description = "Fix permissions on media and downloads directories";
+      wantedBy = [ "multi-user.target" ];
+      after = [ "local-fs.target" ];
+      serviceConfig.Type = "oneshot";
+      script = ''
+        # Fix downloads directories
+        ${pkgs.findutils}/bin/find /mnt/downloads -type d -exec ${pkgs.coreutils}/bin/chmod 2775 {} \;
+        ${pkgs.findutils}/bin/find /mnt/downloads -type f -exec ${pkgs.coreutils}/bin/chmod 664 {} \;
+        ${pkgs.coreutils}/bin/chown -R ${shareUser}:${shareGroup} /mnt/downloads
+        ${pkgs.acl}/bin/setfacl -Rm g:${shareGroup}:rwx /mnt/downloads
+        ${pkgs.acl}/bin/setfacl -dRm g:${shareGroup}:rwx /mnt/downloads
 
-      # Fix media directories if they exist
-      if [ -d /tank/media ]; then
-        ${pkgs.findutils}/bin/find /tank/media -type d -exec ${pkgs.coreutils}/bin/chmod 2775 {} \;
-        ${pkgs.findutils}/bin/find /tank/media -type f -exec ${pkgs.coreutils}/bin/chmod 664 {} \;
-        ${pkgs.coreutils}/bin/chown -R ${shareUser}:${shareGroup} /tank/media
-        ${pkgs.acl}/bin/setfacl -Rm g:${shareGroup}:rwx /tank/media
-        ${pkgs.acl}/bin/setfacl -dRm g:${shareGroup}:rwx /tank/media
-      fi
-    '';
-  };
+        # Fix media directories if they exist
+        if [ -d /tank/media ]; then
+          ${pkgs.findutils}/bin/find /tank/media -type d -exec ${pkgs.coreutils}/bin/chmod 2775 {} \;
+          ${pkgs.findutils}/bin/find /tank/media -type f -exec ${pkgs.coreutils}/bin/chmod 664 {} \;
+          ${pkgs.coreutils}/bin/chown -R ${shareUser}:${shareGroup} /tank/media
+          ${pkgs.acl}/bin/setfacl -Rm g:${shareGroup}:rwx /tank/media
+          ${pkgs.acl}/bin/setfacl -dRm g:${shareGroup}:rwx /tank/media
+        fi
+
+        # Fix state directories for media services
+        ${chownMediaDirs}
+      '';
+    };
 
   # System configuration
   time.timeZone = "Europe/Vienna";
