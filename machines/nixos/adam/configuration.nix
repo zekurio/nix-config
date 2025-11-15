@@ -207,6 +207,8 @@ in
     };
   };
 
+  users.mutableUsers = false;
+
   # Shared service account providing read/write access for media tooling
   users.groups.${shareGroup} = {
     gid = shareGroupGid;
