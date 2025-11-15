@@ -40,6 +40,17 @@ let
       { path = "/mnt/downloads"; }
       { path = "/tank/media"; }
     ];
+    stateDirectories = [
+      "/var/lib/fileflows"
+      "/var/lib/jellyfin"
+      "/var/lib/lidarr"
+      "/var/lib/navidrome"
+      "/var/lib/qBittorrent"
+      "/var/lib/radarr"
+      "/var/lib/sabnzbd"
+      "/var/lib/sonarr"
+    ];
+    useBackupPaths = false;
   };
   shareUser = mediaShareConfig.user;
   shareGroup = mediaShareConfig.group;
