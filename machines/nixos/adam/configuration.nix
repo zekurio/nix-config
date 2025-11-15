@@ -10,6 +10,8 @@ let
     enable = true;
     user = "share";
     group = "share";
+    uid = 995;
+    gid = 995;
     home = "/var/lib/share";
     description = "Shared service account for media automation";
     extraGroups = [
