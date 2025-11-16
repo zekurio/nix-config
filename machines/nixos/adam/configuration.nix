@@ -256,7 +256,6 @@ in
     enable = true;
     allowReboot = true;
     dates = "Sun 04:00";
-    randomizedDelaySec = "1h";
     flake = "github:zekurio/nix-config#adam";
   };
 
