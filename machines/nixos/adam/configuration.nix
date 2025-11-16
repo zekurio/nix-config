@@ -17,6 +17,7 @@ let
       "video"
       "render"
     ];
+    addDockerGroup = true;
     collaborators = [ mainUser ];
     tmpfilesDirectories = [
       { path = "/var/lib/qBittorrent"; }
