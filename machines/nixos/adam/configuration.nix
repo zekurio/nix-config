@@ -93,6 +93,10 @@ in
   modules.graphics.intelArc.enable = true;
   modules.virtualization.enable = true;
   modules.homelab.mediaShare = mediaShareConfig;
+  modules.homelab.tailscale = {
+    enable = true;
+    publicInterface = "enp42s0";
+  };
 
   # Networking configuration
   networking = {
@@ -156,7 +160,6 @@ in
       };
     };
     autoaspm.enable = true;
-    tailscale.enable = true;
 
     backups.b2 = {
       enable = true;
