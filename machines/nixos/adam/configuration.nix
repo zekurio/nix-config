@@ -30,12 +30,6 @@ let
       { path = "/mnt/downloads/converted"; }
       { path = "/mnt/downloads/converted/sonarr"; }
       { path = "/mnt/downloads/converted/radarr"; }
-      { path = "/tank"; kind = "z"; }
-      { path = "/tank/media"; kind = "z"; }
-      { path = "/tank/media/anime"; kind = "z"; }
-      { path = "/tank/media/movies"; kind = "z"; }
-      { path = "/tank/media/music"; kind = "z"; }
-      { path = "/tank/media/tv"; kind = "z"; }
     ];
     permissionProfiles = [
       { path = "/mnt/downloads"; }
