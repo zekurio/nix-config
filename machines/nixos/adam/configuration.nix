@@ -21,15 +21,15 @@ let
     collaborators = [ mainUser ];
     tmpfilesDirectories = [
       { path = "/var/lib/qBittorrent"; }
-      { path = "/mnt/downloads"; }
-      { path = "/mnt/downloads/completed"; }
-      { path = "/mnt/downloads/completed/sonarr"; }
-      { path = "/mnt/downloads/completed/radarr"; }
-      { path = "/mnt/downloads/completed/torrent"; }
-      { path = "/mnt/downloads/incomplete"; }
-      { path = "/mnt/downloads/converted"; }
-      { path = "/mnt/downloads/converted/sonarr"; }
-      { path = "/mnt/downloads/converted/radarr"; }
+      { path = "/mnt/downloads"; kind = "d"; }
+      { path = "/mnt/downloads/completed"; kind = "d"; }
+      { path = "/mnt/downloads/completed/sonarr"; kind = "d"; }
+      { path = "/mnt/downloads/completed/radarr"; kind = "d"; }
+      { path = "/mnt/downloads/completed/torrent"; kind = "d"; }
+      { path = "/mnt/downloads/incomplete"; kind = "d"; }
+      { path = "/mnt/downloads/converted"; kind = "d"; }
+      { path = "/mnt/downloads/converted/sonarr"; kind = "d"; }
+      { path = "/mnt/downloads/converted/radarr"; kind = "d"; }
     ];
     permissionProfiles = [
       { path = "/mnt/downloads"; }
@@ -194,7 +194,10 @@ in
     vaultwarden-wrapped.enable = true;
     jellyseerr-wrapped.enable = true;
     jellyfin-wrapped.enable = true;
-    fileflows-wrapped.enable = true;
+    fileflows-wrapped = {
+      enable = true;
+      image = "revenz/fileflows:25.11";
+    };
 
     # Enable arr stack services
     sonarr-wrapped.enable = true;
