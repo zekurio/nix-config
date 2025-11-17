@@ -77,6 +77,7 @@ in
       systemd-boot.enable = true;
     };
     supportedFilesystems = [ "zfs" ];
+    zfs.extraPools = [ "tank" ];
   };
 
   # Hardware configuration
@@ -120,11 +121,6 @@ in
     device = "/dev/disk/by-uuid/b036ac8f-cb3c-468f-9a37-80351abe887c";
     fsType = "ext4";
     options = [ "noatime" "nodiratime" ];
-  };
-
-  fileSystems."/tank" = {
-    device = "tank";
-    fsType = "zfs";
   };
 
   # SOPS secrets configuration
