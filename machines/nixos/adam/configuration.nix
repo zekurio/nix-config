@@ -27,6 +27,10 @@ let
       { path = "/mnt/downloads/completed/radarr"; }
       { path = "/mnt/downloads/completed/torrent"; }
       { path = "/mnt/downloads/incomplete"; }
+      { path = "/mnt/downloads/converted"; }
+      { path = "/mnt/downloads/converted/sonarr"; }
+      { path = "/mnt/downloads/converted/radarr"; }
+      { path = "/tank"; kind = "z"; }
       { path = "/tank/media"; kind = "z"; }
       { path = "/tank/media/anime"; kind = "z"; }
       { path = "/tank/media/movies"; kind = "z"; }
@@ -168,6 +172,7 @@ in
         "/etc/nixos"
         "/var/lib/autobrr"
         "/var/lib/configarr"
+        "/var/lib/fileflows"
         "/var/lib/jellyfin"
         "/var/lib/jellyseerr"
         "/var/lib/lidarr"
@@ -199,6 +204,7 @@ in
     vaultwarden-wrapped.enable = true;
     jellyseerr-wrapped.enable = true;
     jellyfin-wrapped.enable = true;
+    fileflows-wrapped.enable = true;
 
     # Enable arr stack services
     sonarr-wrapped.enable = true;
