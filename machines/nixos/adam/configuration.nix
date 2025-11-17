@@ -33,7 +33,7 @@ let
       { path = "/mnt/downloads/converted/sonarr"; kind = "d"; }
       { path = "/mnt/downloads/converted/sonarr-anime"; kind = "d"; }
       { path = "/mnt/downloads/converted/radarr"; kind = "d"; }
-      { path = "/mnt/downloads/converted/radarr-anime"; kind = "d"}
+      { path = "/mnt/downloads/converted/radarr-anime"; kind = "d"; }
     ];
     permissionProfiles = [
       { path = "/mnt/downloads"; }
