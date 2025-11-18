@@ -21,14 +21,13 @@ let
     collaborators = [ mainUser ];
     tmpfilesDirectories = [
       { path = "/var/lib/qBittorrent"; }
+      { path = "/tank/media/torrents"; kind = "d"; }
       { path = "/mnt/downloads"; kind = "d"; }
       { path = "/mnt/downloads/completed"; kind = "d"; }
       { path = "/mnt/downloads/completed/sonarr"; kind = "d"; }
       { path = "/mnt/downloads/completed/sonarr-anime"; kind = "d"; }
       { path = "/mnt/downloads/completed/radarr"; kind = "d"; }
       { path = "/mnt/downloads/completed/radarr-anime"; kind = "d"; }
-      { path = "/mnt/downloads/completed/torrent"; kind = "d"; }
-      { path = "/mnt/downloads/incomplete"; kind = "d"; }
       { path = "/mnt/downloads/converted"; kind = "d"; }
       { path = "/mnt/downloads/converted/sonarr"; kind = "d"; }
       { path = "/mnt/downloads/converted/sonarr-anime"; kind = "d"; }
