@@ -146,6 +146,7 @@ in
     beets
     ryzen-monitor-ng
     zfs
+    unstable.ab-av1
   ];
 
   services = {
