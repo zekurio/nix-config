@@ -166,6 +166,7 @@ in
         "/var/lib/autobrr"
         "/var/lib/configarr"
         "/var/lib/fileflows"
+        "/var/lib/immich"
         "/var/lib/jellyfin"
         "/var/lib/jellyseerr"
         "/var/lib/lidarr"
@@ -197,6 +198,7 @@ in
     vaultwarden-wrapped.enable = true;
     jellyseerr-wrapped.enable = true;
     jellyfin-wrapped.enable = true;
+    immich-wrapped.enable = true;
     fileflows-wrapped = {
       enable = true;
       image = "revenz/fileflows:25.11";
