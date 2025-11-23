@@ -147,7 +147,6 @@ in
 
   # System packages
   environment.systemPackages = with pkgs; [
-    streamrip
     ryzen-monitor-ng
     zfs
     unstable.ab-av1
