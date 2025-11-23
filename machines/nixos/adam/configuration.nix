@@ -120,6 +120,11 @@ in
     '';
   };
 
+  swapDevices = [{
+    device = "/var/lib/swapfile";
+    size = 16 * 1024;
+  }];
+
   fileSystems."/mnt/downloads" = {
     device = "/dev/disk/by-uuid/b036ac8f-cb3c-468f-9a37-80351abe887c";
     fsType = "ext4";
