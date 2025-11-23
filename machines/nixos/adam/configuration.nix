@@ -148,7 +148,6 @@ in
   # System packages
   environment.systemPackages = with pkgs; [
     streamrip
-    beets
     ryzen-monitor-ng
     zfs
     unstable.ab-av1
