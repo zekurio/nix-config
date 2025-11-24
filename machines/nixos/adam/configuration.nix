@@ -5,52 +5,8 @@
 }:
 let
   mainUser = "zekurio";
-  mediaShareConfig = {
-    enable = true;
-    user = "share";
-    group = "share";
-    uid = 995;
-    gid = 995;
-    home = "/var/lib/share";
-    description = "Shared service account for media automation";
-    extraGroups = [
-      "video"
-      "render"
-    ];
-    addDockerGroup = true;
-    collaborators = [ mainUser ];
-    tmpfilesDirectories = [
-      { path = "/var/lib/qBittorrent"; }
-      { path = "/tank/media/torrents"; kind = "d"; }
-      { path = "/mnt/downloads"; kind = "d"; }
-      { path = "/mnt/downloads/completed"; kind = "d"; }
-      { path = "/mnt/downloads/completed/sonarr"; kind = "d"; }
-      { path = "/mnt/downloads/completed/sonarr-anime"; kind = "d"; }
-      { path = "/mnt/downloads/completed/radarr"; kind = "d"; }
-      { path = "/mnt/downloads/completed/radarr-anime"; kind = "d"; }
-      { path = "/mnt/downloads/converted"; kind = "d"; }
-      { path = "/mnt/downloads/converted/sonarr"; kind = "d"; }
-      { path = "/mnt/downloads/converted/sonarr-anime"; kind = "d"; }
-      { path = "/mnt/downloads/converted/radarr"; kind = "d"; }
-      { path = "/mnt/downloads/converted/radarr-anime"; kind = "d"; }
-    ];
-    permissionProfiles = [
-      { path = "/mnt/downloads"; }
-      { path = "/tank/media"; }
-    ];
-    stateDirectories = [
-      "/var/lib/jellyfin"
-      "/var/lib/lidarr"
-      "/var/lib/navidrome"
-      "/var/lib/qBittorrent"
-      "/var/lib/radarr"
-      "/var/lib/sabnzbd"
-      "/var/lib/sonarr"
-    ];
-    useBackupPaths = false;
-  };
-  shareUser = mediaShareConfig.user;
-  shareGroup = mediaShareConfig.group;
+  shareUser = "share";
+  shareGroup = "share";
 in
 {
   imports = [
@@ -94,7 +50,10 @@ in
 
   modules.graphics.intelArc.enable = true;
   modules.virtualization.enable = true;
-  modules.homelab.mediaShare = mediaShareConfig;
+  modules.homelab.mediaShare = {
+    enable = true;
+    collaborators = [ mainUser ];
+  };
   modules.homelab.tailscale = {
     enable = true;
     publicInterface = "enp42s0";
@@ -168,8 +127,6 @@ in
       paths = [
         "/etc/nixos"
         "/var/lib/autobrr"
-        "/var/lib/configarr"
-        "/var/lib/fileflows"
         "/var/lib/immich"
         "/var/lib/jellyfin"
         "/var/lib/jellyseerr"
@@ -203,10 +160,6 @@ in
     jellyseerr-wrapped.enable = true;
     jellyfin-wrapped.enable = true;
     immich-wrapped.enable = true;
-    fileflows-wrapped = {
-      enable = true;
-      image = "revenz/fileflows:25.11";
-    };
 
     # Enable arr stack services
     sonarr-wrapped.enable = true;
