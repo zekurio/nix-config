@@ -130,8 +130,6 @@ in
         "/var/lib/immich"
         "/var/lib/jellyfin"
         "/var/lib/jellyseerr"
-        "/var/lib/lidarr"
-        "/var/lib/navidrome"
         "/var/lib/paperless"
         "/var/lib/prowlarr"
         "/var/lib/qBittorrent"
@@ -140,9 +138,7 @@ in
         "/var/lib/sonarr"
         "/var/lib/vaultwarden"
       ];
-      excludePaths = [
-        "/var/lib/navidrome/cache"
-      ];
+      excludePaths = [ ];
       extraBackupArgs = [ "--tag adam" ];
       pruneKeep = {
         daily = 7;
@@ -154,7 +150,6 @@ in
     };
 
     # Enable wrapped services with Caddy integration
-    navidrome-wrapped.enable = true;
     paperless-ngx-wrapped.enable = true;
     vaultwarden-wrapped.enable = true;
     jellyseerr-wrapped.enable = true;
@@ -164,7 +159,6 @@ in
     # Enable arr stack services
     sonarr-wrapped.enable = true;
     radarr-wrapped.enable = true;
-    lidarr-wrapped.enable = true;
     prowlarr-wrapped.enable = true;
     sabnzbd-wrapped.enable = true;
     autobrr-wrapped.enable = true;
