@@ -127,8 +127,6 @@ in
       paths = [
         "/etc/nixos"
         "/var/lib/autobrr"
-        "/var/lib/containers/storage/volumes/fileflows-data"
-        "/var/lib/containers/storage/volumes/fileflows-logs"
         "/var/lib/immich"
         "/var/lib/jellyfin"
         "/var/lib/jellyseerr"
@@ -169,10 +167,7 @@ in
     qbittorrent-wrapped.enable = true;
 
     # FileFlows media automation
-    fileflows-wrapped = {
-      enable = true;
-      image = "revenz/fileflows:25.11";
-    };
+    fileflows-wrapped.enable = true;
   };
 
   # VPN namespace configuration for qBittorrent
