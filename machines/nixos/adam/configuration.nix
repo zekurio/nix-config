@@ -167,7 +167,7 @@ in
     qbittorrent-wrapped.enable = true;
 
     # FileFlows media automation
-    fileflows-wrapped.enable = true;
+    fileflows-wrapped.enable = false;
   };
 
   # VPN namespace configuration for qBittorrent
