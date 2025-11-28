@@ -1,7 +1,8 @@
-{ config
-, pkgs
-, modulesPath
-, ...
+{
+  config,
+  pkgs,
+  modulesPath,
+  ...
 }:
 let
   mainUser = "zekurio";
@@ -73,21 +74,29 @@ in
     enable = true;
     dnssec = "allow-downgrade";
     domains = [ "~." ];
-    fallbackDns = [ "1.1.1.1#cloudflare-dns.com" "1.0.0.1#cloudflare-dns.com" ];
+    fallbackDns = [
+      "1.1.1.1#cloudflare-dns.com"
+      "1.0.0.1#cloudflare-dns.com"
+    ];
     extraConfig = ''
       DNSOverTLS=yes
     '';
   };
 
-  swapDevices = [{
-    device = "/var/lib/swapfile";
-    size = 16 * 1024;
-  }];
+  swapDevices = [
+    {
+      device = "/var/lib/swapfile";
+      size = 16 * 1024;
+    }
+  ];
 
   fileSystems."/mnt/downloads" = {
     device = "/dev/disk/by-uuid/b036ac8f-cb3c-468f-9a37-80351abe887c";
     fsType = "ext4";
-    options = [ "noatime" "nodiratime" ];
+    options = [
+      "noatime"
+      "nodiratime"
+    ];
   };
 
   # SOPS secrets configuration
@@ -120,6 +129,60 @@ in
       };
     };
     autoaspm.enable = true;
+
+    # Samba network shares for ZFS tank pool
+    samba = {
+      enable = true;
+      openFirewall = true;
+      settings = {
+        global = {
+          workgroup = "WORKGROUP";
+          "server string" = "adam";
+          "netbios name" = "adam";
+          security = "user";
+          "hosts allow" = "192.168. 10. 100.64.0.0/10 127.0.0.1 localhost";
+          "hosts deny" = "0.0.0.0/0";
+          "guest account" = "nobody";
+          "map to guest" = "Bad User";
+          "server min protocol" = "SMB2";
+          # Performance tuning
+          "socket options" = "TCP_NODELAY IPTOS_LOWDELAY SO_RCVBUF=131072 SO_SNDBUF=131072";
+          "use sendfile" = "yes";
+          "aio read size" = "16384";
+          "aio write size" = "16384";
+        };
+        media = {
+          path = "/tank/jellyfin";
+          browseable = "yes";
+          "read only" = "no";
+          "guest ok" = "no";
+          "valid users" = "@${shareGroup}";
+          "force user" = shareUser;
+          "force group" = shareGroup;
+          "create mask" = "0664";
+          "directory mask" = "2775";
+          comment = "Media Library";
+        };
+        games = {
+          path = "/tank/games";
+          browseable = "yes";
+          "read only" = "no";
+          "guest ok" = "no";
+          "valid users" = mainUser;
+          "force user" = mainUser;
+          "force group" = mainUser;
+          "create mask" = "0664";
+          "directory mask" = "2775";
+          comment = "Games Offload";
+        };
+      };
+    };
+
+    # Enable SMB autodiscovery
+    samba-wsdd = {
+      enable = true;
+      openFirewall = true;
+    };
 
     backups.b2 = {
       enable = true;
