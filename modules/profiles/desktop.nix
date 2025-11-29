@@ -14,13 +14,12 @@ let
     mkMerge
     mkOption
     mkDefault
-    optionalAttrs
     types
     ;
 
   cfg = config.profiles.desktop;
-  hyprCfg = cfg.hyprland;
-  hyprEnabled = hyprCfg.enable;
+  niriCfg = cfg.niri;
+  niriEnabled = niriCfg.enable;
 
   bravePackage = pkgs':
     pkgs'.brave.override {
@@ -66,6 +65,496 @@ let
       vesktop
       zed-editor
     ]);
+
+  niriSettings = { config, ... }: {
+    config-notification.disable-failed = true;
+
+    gestures.hot-corners.enable = false;
+
+    input = {
+      keyboard = {
+        xkb = { };
+        numlock = true;
+      };
+      touchpad = { };
+      mouse = { };
+      trackpoint = { };
+    };
+
+    outputs."DP-2" = {
+      mode = {
+        width = 2560;
+        height = 1440;
+        refresh = 164.835;
+      };
+      variable-refresh-rate = true;
+    };
+
+    layout = {
+      gaps = 5;
+      background-color = "transparent";
+      center-focused-column = "never";
+
+      preset-column-widths = [
+        { proportion = 0.33333; }
+        { proportion = 0.5; }
+        { proportion = 0.66667; }
+      ];
+
+      default-column-width = { proportion = 0.5; };
+
+      border = {
+        enable = false;
+        width = 4;
+        active.color = "#707070";
+        inactive.color = "#d0d0d0";
+        urgent.color = "#cc4444";
+      };
+
+      focus-ring = {
+        width = 2;
+        active.color = "#808080";
+        inactive.color = "#505050";
+      };
+
+      shadow = {
+        softness = 30;
+        spread = 5;
+        offset = {
+          x = 0;
+          y = 5;
+        };
+        color = "#0007";
+      };
+
+      struts = { };
+    };
+
+    layer-rules = [
+      {
+        matches = [{ namespace = "^quickshell$"; }];
+        place-within-backdrop = true;
+      }
+    ];
+
+    overview.workspace-shadow.enable = false;
+
+    spawn-at-startup = [
+      { argv = [ "bash" "-c" "wl-paste --watch cliphist store &" ]; }
+      { argv = [ "dms" "run" ]; }
+      { argv = [ "/usr/lib/mate-polkit/polkit-mate-authentication-agent-1" ]; }
+    ];
+
+    environment = {
+      XDG_CURRENT_DESKTOP = "niri";
+      QT_QPA_PLATFORM = "wayland";
+      ELECTRON_OZONE_PLATFORM_HINT = "auto";
+      QT_QPA_PLATFORMTHEME = "gtk3";
+      QT_QPA_PLATFORMTHEME_QT6 = "gtk3";
+      TERMINAL = "ghostty";
+    };
+
+    hotkey-overlay.skip-at-startup = true;
+
+    prefer-no-csd = true;
+
+    screenshot-path = "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png";
+
+    animations = {
+      workspace-switch.kind.spring = {
+        damping-ratio = 0.80;
+        stiffness = 523;
+        epsilon = 0.0001;
+      };
+      window-open.kind.easing = {
+        duration-ms = 150;
+        curve = "ease-out-expo";
+      };
+      window-close.kind.easing = {
+        duration-ms = 150;
+        curve = "ease-out-quad";
+      };
+      horizontal-view-movement.kind.spring = {
+        damping-ratio = 0.85;
+        stiffness = 423;
+        epsilon = 0.0001;
+      };
+      window-movement.kind.spring = {
+        damping-ratio = 0.75;
+        stiffness = 323;
+        epsilon = 0.0001;
+      };
+      window-resize.kind.spring = {
+        damping-ratio = 0.85;
+        stiffness = 423;
+        epsilon = 0.0001;
+      };
+      config-notification-open-close.kind.spring = {
+        damping-ratio = 0.65;
+        stiffness = 923;
+        epsilon = 0.001;
+      };
+      screenshot-ui-open.kind.easing = {
+        duration-ms = 200;
+        curve = "ease-out-quad";
+      };
+      overview-open-close.kind.spring = {
+        damping-ratio = 0.85;
+        stiffness = 800;
+        epsilon = 0.0001;
+      };
+    };
+
+    window-rules = [
+      # WezTerm initial configure bug workaround
+      {
+        matches = [{ app-id = ''^org\.wezfurlong\.wezterm$''; }];
+        default-column-width = { };
+      }
+      # GNOME apps styling
+      {
+        matches = [{ app-id = ''^org\.gnome\.''; }];
+        draw-border-with-background = false;
+        geometry-corner-radius = {
+          top-left = 12.0;
+          top-right = 12.0;
+          bottom-left = 12.0;
+          bottom-right = 12.0;
+        };
+        clip-to-geometry = true;
+      }
+      # Settings/control apps
+      {
+        matches = [
+          { app-id = ''^gnome-control-center$''; }
+          { app-id = ''^pavucontrol$''; }
+          { app-id = ''^nm-connection-editor$''; }
+        ];
+        default-column-width = { proportion = 0.5; };
+        open-floating = false;
+      }
+      # Floating windows
+      {
+        matches = [
+          { app-id = ''^gnome-calculator$''; }
+          { app-id = ''^galculator$''; }
+          { app-id = ''^blueman-manager$''; }
+          { app-id = ''^org\.gnome\.Nautilus$''; }
+          { app-id = ''^steam$''; }
+          { app-id = ''^xdg-desktop-portal$''; }
+        ];
+        open-floating = true;
+      }
+      # Terminal apps - no border background
+      {
+        matches = [
+          { app-id = ''^org\.wezfurlong\.wezterm$''; }
+          { app-id = "Alacritty"; }
+          { app-id = "zen"; }
+          { app-id = "com.mitchellh.ghostty"; }
+          { app-id = "kitty"; }
+        ];
+        draw-border-with-background = false;
+      }
+      # Inactive window opacity
+      {
+        matches = [{ is-active = false; }];
+        opacity = 0.9;
+      }
+      # PiP and Zoom floating
+      {
+        matches = [
+          { app-id = ''^firefox$''; title = "^Picture-in-Picture$"; }
+          { app-id = "zoom"; }
+        ];
+        open-floating = true;
+      }
+      # Global corner radius
+      {
+        geometry-corner-radius = {
+          top-left = 12.0;
+          top-right = 12.0;
+          bottom-left = 12.0;
+          bottom-right = 12.0;
+        };
+        clip-to-geometry = true;
+      }
+    ];
+
+    binds = let
+      inherit (config.lib.niri.actions)
+        spawn
+        toggle-overview
+        show-hotkey-overlay
+        quit
+        close-window
+        maximize-column
+        fullscreen-window
+        toggle-window-floating
+        switch-focus-between-floating-and-tiling
+        toggle-column-tabbed-display
+        focus-column-left
+        focus-column-right
+        focus-window-down
+        focus-window-up
+        focus-column-first
+        focus-column-last
+        move-column-left
+        move-column-right
+        move-window-down
+        move-window-up
+        move-column-to-first
+        move-column-to-last
+        focus-monitor-left
+        focus-monitor-right
+        focus-monitor-down
+        focus-monitor-up
+        move-column-to-monitor-left
+        move-column-to-monitor-right
+        move-column-to-monitor-down
+        move-column-to-monitor-up
+        focus-workspace-down
+        focus-workspace-up
+        focus-workspace
+        move-column-to-workspace-down
+        move-column-to-workspace-up
+        move-workspace-down
+        move-workspace-up
+        consume-or-expel-window-left
+        consume-or-expel-window-right
+        expel-window-from-column
+        switch-preset-column-width
+        switch-preset-window-height
+        reset-window-height
+        expand-column-to-available-width
+        center-column
+        center-visible-columns
+        set-column-width
+        set-window-height
+        toggle-keyboard-shortcuts-inhibit
+        power-off-monitors
+        ;
+    in {
+      # === System & Overview ===
+      "Mod+D".action = spawn "niri" "msg" "action" "toggle-overview";
+      "Mod+Tab" = { action = toggle-overview; repeat = false; };
+      "Mod+Shift+Slash".action = show-hotkey-overlay;
+
+      # === Application Launchers ===
+      "Mod+T" = {
+        action = spawn "ghostty";
+        hotkey-overlay.title = "Open Terminal";
+      };
+      "Mod+Space" = {
+        action = spawn "dms" "ipc" "call" "spotlight" "toggle";
+        hotkey-overlay.title = "Application Launcher";
+      };
+      "Mod+V" = {
+        action = spawn "dms" "ipc" "call" "clipboard" "toggle";
+        hotkey-overlay.title = "Clipboard Manager";
+      };
+      "Mod+M" = {
+        action = spawn "dms" "ipc" "call" "processlist" "toggle";
+        hotkey-overlay.title = "Task Manager";
+      };
+      "Mod+Comma" = {
+        action = spawn "dms" "ipc" "call" "settings" "toggle";
+        hotkey-overlay.title = "Settings";
+      };
+      "Mod+Y" = {
+        action = spawn "dms" "ipc" "call" "dankdash" "wallpaper";
+        hotkey-overlay.title = "Browse Wallpapers";
+      };
+      "Mod+N" = {
+        action = spawn "dms" "ipc" "call" "notifications" "toggle";
+        hotkey-overlay.title = "Notification Center";
+      };
+      "Mod+Shift+N" = {
+        action = spawn "dms" "ipc" "call" "notepad" "toggle";
+        hotkey-overlay.title = "Notepad";
+      };
+
+      # === Security ===
+      "Mod+Alt+L" = {
+        action = spawn "dms" "ipc" "call" "lock" "lock";
+        hotkey-overlay.title = "Lock Screen";
+      };
+      "Mod+Shift+E".action = quit;
+      "Ctrl+Alt+Delete" = {
+        action = spawn "dms" "ipc" "call" "processlist" "toggle";
+        hotkey-overlay.title = "Task Manager";
+      };
+
+      # === Audio Controls ===
+      "XF86AudioRaiseVolume" = {
+        action = spawn "dms" "ipc" "call" "audio" "increment" "3";
+        allow-when-locked = true;
+      };
+      "XF86AudioLowerVolume" = {
+        action = spawn "dms" "ipc" "call" "audio" "decrement" "3";
+        allow-when-locked = true;
+      };
+      "XF86AudioMute" = {
+        action = spawn "dms" "ipc" "call" "audio" "mute";
+        allow-when-locked = true;
+      };
+      "XF86AudioMicMute" = {
+        action = spawn "dms" "ipc" "call" "audio" "micmute";
+        allow-when-locked = true;
+      };
+
+      # === Brightness Controls ===
+      "XF86MonBrightnessUp" = {
+        action = spawn "dms" "ipc" "call" "brightness" "increment" "5" "";
+        allow-when-locked = true;
+      };
+      "XF86MonBrightnessDown" = {
+        action = spawn "dms" "ipc" "call" "brightness" "decrement" "5" "";
+        allow-when-locked = true;
+      };
+
+      # === Window Management ===
+      "Mod+Q" = { action = close-window; repeat = false; };
+      "Mod+F".action = maximize-column;
+      "Mod+Shift+F".action = fullscreen-window;
+      "Mod+Shift+T".action = toggle-window-floating;
+      "Mod+Shift+V".action = switch-focus-between-floating-and-tiling;
+      "Mod+W".action = toggle-column-tabbed-display;
+
+      # === Focus Navigation ===
+      "Mod+Left".action = focus-column-left;
+      "Mod+Down".action = focus-window-down;
+      "Mod+Up".action = focus-window-up;
+      "Mod+Right".action = focus-column-right;
+      "Mod+H".action = focus-column-left;
+      "Mod+J".action = focus-window-down;
+      "Mod+K".action = focus-window-up;
+      "Mod+L".action = focus-column-right;
+
+      # === Window Movement ===
+      "Mod+Shift+Left".action = move-column-left;
+      "Mod+Shift+Down".action = move-window-down;
+      "Mod+Shift+Up".action = move-window-up;
+      "Mod+Shift+Right".action = move-column-right;
+      "Mod+Shift+H".action = move-column-left;
+      "Mod+Shift+J".action = move-window-down;
+      "Mod+Shift+K".action = move-window-up;
+      "Mod+Shift+L".action = move-column-right;
+
+      # === Column Navigation ===
+      "Mod+Home".action = focus-column-first;
+      "Mod+End".action = focus-column-last;
+      "Mod+Ctrl+Home".action = move-column-to-first;
+      "Mod+Ctrl+End".action = move-column-to-last;
+
+      # === Monitor Navigation ===
+      "Mod+Ctrl+Left".action = focus-monitor-left;
+      "Mod+Ctrl+Right".action = focus-monitor-right;
+      "Mod+Ctrl+H".action = focus-monitor-left;
+      "Mod+Ctrl+J".action = focus-monitor-down;
+      "Mod+Ctrl+K".action = focus-monitor-up;
+      "Mod+Ctrl+L".action = focus-monitor-right;
+
+      # === Move to Monitor ===
+      "Mod+Shift+Ctrl+Left".action = move-column-to-monitor-left;
+      "Mod+Shift+Ctrl+Down".action = move-column-to-monitor-down;
+      "Mod+Shift+Ctrl+Up".action = move-column-to-monitor-up;
+      "Mod+Shift+Ctrl+Right".action = move-column-to-monitor-right;
+      "Mod+Shift+Ctrl+H".action = move-column-to-monitor-left;
+      "Mod+Shift+Ctrl+J".action = move-column-to-monitor-down;
+      "Mod+Shift+Ctrl+K".action = move-column-to-monitor-up;
+      "Mod+Shift+Ctrl+L".action = move-column-to-monitor-right;
+
+      # === Workspace Navigation ===
+      "Mod+Page_Down".action = focus-workspace-down;
+      "Mod+Page_Up".action = focus-workspace-up;
+      "Mod+U".action = focus-workspace-down;
+      "Mod+I".action = focus-workspace-up;
+      "Mod+Ctrl+Down".action = move-column-to-workspace-down;
+      "Mod+Ctrl+Up".action = move-column-to-workspace-up;
+      "Mod+Ctrl+U".action = move-column-to-workspace-down;
+      "Mod+Ctrl+I".action = move-column-to-workspace-up;
+
+      # === Move Workspaces ===
+      "Mod+Shift+Page_Down".action = move-workspace-down;
+      "Mod+Shift+Page_Up".action = move-workspace-up;
+      "Mod+Shift+U".action = move-workspace-down;
+      "Mod+Shift+I".action = move-workspace-up;
+
+      # === Mouse Wheel Navigation ===
+      "Mod+WheelScrollDown" = { action = focus-workspace-down; cooldown-ms = 150; };
+      "Mod+WheelScrollUp" = { action = focus-workspace-up; cooldown-ms = 150; };
+      "Mod+Ctrl+WheelScrollDown" = { action = move-column-to-workspace-down; cooldown-ms = 150; };
+      "Mod+Ctrl+WheelScrollUp" = { action = move-column-to-workspace-up; cooldown-ms = 150; };
+
+      "Mod+WheelScrollRight".action = focus-column-right;
+      "Mod+WheelScrollLeft".action = focus-column-left;
+      "Mod+Ctrl+WheelScrollRight".action = move-column-right;
+      "Mod+Ctrl+WheelScrollLeft".action = move-column-left;
+
+      "Mod+Shift+WheelScrollDown".action = focus-column-right;
+      "Mod+Shift+WheelScrollUp".action = focus-column-left;
+      "Mod+Ctrl+Shift+WheelScrollDown".action = move-column-right;
+      "Mod+Ctrl+Shift+WheelScrollUp".action = move-column-left;
+
+      # === Numbered Workspaces ===
+      "Mod+1".action = focus-workspace 1;
+      "Mod+2".action = focus-workspace 2;
+      "Mod+3".action = focus-workspace 3;
+      "Mod+4".action = focus-workspace 4;
+      "Mod+5".action = focus-workspace 5;
+      "Mod+6".action = focus-workspace 6;
+      "Mod+7".action = focus-workspace 7;
+      "Mod+8".action = focus-workspace 8;
+      "Mod+9".action = focus-workspace 9;
+
+      # === Move to Numbered Workspaces ===
+      "Mod+Shift+1".action.move-column-to-workspace = 1;
+      "Mod+Shift+2".action.move-column-to-workspace = 2;
+      "Mod+Shift+3".action.move-column-to-workspace = 3;
+      "Mod+Shift+4".action.move-column-to-workspace = 4;
+      "Mod+Shift+5".action.move-column-to-workspace = 5;
+      "Mod+Shift+6".action.move-column-to-workspace = 6;
+      "Mod+Shift+7".action.move-column-to-workspace = 7;
+      "Mod+Shift+8".action.move-column-to-workspace = 8;
+      "Mod+Shift+9".action.move-column-to-workspace = 9;
+
+      # === Column Management ===
+      "Mod+BracketLeft".action = consume-or-expel-window-left;
+      "Mod+BracketRight".action = consume-or-expel-window-right;
+      "Mod+Period".action = expel-window-from-column;
+
+      # === Sizing & Layout ===
+      "Mod+R".action = switch-preset-column-width;
+      "Mod+Shift+R".action = switch-preset-window-height;
+      "Mod+Ctrl+R".action = reset-window-height;
+      "Mod+Ctrl+F".action = expand-column-to-available-width;
+      "Mod+C".action = center-column;
+      "Mod+Ctrl+C".action = center-visible-columns;
+
+      # === Manual Sizing ===
+      "Mod+Minus".action = set-column-width "-10%";
+      "Mod+Equal".action = set-column-width "+10%";
+      "Mod+Shift+Minus".action = set-window-height "-10%";
+      "Mod+Shift+Equal".action = set-window-height "+10%";
+
+      # === Screenshots ===
+      "XF86Launch1".action.screenshot = { };
+      "Ctrl+XF86Launch1".action.screenshot-screen = { };
+      "Alt+XF86Launch1".action.screenshot-window = { };
+      "Print".action.screenshot = { };
+      "Ctrl+Print".action.screenshot-screen = { };
+      "Alt+Print".action.screenshot-window = { };
+
+      # === System Controls ===
+      "Mod+Escape" = { action = toggle-keyboard-shortcuts-inhibit; allow-inhibiting = false; };
+      "Mod+Shift+P".action = power-off-monitors;
+    };
+
+    debug = {
+      honor-xdg-activation-with-invalid-serial = [ ];
+    };
+  };
 in
 {
   imports = [
@@ -91,20 +580,8 @@ in
       '';
     };
 
-    hyprland = {
-      enable = mkEnableOption "Hyprland desktop configuration";
-
-      monitors = mkOption {
-        type = types.listOf types.str;
-        default = [ ];
-        description = "Hyprland monitor layout entries.";
-      };
-
-      input = mkOption {
-        type = types.attrsOf types.anything;
-        default = { };
-        description = "Hyprland input configuration block.";
-      };
+    niri = {
+      enable = mkEnableOption "Niri desktop configuration";
     };
   };
 
@@ -122,250 +599,26 @@ in
           home-manager.sharedModules =
             mkAfter [
               inputs.dankMaterialShell.homeModules.dankMaterialShell.default
+              inputs.dankMaterialShell.homeModules.dankMaterialShell.niri
             ];
 
-          home-manager.users.${cfg.user} = { pkgs, ... }:
+          home-manager.users.${cfg.user} = { pkgs, config, ... }:
             mkMerge [
               {
                 home.packages =
                   mkAfter (desktopPackages pkgs cfg.desktopPackageSet);
               }
-              (mkIf hyprEnabled {
+              (mkIf niriEnabled {
                 services.gnome-keyring.enable = true;
 
-                wayland.windowManager.hyprland = {
+                programs.niri.settings = niriSettings { inherit config; };
+
+                programs.dankMaterialShell = {
                   enable = true;
-                  settings =
-                    mkMerge [
-                      {
-                        env = [
-                          "QT_QPA_PLATFORM,wayland"
-                          "ELECTRON_OZONE_PLATFORM_HINT,auto"
-                          "QT_QPA_PLATFORMTHEME,gtk3"
-                          "QT_QPA_PLATFORMTHEME_QT6,gtk3"
-                          "TERMINAL,ghostty"
-                        ];
-
-                        exec-once = [
-                          "uwsm app -- wl-clip-persist --clipboard both"
-                          "uwsm app -- wl-paste --watch cliphist store &"
-                          "uwsm app -- dms run"
-                          "uwsm app -- /usr/lib/mate-polkit/polkit-mate-authentication-agent-1"
-                          "uwsm app -- ghostty --gtk-single-instance=true --quit-after-last-window-closed=false --initial-window=false"
-                        ];
-
-                        general = {
-                          gaps_in = 5;
-                          gaps_out = 5;
-                          border_size = 0;
-                          "col.active_border" = "rgba(707070ff)";
-                          "col.inactive_border" = "rgba(d0d0d0ff)";
-                          layout = "dwindle";
-                        };
-
-                        decoration = {
-                          rounding = 18;
-                          shadow = {
-                            enabled = true;
-                            range = 30;
-                            render_power = 5;
-                            offset = "0 5";
-                            color = "rgba(00000070)";
-                          };
-                        };
-
-                        animations = {
-                          enabled = true;
-                          animation = [
-                            "windowsIn, 1, 3, default"
-                            "windowsOut, 1, 3, default"
-                            "workspaces, 1, 5, default"
-                            "windowsMove, 1, 4, default"
-                            "fade, 1, 3, default"
-                            "border, 1, 3, default"
-                          ];
-                        };
-
-                        dwindle = {
-                          preserve_split = true;
-                        };
-
-                        master = {
-                          mfact = 0.5;
-                        };
-
-                        misc = {
-                          disable_hyprland_logo = true;
-                          disable_splash_rendering = true;
-                          vrr = 1;
-                        };
-
-                        windowrulev2 = [
-                          "rounding 18, class:^(org.gnome.)"
-                          "noborder, class:^(org.gnome.)"
-                          "float, class:^(.blueman-manager-wrapped)$"
-                          "size 720 480, class:^(.blueman-manager-wrapped)$"
-                          "float, class:^(blender)$, title:^(Blender Render)$"
-                          "float, class:^(blender)$, title:^(Preferences)$"
-                          "float, class:^(steam)$"
-                          "float, class:^(heroic)$"
-                          "float, class:^(org.gnome.FileRoller)$"
-                          "float, class:^(brave-.*-Default)$"
-                          "float, opacity 1, title:^(Picture in picture)$"
-                          "float, class:^(xdg-desktop-portal)$"
-                          "size 1280 720, class:^(xdg-desktop-portal)$"
-                          "float, class:^(xdg-desktop-portal-gtk)$"
-                          "size 1280 720, class:^(xdg-desktop-portal-gtk)$"
-                          "float, class:^(org.gnome.Showtime)$"
-                          "size 1280 720, class:^(org.gnome.Showtime)$"
-                          "float, class:^(org.gnome.Loupe)$"
-                          "size 1280 720, class:^(org.gnome.Loupe)$"
-                          "float, class:^(Bitwarden)$"
-                          "size 1280 720, class:^(Bitwarden)$"
-                          "float, class:^(org.gnome.Nautilus)$"
-                          "size 1280 720, class:^(org.gnome.Nautilus)$"
-                          "float, class:^(com.saivert.pwvucontrol)$"
-                          "size 1280 720, class:^(com.saivert.pwvucontrol)$"
-                          "float, class:^(org.coolercontrol.CoolerControl)$"
-                          "size 1280 720, class:^(org.coolercontrol.CoolerControl)$"
-                          "noborder, class:^(com.mitchellh.ghostty)$"
-                          "workspace special:term, class:^(com.mitchellh.ghostty.zellij)$"
-                          "workspace special:comms, class:^(vesktop)$"
-                          "workspace special:music, class:^(deezer-enhanced)$"
-                        ];
-
-                        layerrule = [
-                          "noanim, ^(quickshell)$"
-                        ];
-
-                        "$mainMod" = "Super";
-                        "$altMod" = "Alt";
-                        "$shiftMod" = "Shift";
-                        "$ctrlMod" = "Control";
-                        "$mainAlt" = "$mainMod $altMod";
-                        "$mainCtrl" = "$mainMod $ctrlMod";
-                        "$mainShift" = "$mainMod $shiftMod";
-                        "$ctrlShift" = "$ctrlMod $shiftMod";
-                        "$ctrlAlt" = "$ctrlMod $altMod";
-                        "$handbreaker" = "$mainCtrl $mainShift";
-
-                        bind = [
-                          "$mainMod, Return, exec, ghostty"
-                          "$mainMod, E, exec, nautilus"
-                          "$mainMod, Space, exec, dms ipc call spotlight toggle"
-                          "$mainMod, V, exec, dms ipc call clipboard toggle"
-                          "$mainMod, M, exec, dms ipc call processlist toggle"
-                          "$mainMod, comma, exec, dms ipc call settings toggle"
-                          "$mainMod, N, exec, dms ipc call notifications toggle"
-                          "$mainShift, N, exec, dms ipc call notepad toggle"
-                          "$mainMod, Y, exec, dms ipc call dankdash wallpaper"
-                          "$mainMod, TAB, exec, dms ipc call hypr toggleOverview"
-                          "$mainMod, L, exec, dms ipc call lock lock"
-                          "$mainMod, Escape, exec, dms ipc call powermenu toggle"
-                          "CTRL ALT, Delete, exec, dms ipc call processlist toggle"
-                          "$mainMod, Q, killactive"
-                          "$mainAlt, F, fullscreen, 1"
-                          "$mainShift, F, fullscreen, 0"
-                          "$mainMod, F, togglefloating"
-                          "$mainMod, W, togglegroup"
-                          "$mainMod, left, movefocus, l"
-                          "$mainMod, down, movefocus, d"
-                          "$mainMod, up, movefocus, u"
-                          "$mainMod, right, movefocus, r"
-                          "$mainMod, H, movefocus, l"
-                          "$mainMod, J, movefocus, d"
-                          "$mainMod, K, movefocus, u"
-                          "$mainMod, L, movefocus, r"
-                          "$mainShift, left, movewindow, l"
-                          "$mainShift, down, movewindow, d"
-                          "$mainShift, up, movewindow, u"
-                          "$mainShift, right, movewindow, r"
-                          "$mainShift, H, movewindow, l"
-                          "$mainShift, J, movewindow, d"
-                          "$mainShift, K, movewindow, u"
-                          "$mainShift, L, movewindow, r"
-                          "$mainMod, Home, focuswindow, first"
-                          "$mainMod, End, focuswindow, last"
-                          "$mainMod, Page_Down, workspace, e+1"
-                          "$mainMod, Page_Up, workspace, e-1"
-                          "$mainMod, U, workspace, e+1"
-                          "$mainMod, I, workspace, e-1"
-                          "$mainCtrl, down, movetoworkspace, e+1"
-                          "$mainCtrl, up, movetoworkspace, e-1"
-                          "$mainCtrl, U, movetoworkspace, e+1"
-                          "$mainCtrl, I, movetoworkspace, e-1"
-                          "$mainShift, Page_Down, movetoworkspace, e+1"
-                          "$mainShift, Page_Up, movetoworkspace, e-1"
-                          "$mainShift, U, movetoworkspace, e+1"
-                          "$mainShift, I, movetoworkspace, e-1"
-                          "$mainMod, mouse_down, workspace, e+1"
-                          "$mainMod, mouse_up, workspace, e-1"
-                          "$mainCtrl, mouse_down, movetoworkspace, e+1"
-                          "$mainCtrl, mouse_up, movetoworkspace, e-1"
-                          "$mainMod, 1, workspace, 1"
-                          "$mainMod, 2, workspace, 2"
-                          "$mainMod, 3, workspace, 3"
-                          "$mainMod, 4, workspace, 4"
-                          "$mainMod, 5, workspace, 5"
-                          "$mainMod, 6, workspace, 6"
-                          "$mainMod, 7, workspace, 7"
-                          "$mainMod, 8, workspace, 8"
-                          "$mainMod, 9, workspace, 9"
-                          "$mainShift, 1, movetoworkspace, 1"
-                          "$mainShift, 2, movetoworkspace, 2"
-                          "$mainShift, 3, movetoworkspace, 3"
-                          "$mainShift, 4, movetoworkspace, 4"
-                          "$mainShift, 5, movetoworkspace, 5"
-                          "$mainShift, 6, movetoworkspace, 6"
-                          "$mainShift, 7, movetoworkspace, 7"
-                          "$mainShift, 8, movetoworkspace, 8"
-                          "$mainShift, 9, movetoworkspace, 9"
-                          "$mainCtrl, F, resizeactive, exact 100%"
-                          "$altMod, T, togglespecialworkspace, term"
-                          "$altMod, M, togglespecialworkspace, music"
-                          "$altMod, C, togglespecialworkspace, comms"
-                          "$altMod, S, togglespecialworkspace, scratchpad"
-                          '' , Print, exec, bash -lc 'd="$(xdg-user-dir PICTURES)/screenshots"; mkdir -p "$d"; f="$d/$(date +%F_%H-%M-%S).png"; grimblast copysave area "$f" && notify-send -i "$f" "Screenshot saved" "$f"' ''
-                          '' $mainMod, Print, exec, bash -lc 'd="$(xdg-user-dir PICTURES)/screenshots"; mkdir -p "$d"; f="$d/$(date +%F_%H-%M-%S).png"; grimblast copysave screen "$f" && notify-send -i "$f" "Screenshot saved" "$f"' ''
-                          ", XF86AudioPlay, exec, dms ipc call mpris playPause"
-                          ", XF86AudioPause, exec, dms ipc call mpris playPause"
-                          ", XF86AudioNext, exec, dms ipc call mpris next"
-                          ", XF86AudioPrev, exec, dms ipc call mpris previous"
-                        ];
-
-                        bindel = [
-                          ", XF86AudioRaiseVolume, exec, dms ipc call audio increment 3"
-                          ", XF86AudioLowerVolume, exec, dms ipc call audio decrement 3"
-                          ", XF86MonBrightnessUp, exec, dms ipc call brightness increment 5"
-                          ", XF86MonBrightnessDown, exec, dms ipc call brightness decrement 5"
-                        ];
-
-                        bindl = [
-                          ", XF86AudioMute, exec, dms ipc call audio mute"
-                          ", XF86AudioMicMute, exec, dms ipc call audio micmute"
-                        ];
-
-                        binde = [
-                          "$mainMod, minus, resizeactive, -10% 0"
-                          "$mainMod, equal, resizeactive, 10% 0"
-                          "$mainShift, minus, resizeactive, 0 -10%"
-                          "$mainShift, equal, resizeactive, 0 10%"
-                        ];
-
-                        bindm = [
-                          "$mainMod, mouse:272, movewindow"
-                          "$mainMod, mouse:273, resizewindow"
-                        ];
-                      }
-                      (optionalAttrs (hyprCfg.monitors != [ ]) { monitor = hyprCfg.monitors; })
-                      (optionalAttrs (hyprCfg.input != { }) { input = hyprCfg.input; })
-                      {
-                        exec-once = [
-                          "uwsm app -- nm-applet --indicator"
-                          "uwsm app -- blueman-applet"
-                        ];
-                      }
-                    ];
+                  niri = {
+                    enableKeybinds = false;
+                    enableSpawn = false;
+                  };
                 };
 
                 home.file.".config/BraveSoftware/Brave-Browser/Policies/Managed/policies.json".text = ''
@@ -440,16 +693,15 @@ in
                   name = "Bibata-Modern-Classic";
                   size = 20;
                 };
-
-                programs.dankMaterialShell = {
-                  enable = true;
-                };
               })
             ];
         }
-        (mkIf hyprEnabled {
+        (mkIf niriEnabled {
           services.gnome.gnome-keyring.enable = mkDefault true;
           security.polkit.enable = true;
+
+          # Disable niri-flake's default polkit agent as DMS has its own
+          systemd.user.services.niri-flake-polkit.enable = false;
 
           services = {
             accounts-daemon.enable = true;
@@ -463,11 +715,11 @@ in
             };
           };
 
-          programs.hyprland = {
+          programs.niri = {
             enable = true;
-            withUWSM = true;
-            xwayland.enable = true;
           };
+
+          nixpkgs.overlays = [ inputs.niri.overlays.niri ];
 
           services.seatd.enable = true;
           security.pam.services.greetd.enableGnomeKeyring = true;
@@ -476,10 +728,10 @@ in
             enable = true;
             extraPortals = mkAfter [
               pkgs.xdg-desktop-portal-gtk
-              pkgs.xdg-desktop-portal-hyprland
+              pkgs.xdg-desktop-portal-gnome
             ];
             config.common.default = mkBefore [
-              "hyprland"
+              "gnome"
               "gtk"
             ];
           };
@@ -492,7 +744,7 @@ in
 
           programs.dankMaterialShell.greeter = {
             enable = true;
-            compositor.name = "hyprland";
+            compositor.name = "niri";
             configHome = "/home/${cfg.user}";
           };
 
