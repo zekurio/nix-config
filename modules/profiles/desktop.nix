@@ -39,6 +39,7 @@ let
       brightnessctl
       (bravePackage pkgs')
       cliphist
+      gearlever
       gcr
       grim
       grimblast
