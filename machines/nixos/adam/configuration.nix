@@ -212,6 +212,35 @@ in
       randomizedDelaySec = "1h";
     };
 
+    backups.local = {
+      enable = true;
+      repository = "/tank/backup/restic";
+      initialize = true;
+      paths = [
+        "/etc/nixos"
+        "/var/lib/autobrr"
+        "/var/lib/immich"
+        "/var/lib/jellyfin"
+        "/var/lib/jellyseerr"
+        "/var/lib/paperless"
+        "/var/lib/prowlarr"
+        "/var/lib/qBittorrent"
+        "/var/lib/radarr"
+        "/var/lib/sabnzbd"
+        "/var/lib/sonarr"
+        "/var/lib/vaultwarden"
+      ];
+      excludePaths = [ ];
+      extraBackupArgs = [ "--tag adam" ];
+      pruneKeep = {
+        daily = 7;
+        weekly = 4;
+        monthly = 12;
+      };
+      timer = "*-*-* 02:00:00";
+      randomizedDelaySec = "1h";
+    };
+
     # Enable wrapped services with Caddy integration
     paperless-ngx-wrapped.enable = true;
     vaultwarden-wrapped.enable = true;
