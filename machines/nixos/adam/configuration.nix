@@ -105,11 +105,6 @@ in
     age.keyFile = "/var/lib/sops-nix/key.txt";
     secrets = {
       mullvad_wg = { };
-      autobrr_secret = {
-        owner = shareUser;
-        group = shareGroup;
-        mode = "0400";
-      };
     };
   };
 

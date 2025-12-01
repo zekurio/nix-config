@@ -17,6 +17,7 @@ let
     "/tank/jellyfin/anime"
     "/tank/jellyfin/movies"
     "/tank/jellyfin/tv"
+    "/tank/jellyfin/smut"
     "/mnt/downloads"
     "/mnt/downloads/complete"
     "/mnt/downloads/complete/radarr"
