@@ -1,8 +1,10 @@
-{ ... }: {
+{ ... }:
+{
   imports = [
     ./autobrr.nix
     ./backups.nix
     ./caddy.nix
+    ./dex.nix
     ./fileflows.nix
     ./immich.nix
     ./jellyfin.nix
@@ -17,5 +19,6 @@
     ./sonarr.nix
     ./tailscale.nix
     ./vaultwarden.nix
+    ./whisparr.nix
   ];
 }

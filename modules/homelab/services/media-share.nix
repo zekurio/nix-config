@@ -1,7 +1,8 @@
-{ config
-, lib
-, pkgs
-, ...
+{
+  config,
+  lib,
+  pkgs,
+  ...
 }:
 let
   cfg = config.modules.homelab.mediaShare;
@@ -20,6 +21,7 @@ let
     "/mnt/downloads/complete"
     "/mnt/downloads/complete/radarr"
     "/mnt/downloads/complete/sonarr"
+    "/mnt/downloads/complete/whisparr"
     # "/mnt/downloads/converted"
     # "/mnt/downloads/converted/radarr"
     # "/mnt/downloads/converted/sonarr"
@@ -39,14 +41,11 @@ let
 
   managedPaths = mediaDirs ++ stateDirs;
 
-  directoryRules = map
-    (dir: "d ${dir} 2775 ${shareUser} ${shareGroup} -")
-    (mediaDirs ++ stateDirs);
+  directoryRules = map (dir: "d ${dir} 2775 ${shareUser} ${shareGroup} -") (mediaDirs ++ stateDirs);
 in
 {
   options.modules.homelab.mediaShare = {
-    enable =
-      lib.mkEnableOption "Shared system account and directory management for homelab media workloads";
+    enable = lib.mkEnableOption "Shared system account and directory management for homelab media workloads";
 
     collaborators = lib.mkOption {
       type = lib.types.listOf lib.types.str;

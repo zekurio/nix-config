@@ -200,6 +200,8 @@ in
         "/var/lib/sabnzbd"
         "/var/lib/sonarr"
         "/var/lib/vaultwarden"
+        "/var/lib/whisparr"
+        "/var/lib/dex"
       ];
       excludePaths = [ ];
       extraBackupArgs = [ "--tag adam" ];
@@ -229,6 +231,8 @@ in
         "/var/lib/sabnzbd"
         "/var/lib/sonarr"
         "/var/lib/vaultwarden"
+        "/var/lib/whisparr"
+        "/var/lib/dex"
       ];
       excludePaths = [ ];
       extraBackupArgs = [ "--tag adam" ];
@@ -248,12 +252,16 @@ in
     jellyfin-wrapped.enable = true;
     immich-wrapped.enable = true;
 
+    # Enable OIDC provider
+    dex-wrapped.enable = true;
+
     # Enable arr stack services
     sonarr-wrapped.enable = true;
     radarr-wrapped.enable = true;
     prowlarr-wrapped.enable = true;
     sabnzbd-wrapped.enable = true;
     autobrr-wrapped.enable = true;
+    whisparr-wrapped.enable = true;
 
     # qBittorrent with VPN confinement
     qbittorrent-wrapped.enable = true;
