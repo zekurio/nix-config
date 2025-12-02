@@ -140,7 +140,6 @@ in
           "guest account" = "nobody";
           "map to guest" = "Bad User";
           "server min protocol" = "SMB2";
-          # Performance tuning
           "socket options" = "TCP_NODELAY IPTOS_LOWDELAY SO_RCVBUF=131072 SO_SNDBUF=131072";
           "use sendfile" = "yes";
           "aio read size" = "16384";
@@ -158,8 +157,8 @@ in
           "directory mask" = "2775";
           comment = "Media Library";
         };
-        games = {
-          path = "/tank/games";
+        vault = {
+          path = "/tank/vault";
           browseable = "yes";
           "read only" = "no";
           "guest ok" = "no";
@@ -167,8 +166,20 @@ in
           "force user" = mainUser;
           "force group" = mainUser;
           "create mask" = "0664";
+          "directory mask" = "0755";
+          comment = "Vault";
+        };
+        datadrop = {
+          path = "/mnt/downloads";
+          browseable = "yes";
+          "read only" = "no";
+          "guest ok" = "no";
+          "valid users" = "@${shareGroup}";
+          "force user" = shareUser;
+          "force group" = shareGroup;
+          "create mask" = "0664";
           "directory mask" = "2775";
-          comment = "Games Offload";
+          comment = "Downloads";
         };
       };
     };
