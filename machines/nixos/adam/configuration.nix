@@ -290,16 +290,15 @@ in
           minimal-responses = "yes";
           cache-min-ttl = 300;
           cache-max-ttl = 86400;
+          local-zone = [ "schnitzelflix.xyz. transparent" ];
+          local-data = [
+            "\"schnitzelflix.xyz. 3600 IN A 127.0.0.1\""
+            "\"photos.schnitzelflix.xyz. 3600 IN A 127.0.0.1\""
+            "\"docs.schnitzelflix.xyz. 3600 IN A 127.0.0.1\""
+            "\"*.schnitzelflix.xyz. 3600 IN A 127.0.0.1\""
+            "\"status.schnitzelflix.xyz. 3600 IN A 0.0.0.0\""
+          ];
         };
-
-        local-zone = "schnitzelflix.xyz transparent";
-        local-data = [
-          "schnitzelflix.xyz. 3600 IN A 127.0.0.1"
-          "photos.schnitzelflix.xyz. 3600 IN A 127.0.0.1"
-          "docs.schnitzelflix.xyz. 3600 IN A 127.0.0.1"
-          "*.schnitzelflix.xyz. 3600 IN A 127.0.0.1"
-          "status.schnitzelflix.xyz. 3600 IN A 0.0.0.0"
-        ];
 
         forward-zone = {
           name = ".";
