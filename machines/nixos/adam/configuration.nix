@@ -273,8 +273,11 @@ in
       enable = true;
       settings = {
         server = {
-          interface = [ "127.0.0.1" ];
-          access-control = [ "127.0.0.0/8 allow" ];
+          interface = [ "127.0.0.1" "::1" ];
+          access-control = [
+            "127.0.0.0/8 allow"
+            "::1/128 allow"
+          ];
           do-ip4 = "yes";
           do-ip6 = "no";
           do-udp = "yes";
