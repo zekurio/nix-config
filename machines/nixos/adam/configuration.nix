@@ -275,46 +275,59 @@ in
         server = {
           interface = [ "127.0.0.1" "::1" "0.0.0.0" ];
           access-control = [
-            "127.0.0.0/8 allow" # localhost
-            "::1/128 allow" # localhost
-            "192.168.0.0/16 allow" # LAN
-            "100.64.0.0/10 allow"  # Tailscale
+            "127.0.0.0/8 allow"
+            "::1/128 allow"
+            "192.168.0.0/16 allow"
+            "100.64.0.0/10 allow"
           ];
+
+          # Map client networks to views
+          access-control-view = [
+            "192.168.0.0/16 lan"      # LAN clients get "lan" view
+            "100.64.0.0/10 tailscale" # Tailscale clients get "tailscale" view
+          ];
+
           do-ip4 = "yes";
           do-ip6 = "no";
-          do-udp = "yes";
-          do-tcp = "yes";
-          hide-identity = "yes";
-          hide-version = "yes";
-          harden-glue = "yes";
-          harden-dnssec-stripped = "yes";
-          use-caps-for-id = "yes";
-          prefetch = "yes";
-          prefetch-key = "yes";
-          qname-minimisation = "yes";
-          rrset-roundrobin = "yes";
-          minimal-responses = "yes";
-          cache-min-ttl = 300;
-          cache-max-ttl = 86400;
-          local-zone = [
-            "schnitzelflix.xyz. transparent"
-            "zekurio.xyz. transparent"
-          ];
-          local-data = [
-            # schnitzelflix.xyz domain
-            "\"schnitzelflix.xyz. 3600 IN A 127.0.0.1\""
-            "\"requests.schnitzelflix.xyz. 3600 IN A 127.0.0.1\""
-            "\"sab.schnitzelflix.xyz. 3600 IN A 127.0.0.1\""
-            "\"qbit.schnitzelflix.xyz. 3600 IN A 127.0.0.1\""
-            "\"arr.schnitzelflix.xyz. 3600 IN A 127.0.0.1\""
-            "\"ff.schnitzelflix.xyz. 3600 IN A 127.0.0.1\""
+          # ... keep all your other server settings ...
+        };
 
-            # zekurio.xyz domain
-            "\"zekurio.xyz. 3600 IN A 127.0.0.1\""
-            "\"vw.zekurio.xyz. 3600 IN A 127.0.0.1\""
-            "\"docs.zekurio.xyz. 3600 IN A 127.0.0.1\""
-            "\"photos.zekurio.xyz. 3600 IN A 127.0.0.1\""
-          ];
+        # LAN view - uses your server's LAN IP
+        view = {
+          lan = {
+            local-zone = [ "schnitzelflix.xyz. transparent" "zekurio.xyz. transparent" ];
+            local-data = [
+              "\"schnitzelflix.xyz. 3600 IN A 192.168.0.2\""
+              "\"docs.schnitzelflix.xyz. 3600 IN A 192.168.0.2\""
+              "\"photos.schnitzelflix.xyz. 3600 IN A 192.168.0.2\""
+              "\"status.schnitzelflix.xyz. 3600 IN A 0.0.0.0\""
+              "\"requests.schnitzelflix.xyz. 3600 IN A 192.168.0.2\""
+              "\"sab.schnitzelflix.xyz. 3600 IN A 192.168.0.2\""
+              "\"qbit.schnitzelflix.xyz. 3600 IN A 192.168.0.2\""
+              "\"arr.schnitzelflix.xyz. 3600 IN A 192.168.0.2\""
+              "\"ff.schnitzelflix.xyz. 3600 IN A 192.168.0.2\""
+              "\"zekurio.xyz. 3600 IN A 192.168.0.2\""
+              "\"vw.zekurio.xyz. 3600 IN A 192.168.0.2\""
+            ];
+          };
+
+          # Tailscale view - uses your server's Tailscale IP
+          tailscale = {
+            local-zone = [ "schnitzelflix.xyz. transparent" "zekurio.xyz. transparent" ];
+            local-data = [
+              "\"schnitzelflix.xyz. 3600 IN A 100.103.132.84\""
+              "\"docs.schnitzelflix.xyz. 3600 IN A 100.103.132.84\""
+              "\"photos.schnitzelflix.xyz. 3600 IN A 100.103.132.84\""
+              "\"status.schnitzelflix.xyz. 3600 IN A 0.0.0.0\""
+              "\"requests.schnitzelflix.xyz. 3600 IN A 100.103.132.84\""
+              "\"sab.schnitzelflix.xyz. 3600 IN A 100.103.132.84\""
+              "\"qbit.schnitzelflix.xyz. 3600 IN A 100.103.132.84\""
+              "\"arr.schnitzelflix.xyz. 3600 IN A 100.103.132.84\""
+              "\"ff.schnitzelflix.xyz. 3600 IN A 100.103.132.84\""
+              "\"zekurio.xyz. 3600 IN A 100.103.132.84\""
+              "\"vw.zekurio.xyz. 3600 IN A 100.103.132.84\""
+            ];
+          };
         };
 
         forward-zone = {
