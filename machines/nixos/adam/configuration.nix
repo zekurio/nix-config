@@ -291,50 +291,22 @@ in
           cache-min-ttl = 300;
           cache-max-ttl = 86400;
         };
-        
-        # Local DNS zone for schnitzelflix.xyz - transparent type allows forwarding for non-local names
-        local-zone = {
-          name = "schnitzelflix.xyz";
-          type = "transparent";
-          local-data = [
-            "schnitzelflix.xyz. 3600 IN A 127.0.0.1"
-            "photos.schnitzelflix.xyz. 3600 IN A 127.0.0.1"
-            "docs.schnitzelflix.xyz. 3600 IN A 127.0.0.1"
-          ];
-        };
-        
-        # Wildcard for all other subdomains except status
-        local-zone = {
-          name = "*.schnitzelflix.xyz";
-          type = "transparent";
-          local-data = "*.schnitzelflix.xyz. 3600 IN A 127.0.0.1";
-        };
-        
-        # Explicitly block status.schnitzelflix.xyz (override wildcard)
-        local-zone = {
-          name = "status.schnitzelflix.xyz";
-          type = "transparent";
-          local-data = "status.schnitzelflix.xyz. 3600 IN A 0.0.0.0";
-        };
+
+        local-zone = "schnitzelflix.xyz transparent";
+        local-data = [
+          "schnitzelflix.xyz. 3600 IN A 127.0.0.1"
+          "photos.schnitzelflix.xyz. 3600 IN A 127.0.0.1"
+          "docs.schnitzelflix.xyz. 3600 IN A 127.0.0.1"
+          "*.schnitzelflix.xyz. 3600 IN A 127.0.0.1"
+          "status.schnitzelflix.xyz. 3600 IN A 0.0.0.0"
+        ];
+
         forward-zone = {
           name = ".";
           forward-ssl-upstream = "yes";
           forward-addr = [
             "9.9.9.9@853#dns.quad9.net"
             "149.112.112.112@853#dns.quad9.net"
-          ];
-        };
-        
-        # Local DNS zone for schnitzelflix.xyz domains
-        local-zone = {
-          name = "schnitzelflix.xyz";
-          type = "transparent";
-          local-data = [
-            "schnitzelflix.xyz. 3600 IN A 127.0.0.1"
-            "photos.schnitzelflix.xyz. 3600 IN A 127.0.0.1"
-            "docs.schnitzelflix.xyz. 3600 IN A 127.0.0.1"
-            "status.schnitzelflix.xyz. 3600 IN A 0.0.0.0"
-            "*.schnitzelflix.xyz. 3600 IN A 127.0.0.1"
           ];
         };
       };
@@ -346,19 +318,19 @@ in
     enable = true;
     wireguardConfigFile = config.sops.secrets.mullvad_wg.path;
     accessibleFrom = [
-      "192.168.0.0/16" # Adjust to your local network
+      "192.168.0.0/16"
     ];
     portMappings = [
       {
         from = 8080;
         to = 8080;
-      } # qBittorrent WebUI
+      }
     ];
     openVPNPorts = [
       {
         port = 6881;
         protocol = "both";
-      } # qBittorrent incoming connections
+      }
     ];
   };
 
@@ -375,9 +347,6 @@ in
   };
 
   users.mutableUsers = false;
-
-  # Shared media user, directories, and permission remediation
-  # are defined in modules.homelab.mediaShare.
 
   # System configuration
   time.timeZone = "Europe/Vienna";
