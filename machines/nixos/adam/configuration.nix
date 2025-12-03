@@ -265,7 +265,7 @@ in
     qbittorrent-wrapped.enable = true;
 
     # FileFlows media automation
-    fileflows-wrapped.enable = false;
+    fileflows-wrapped.enable = true;
 
     # Unbound DNS server
     unbound = {
@@ -291,12 +291,50 @@ in
           cache-min-ttl = 300;
           cache-max-ttl = 86400;
         };
+        
+        # Local DNS zone for schnitzelflix.xyz - transparent type allows forwarding for non-local names
+        local-zone = {
+          name = "schnitzelflix.xyz";
+          type = "transparent";
+          local-data = [
+            "schnitzelflix.xyz. 3600 IN A 127.0.0.1"
+            "photos.schnitzelflix.xyz. 3600 IN A 127.0.0.1"
+            "docs.schnitzelflix.xyz. 3600 IN A 127.0.0.1"
+          ];
+        };
+        
+        # Wildcard for all other subdomains except status
+        local-zone = {
+          name = "*.schnitzelflix.xyz";
+          type = "transparent";
+          local-data = "*.schnitzelflix.xyz. 3600 IN A 127.0.0.1";
+        };
+        
+        # Explicitly block status.schnitzelflix.xyz (override wildcard)
+        local-zone = {
+          name = "status.schnitzelflix.xyz";
+          type = "transparent";
+          local-data = "status.schnitzelflix.xyz. 3600 IN A 0.0.0.0";
+        };
         forward-zone = {
           name = ".";
           forward-ssl-upstream = "yes";
           forward-addr = [
             "9.9.9.9@853#dns.quad9.net"
             "149.112.112.112@853#dns.quad9.net"
+          ];
+        };
+        
+        # Local DNS zone for schnitzelflix.xyz domains
+        local-zone = {
+          name = "schnitzelflix.xyz";
+          type = "transparent";
+          local-data = [
+            "schnitzelflix.xyz. 3600 IN A 127.0.0.1"
+            "photos.schnitzelflix.xyz. 3600 IN A 127.0.0.1"
+            "docs.schnitzelflix.xyz. 3600 IN A 127.0.0.1"
+            "status.schnitzelflix.xyz. 3600 IN A 0.0.0.0"
+            "*.schnitzelflix.xyz. 3600 IN A 127.0.0.1"
           ];
         };
       };
