@@ -272,7 +272,7 @@ in
       enable = true;
       settings = {
         server = {
-          interface = [ "127.0.0.1@5335" ];
+          interface = [ "127.0.0.1" ];
           access-control = [ "127.0.0.0/8 allow" ];
           do-ip4 = "yes";
           do-ip6 = "no";
