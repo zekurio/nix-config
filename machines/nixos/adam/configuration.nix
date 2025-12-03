@@ -68,6 +68,7 @@ in
     firewall.enable = true;
     hostId = "eab7e93e";
     nameservers = [ "127.0.0.1" ];
+    firewall.allowedUDPPorts = [ 53 ];
   };
 
   # DNS over TLS with Cloudflare
