@@ -67,20 +67,12 @@ in
     networkmanager.enable = false;
     firewall.enable = true;
     hostId = "eab7e93e";
+    nameservers = [ "127.0.0.1" ];
   };
 
   # DNS over TLS with Cloudflare
   services.resolved = {
-    enable = true;
-    dnssec = "allow-downgrade";
-    domains = [ "~." ];
-    fallbackDns = [
-      "1.1.1.1#cloudflare-dns.com"
-      "1.0.0.1#cloudflare-dns.com"
-    ];
-    extraConfig = ''
-      DNSOverTLS=yes
-    '';
+    enable = false;
   };
 
   swapDevices = [
@@ -274,6 +266,41 @@ in
 
     # FileFlows media automation
     fileflows-wrapped.enable = false;
+
+    # Unbound DNS server
+    unbound = {
+      enable = true;
+      settings = {
+        server = {
+          interface = [ "127.0.0.1@5335" ];
+          access-control = [ "127.0.0.0/8 allow" ];
+          do-ip4 = "yes";
+          do-ip6 = "no";
+          do-udp = "yes";
+          do-tcp = "yes";
+          hide-identity = "yes";
+          hide-version = "yes";
+          harden-glue = "yes";
+          harden-dnssec-stripped = "yes";
+          use-caps-for-id = "yes";
+          prefetch = "yes";
+          prefetch-key = "yes";
+          qname-minimisation = "yes";
+          rrset-roundrobin = "yes";
+          minimal-responses = "yes";
+          cache-min-ttl = 300;
+          cache-max-ttl = 86400;
+        };
+        forward-zone = {
+          name = ".";
+          forward-ssl-upstream = "yes";
+          forward-addr = [
+            "9.9.9.9@853#dns.quad9.net"
+            "149.112.112.112@853#dns.quad9.net"
+          ];
+        };
+      };
+    };
   };
 
   # VPN namespace configuration for qBittorrent
