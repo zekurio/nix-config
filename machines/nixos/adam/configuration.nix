@@ -280,22 +280,44 @@ in
             "192.168.0.0/16 allow"
             "100.64.0.0/10 allow"
           ];
-
-          # Map client networks to views
           access-control-view = [
-            "192.168.0.0/16 lan"      # LAN clients get "lan" view
-            "100.64.0.0/10 tailscale" # Tailscale clients get "tailscale" view
+            "192.168.0.0/16 lan"
+            "100.64.0.0/10 tailscale"
           ];
-
           do-ip4 = "yes";
           do-ip6 = "no";
-          # ... keep all your other server settings ...
+          do-udp = "yes";
+          do-tcp = "yes";
+          hide-identity = "yes";
+          hide-version = "yes";
+          harden-glue = "yes";
+          harden-dnssec-stripped = "yes";
+          use-caps-for-id = "yes";
+          prefetch = "yes";
+          prefetch-key = "yes";
+          qname-minimisation = "yes";
+          rrset-roundrobin = "yes";
+          minimal-responses = "yes";
+          cache-min-ttl = 300;
+          cache-max-ttl = 86400;
         };
 
-        # LAN view - uses your server's LAN IP
-        view = {
-          lan = {
-            local-zone = [ "schnitzelflix.xyz. transparent" "zekurio.xyz. transparent" ];
+        forward-zone = {
+          name = ".";
+          forward-ssl-upstream = "yes";
+          forward-addr = [
+            "9.9.9.9@853#dns.quad9.net"
+            "149.112.112.112@853#dns.quad9.net"
+          ];
+        };
+
+        view = [
+          {
+            name = "lan";
+            local-zone = [
+              "schnitzelflix.xyz. transparent"
+              "zekurio.xyz. transparent"
+            ];
             local-data = [
               "\"schnitzelflix.xyz. 3600 IN A 192.168.0.2\""
               "\"docs.schnitzelflix.xyz. 3600 IN A 192.168.0.2\""
@@ -309,11 +331,13 @@ in
               "\"zekurio.xyz. 3600 IN A 192.168.0.2\""
               "\"vw.zekurio.xyz. 3600 IN A 192.168.0.2\""
             ];
-          };
-
-          # Tailscale view - uses your server's Tailscale IP
-          tailscale = {
-            local-zone = [ "schnitzelflix.xyz. transparent" "zekurio.xyz. transparent" ];
+          }
+          {
+            name = "tailscale";
+            local-zone = [
+              "schnitzelflix.xyz. transparent"
+              "zekurio.xyz. transparent"
+            ];
             local-data = [
               "\"schnitzelflix.xyz. 3600 IN A 100.103.132.84\""
               "\"docs.schnitzelflix.xyz. 3600 IN A 100.103.132.84\""
@@ -327,17 +351,8 @@ in
               "\"zekurio.xyz. 3600 IN A 100.103.132.84\""
               "\"vw.zekurio.xyz. 3600 IN A 100.103.132.84\""
             ];
-          };
-        };
-
-        forward-zone = {
-          name = ".";
-          forward-ssl-upstream = "yes";
-          forward-addr = [
-            "9.9.9.9@853#dns.quad9.net"
-            "149.112.112.112@853#dns.quad9.net"
-          ];
-        };
+          }
+        ];
       };
     };
   };
