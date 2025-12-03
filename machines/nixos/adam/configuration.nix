@@ -296,13 +296,24 @@ in
           minimal-responses = "yes";
           cache-min-ttl = 300;
           cache-max-ttl = 86400;
-          local-zone = [ "schnitzelflix.xyz. transparent" ];
+          local-zone = [
+            "schnitzelflix.xyz. transparent"
+            "zekurio.xyz. transparent"
+          ];
           local-data = [
+            # schnitzelflix.xyz domain
             "\"schnitzelflix.xyz. 3600 IN A 127.0.0.1\""
-            "\"photos.schnitzelflix.xyz. 3600 IN A 127.0.0.1\""
-            "\"docs.schnitzelflix.xyz. 3600 IN A 127.0.0.1\""
-            "\"*.schnitzelflix.xyz. 3600 IN A 127.0.0.1\""
-            "\"status.schnitzelflix.xyz. 3600 IN A 0.0.0.0\""
+            "\"requests.schnitzelflix.xyz. 3600 IN A 127.0.0.1\""
+            "\"sab.schnitzelflix.xyz. 3600 IN A 127.0.0.1\""
+            "\"qbit.schnitzelflix.xyz. 3600 IN A 127.0.0.1\""
+            "\"arr.schnitzelflix.xyz. 3600 IN A 127.0.0.1\""
+            "\"ff.schnitzelflix.xyz. 3600 IN A 127.0.0.1\""
+
+            # zekurio.xyz domain
+            "\"zekurio.xyz. 3600 IN A 127.0.0.1\""
+            "\"vw.zekurio.xyz. 3600 IN A 127.0.0.1\""
+            "\"docs.zekurio.xyz. 3600 IN A 127.0.0.1\""
+            "\"photos.zekurio.xyz. 3600 IN A 127.0.0.1\""
           ];
         };
 
