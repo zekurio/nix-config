@@ -273,10 +273,12 @@ in
       enable = true;
       settings = {
         server = {
-          interface = [ "127.0.0.1" "::1" ];
+          interface = [ "127.0.0.1" "::1" "0.0.0.0" ];
           access-control = [
-            "127.0.0.0/8 allow"
-            "::1/128 allow"
+            "127.0.0.0/8 allow" # localhost
+            "::1/128 allow" # localhost
+            "192.168.0.0/16 allow" # LAN
+            "100.64.0.0/10 allow"  # Tailscale
           ];
           do-ip4 = "yes";
           do-ip6 = "no";
