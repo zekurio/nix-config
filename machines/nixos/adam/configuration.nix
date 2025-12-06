@@ -324,7 +324,6 @@ in
             local-data = [
               "\"adam.local. 3600 IN A ${networkIP}\""
               "\"schnitzelflix.xyz. 3600 IN A ${networkIP}\""
-              "\"status.schnitzelflix.xyz. 3600 IN A 0.0.0.0\""
               "\"requests.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
               "\"sab.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
               "\"qbit.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
@@ -345,7 +344,6 @@ in
             local-data = [
               "\"adam.local. 3600 IN A ${tailscaleIP}\""
               "\"schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
-              "\"status.schnitzelflix.xyz. 3600 IN A 0.0.0.0\""
               "\"requests.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
               "\"sab.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
               "\"qbit.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
