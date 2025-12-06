@@ -2,12 +2,17 @@
   config,
   pkgs,
   modulesPath,
+  lib,
   ...
 }:
 let
   mainUser = "zekurio";
   shareUser = "share";
   shareGroup = "share";
+  
+  # Network IP parameters - can be overridden when importing this module
+  networkIP = "192.168.0.2";
+  tailscaleIP = "100.103.132.84";
 in
 {
   imports = [
@@ -319,17 +324,18 @@ in
               "zekurio.xyz. transparent"
             ];
             local-data = [
-              "\"schnitzelflix.xyz. 3600 IN A 192.168.0.2\""
-              "\"docs.schnitzelflix.xyz. 3600 IN A 192.168.0.2\""
-              "\"photos.schnitzelflix.xyz. 3600 IN A 192.168.0.2\""
+              "\"adam.local. 3600 IN A ${networkIP}\""
+              "\"schnitzelflix.xyz. 3600 IN A ${networkIP}\""
+              "\"docs.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
+              "\"photos.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
               "\"status.schnitzelflix.xyz. 3600 IN A 0.0.0.0\""
-              "\"requests.schnitzelflix.xyz. 3600 IN A 192.168.0.2\""
-              "\"sab.schnitzelflix.xyz. 3600 IN A 192.168.0.2\""
-              "\"qbit.schnitzelflix.xyz. 3600 IN A 192.168.0.2\""
-              "\"arr.schnitzelflix.xyz. 3600 IN A 192.168.0.2\""
-              "\"ff.schnitzelflix.xyz. 3600 IN A 192.168.0.2\""
-              "\"zekurio.xyz. 3600 IN A 192.168.0.2\""
-              "\"vw.zekurio.xyz. 3600 IN A 192.168.0.2\""
+              "\"requests.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
+              "\"sab.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
+              "\"qbit.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
+              "\"arr.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
+              "\"ff.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
+              "\"zekurio.xyz. 3600 IN A ${networkIP}\""
+              "\"vw.zekurio.xyz. 3600 IN A ${networkIP}\""
             ];
           }
           {
@@ -339,17 +345,18 @@ in
               "zekurio.xyz. transparent"
             ];
             local-data = [
-              "\"schnitzelflix.xyz. 3600 IN A 100.103.132.84\""
-              "\"docs.schnitzelflix.xyz. 3600 IN A 100.103.132.84\""
-              "\"photos.schnitzelflix.xyz. 3600 IN A 100.103.132.84\""
+              "\"adam.local. 3600 IN A ${tailscaleIP}\""
+              "\"schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
+              "\"docs.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
+              "\"photos.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
               "\"status.schnitzelflix.xyz. 3600 IN A 0.0.0.0\""
-              "\"requests.schnitzelflix.xyz. 3600 IN A 100.103.132.84\""
-              "\"sab.schnitzelflix.xyz. 3600 IN A 100.103.132.84\""
-              "\"qbit.schnitzelflix.xyz. 3600 IN A 100.103.132.84\""
-              "\"arr.schnitzelflix.xyz. 3600 IN A 100.103.132.84\""
-              "\"ff.schnitzelflix.xyz. 3600 IN A 100.103.132.84\""
-              "\"zekurio.xyz. 3600 IN A 100.103.132.84\""
-              "\"vw.zekurio.xyz. 3600 IN A 100.103.132.84\""
+              "\"requests.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
+              "\"sab.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
+              "\"qbit.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
+              "\"arr.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
+              "\"ff.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
+              "\"zekurio.xyz. 3600 IN A ${tailscaleIP}\""
+              "\"vw.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
             ];
           }
         ];
