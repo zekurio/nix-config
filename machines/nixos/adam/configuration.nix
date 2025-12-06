@@ -326,8 +326,6 @@ in
             local-data = [
               "\"adam.local. 3600 IN A ${networkIP}\""
               "\"schnitzelflix.xyz. 3600 IN A ${networkIP}\""
-              "\"docs.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
-              "\"photos.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
               "\"status.schnitzelflix.xyz. 3600 IN A 0.0.0.0\""
               "\"requests.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
               "\"sab.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
@@ -336,6 +334,8 @@ in
               "\"ff.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
               "\"zekurio.xyz. 3600 IN A ${networkIP}\""
               "\"vw.zekurio.xyz. 3600 IN A ${networkIP}\""
+              "\"docs.zekurio.xyz. 3600 IN A ${networkIP}\""
+              "\"photos.zekurio.xyz. 3600 IN A ${networkIP}\""
             ];
           }
           {
@@ -347,8 +347,6 @@ in
             local-data = [
               "\"adam.local. 3600 IN A ${tailscaleIP}\""
               "\"schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
-              "\"docs.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
-              "\"photos.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
               "\"status.schnitzelflix.xyz. 3600 IN A 0.0.0.0\""
               "\"requests.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
               "\"sab.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
@@ -357,6 +355,10 @@ in
               "\"ff.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
               "\"zekurio.xyz. 3600 IN A ${tailscaleIP}\""
               "\"vw.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
+              "\"docs.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
+              "\"photos.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
+              "\"docs.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
+              "\"photos.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
             ];
           }
         ];
