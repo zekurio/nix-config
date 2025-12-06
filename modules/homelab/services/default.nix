@@ -18,6 +18,5 @@
     ./sonarr.nix
     ./tailscale.nix
     ./vaultwarden.nix
-    ./whisparr.nix
   ];
 }

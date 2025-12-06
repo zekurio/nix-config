@@ -204,7 +204,6 @@ in
         "/var/lib/sabnzbd"
         "/var/lib/sonarr"
         "/var/lib/vaultwarden"
-        "/var/lib/whisparr"
         "/var/lib/dex"
       ];
       excludePaths = [ ];
@@ -235,7 +234,6 @@ in
         "/var/lib/sabnzbd"
         "/var/lib/sonarr"
         "/var/lib/vaultwarden"
-        "/var/lib/whisparr"
         "/var/lib/dex"
       ];
       excludePaths = [ ];
@@ -265,7 +263,7 @@ in
     prowlarr-wrapped.enable = true;
     sabnzbd-wrapped.enable = true;
     autobrr-wrapped.enable = true;
-    whisparr-wrapped.enable = true;
+
 
     # qBittorrent with VPN confinement
     qbittorrent-wrapped.enable = true;
