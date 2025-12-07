@@ -102,40 +102,6 @@ let
 in
 {
   options.services.backups = {
-    # Backblaze B2 backup configuration
-    b2 = {
-      enable = lib.mkEnableOption "Restic backups to Backblaze B2";
-
-      repository = lib.mkOption {
-        type = lib.types.str;
-        default = "";
-        example = "b2:backups:adam";
-        description = "Restic repository string, typically b2:<bucket>:<path>.";
-      };
-
-      paths = mkPathsOption;
-      excludePaths = mkExcludePathsOption;
-      extraBackupArgs = mkExtraBackupArgsOption;
-      pruneKeep = mkPruneKeepOption;
-      timer = mkTimerOption;
-      randomizedDelaySec = mkRandomizedDelaySecOption;
-      initialize = mkInitializeOption;
-      user = mkUserOption;
-      passwordSecretName = mkPasswordSecretNameOption;
-
-      environmentSecretName = lib.mkOption {
-        type = lib.types.str;
-        default = "restic_env";
-        description = "SOPS secret that provides B2 credentials as environment variables.";
-      };
-
-      unitName = lib.mkOption {
-        type = lib.types.str;
-        default = "backblaze-b2";
-        description = "Identifier used for the restic systemd units.";
-      };
-    };
-
     # Local ZFS backup configuration
     local = {
       enable = lib.mkEnableOption "Restic backups to local ZFS dataset";
@@ -164,102 +130,57 @@ in
     };
   };
 
-  config = lib.mkMerge [
-    # B2 backup configuration
-    (lib.mkIf b2Cfg.enable (
-      let
-        backupName = b2Cfg.unitName;
-        envSecret = b2Cfg.environmentSecretName;
-        passwordSecret = b2Cfg.passwordSecretName;
-      in
+  config = let
+    backupName = localCfg.unitName;
+    pruneOpts = lib.mapAttrsToList (name: value: "--keep-${name} ${toString value}") localCfg.pruneKeep;
+    excludeArgs = map (path: "--exclude=${path}") localCfg.excludePaths;
+    passwordFile = "/run/keys/${backupName}-password";
+  in lib.mkIf localCfg.enable {
+    assertions = [
       {
-        assertions = [
-          {
-            assertion = b2Cfg.repository != "";
-            message = "services.backups.b2.repository must be set when the service is enabled.";
-          }
-          {
-            assertion = b2Cfg.paths != [ ];
-            message = "services.backups.b2.paths must include at least one path.";
-          }
-        ];
-
-        sops.secrets.${envSecret} = {
-          owner = b2Cfg.user;
-          group = b2Cfg.user;
-          mode = "0400";
-        };
-
-        sops.secrets.${passwordSecret} = {
-          owner = b2Cfg.user;
-          group = b2Cfg.user;
-          mode = "0400";
-        };
-
-        services.restic.backups.${backupName} = mkResticBackup {
-          cfg = b2Cfg;
-          inherit passwordSecret;
-          environmentFile = config.sops.secrets.${envSecret}.path;
-        };
+        assertion = localCfg.repository != "";
+        message = "services.backups.local.repository must be set when the service is enabled.";
       }
-    ))
-
-    # Local ZFS backup configuration (unencrypted for easier restores)
-    (lib.mkIf localCfg.enable (
-      let
-        backupName = localCfg.unitName;
-        pruneOpts = lib.mapAttrsToList (name: value: "--keep-${name} ${toString value}") localCfg.pruneKeep;
-        excludeArgs = map (path: "--exclude=${path}") localCfg.excludePaths;
-        passwordFile = "/run/keys/${backupName}-password";
-      in
       {
-        assertions = [
-          {
-            assertion = localCfg.repository != "";
-            message = "services.backups.local.repository must be set when the service is enabled.";
-          }
-          {
-            assertion = localCfg.paths != [ ];
-            message = "services.backups.local.paths must include at least one path.";
-          }
-        ];
-
-        # Create a simple password file for local unencrypted backups
-        # Restic requires a password, but for local backups we can use a simple static one
-        systemd.tmpfiles.rules = [
-          "f ${passwordFile} 0400 ${localCfg.user} ${localCfg.user} - local-backup"
-        ];
-
-        systemd.services."${backupName}-password" = {
-          wantedBy = [ "multi-user.target" ];
-          before = [ "restic-backups-${backupName}.service" ];
-          serviceConfig = {
-            Type = "oneshot";
-            RemainAfterExit = true;
-            ExecStart = pkgs.writeScript "create-password" ''
-              #!${pkgs.bash}/bin/bash
-              echo -n "local-unencrypted-backup" > ${passwordFile}
-            '';
-          };
-        };
-
-        services.restic.backups.${backupName} = {
-          inherit (localCfg)
-            paths
-            repository
-            initialize
-            user
-            ;
-          inherit passwordFile;
-          timerConfig = {
-            OnCalendar = localCfg.timer;
-            RandomizedDelaySec = localCfg.randomizedDelaySec;
-            Persistent = true;
-          };
-          pruneOpts = pruneOpts;
-          extraBackupArgs = localCfg.extraBackupArgs ++ excludeArgs;
-        };
+        assertion = localCfg.paths != [ ];
+        message = "services.backups.local.paths must include at least one path.";
       }
-    ))
-  ];
+    ];
+
+    # Create a simple password file for local unencrypted backups
+    # Restic requires a password, but for local backups we can use a simple static one
+    systemd.tmpfiles.rules = [
+      "f ${passwordFile} 0400 ${localCfg.user} ${localCfg.user} - local-backup"
+    ];
+
+    systemd.services."${backupName}-password" = {
+      wantedBy = [ "multi-user.target" ];
+      before = [ "restic-backups-${backupName}.service" ];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        ExecStart = pkgs.writeScript "create-password" ''
+          #!${pkgs.bash}/bin/bash
+          echo -n "local-unencrypted-backup" > ${passwordFile}
+        '';
+      };
+    };
+
+    services.restic.backups.${backupName} = {
+      inherit (localCfg)
+        paths
+        repository
+        initialize
+        user
+        ;
+      inherit passwordFile;
+      timerConfig = {
+        OnCalendar = localCfg.timer;
+        RandomizedDelaySec = localCfg.randomizedDelaySec;
+        Persistent = true;
+      };
+      pruneOpts = pruneOpts;
+      extraBackupArgs = localCfg.extraBackupArgs ++ excludeArgs;
+    };
+  };
 }

@@ -64,6 +64,10 @@ in
     enable = true;
     publicInterface = "enp42s0";
   };
+  modules.homelab.cockpit = {
+    enable = true;
+    allowedOrigins = [ "192.168.0.0/24" "100.64.0.0/10" ];
+  };
 
   # Networking configuration
   networking = {
@@ -186,35 +190,6 @@ in
     samba-wsdd = {
       enable = true;
       openFirewall = true;
-    };
-
-    backups.b2 = {
-      enable = true;
-      repository = "b2:zekurio-homelab:adam";
-      paths = [
-        "/etc/nixos"
-        "/var/lib/autobrr"
-        "/var/lib/immich"
-        "/var/lib/jellyfin"
-        "/var/lib/jellyseerr"
-        "/var/lib/paperless"
-        "/var/lib/prowlarr"
-        "/var/lib/qBittorrent"
-        "/var/lib/radarr"
-        "/var/lib/sabnzbd"
-        "/var/lib/sonarr"
-        "/var/lib/vaultwarden"
-        "/var/lib/dex"
-      ];
-      excludePaths = [ ];
-      extraBackupArgs = [ "--tag adam" ];
-      pruneKeep = {
-        daily = 7;
-        weekly = 4;
-        monthly = 12;
-      };
-      timer = "*-*-* 01:00:00";
-      randomizedDelaySec = "1h";
     };
 
     backups.local = {

@@ -1,0 +1,1 @@
+/home/zekurio/Git/nix-config/AGENTS.md
