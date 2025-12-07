@@ -73,27 +73,12 @@ There's also a `rebuild-tabris` alias for convenience.
 
 ## Backup Recovery
 
-This config uses restic for backups with two targets: Backblaze B2 (offsite) and local ZFS (`/tank/backup/restic`). Both use the same password stored in sops.
-
-### Prerequisites
-
-You need root access (secrets are only readable by root):
-```bash
-sudo -i
-```
+This config uses restic for local backups to ZFS (`/tank/backup/restic`). Backups are unencrypted (static password: `local-unencrypted-backup`) since they're stored on local storage.
 
 ### Set Up Environment
 
-**For B2 backups:**
 ```bash
-export $(cat /run/secrets/restic_env)
-export RESTIC_PASSWORD=$(cat /run/secrets/restic_password)
-export RESTIC_REPOSITORY="b2:zekurio-homelab:adam"
-```
-
-**For local ZFS backups:**
-```bash
-export RESTIC_PASSWORD=$(cat /run/secrets/restic_password)
+export RESTIC_PASSWORD="local-unencrypted-backup"
 export RESTIC_REPOSITORY="/tank/backup/restic"
 ```
 
@@ -136,17 +121,3 @@ restic mount /mnt/restic
 # Copy what you need, then unmount:
 umount /mnt/restic
 ```
-
-### Emergency Recovery (Fresh System)
-
-If recovering to a fresh NixOS install before sops is set up:
-
-1. Get the restic password from your password manager or another backup
-2. Export credentials manually:
-   ```bash
-   export RESTIC_PASSWORD="your-password-here"
-   export B2_ACCOUNT_ID="your-account-id"
-   export B2_ACCOUNT_KEY="your-account-key"
-   export RESTIC_REPOSITORY="b2:zekurio-homelab:adam"
-   ```
-3. Restore the sops key first, then rebuild to get secrets working
