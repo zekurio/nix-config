@@ -2,7 +2,6 @@
 {
   imports = [
     ./autobrr.nix
-    ./backups.nix
     ./caddy.nix
     ./cockpit.nix
     ./dex.nix
