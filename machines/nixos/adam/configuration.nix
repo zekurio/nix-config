@@ -210,9 +210,6 @@ in
     # qBittorrent with VPN confinement
     qbittorrent-wrapped.enable = true;
 
-    # FileFlows media automation
-    fileflows-wrapped.enable = true;
-
     # Unbound DNS server
     unbound = {
       enable = true;
