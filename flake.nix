@@ -103,6 +103,7 @@
           pkgsInput = inputs.nixpkgs-unstable;
           modules = [
             inputs.nixos-wsl.nixosModules.default
+            ./modules/virtualization
             ./machines/nixos/tabris/configuration.nix
           ];
         };
