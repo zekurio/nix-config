@@ -93,6 +93,7 @@ in
                 "reverse_proxy ${builtins.head hostCfg.reverseProxies}"}
               tls {
                 dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+                resolvers 1.1.1.1 8.8.8.8
               }
             '';
           })
