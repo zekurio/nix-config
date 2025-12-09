@@ -206,6 +206,9 @@ in
     sabnzbd-wrapped.enable = true;
     autobrr-wrapped.enable = true;
 
+    # Jellyfin statistics
+    streamystats-wrapped.enable = true;
+
 
     # qBittorrent with VPN confinement
     qbittorrent-wrapped.enable = true;
