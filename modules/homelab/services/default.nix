@@ -3,7 +3,7 @@
   imports = [
     ./autobrr.nix
     ./caddy.nix
-    ./cockpit.nix
+
     ./dex.nix
     ./fileflows.nix
     ./immich.nix

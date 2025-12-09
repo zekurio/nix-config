@@ -64,10 +64,7 @@ in
     enable = true;
     publicInterface = "enp42s0";
   };
-  modules.homelab.cockpit = {
-    enable = true;
-    allowedOrigins = [ "192.168.0.0/24" "100.64.0.0/10" ];
-  };
+
 
   # Networking configuration
   networking = {
