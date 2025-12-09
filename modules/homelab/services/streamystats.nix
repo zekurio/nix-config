@@ -77,8 +77,8 @@ in
       mode = "0400";
     };
 
-    # Use Docker backend for OCI containers
-    virtualisation.oci-containers.backend = "docker";
+    # Use Podman backend for OCI containers
+    virtualisation.oci-containers.backend = "podman";
 
     # StreamyStats containers
     virtualisation.oci-containers.containers = {
@@ -119,7 +119,7 @@ in
 
     # Ensure migrate container runs before web and jobs start
     # and only runs once (restart = "no")
-    systemd.services.docker-streamystats-migrate = {
+    systemd.services.podman-streamystats-migrate = {
       serviceConfig = {
         Restart = lib.mkForce "no";
         RemainAfterExit = true;
