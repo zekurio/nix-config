@@ -206,10 +206,6 @@ in
     sabnzbd-wrapped.enable = true;
     autobrr-wrapped.enable = true;
 
-    # Jellyfin statistics
-    streamystats-wrapped.enable = true;
-
-
     # qBittorrent with VPN confinement
     qbittorrent-wrapped.enable = true;
 
@@ -271,7 +267,6 @@ in
               "\"qbit.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
               "\"arr.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
               "\"ff.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
-              "\"stats.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
               "\"zekurio.xyz. 3600 IN A ${networkIP}\""
               "\"vw.zekurio.xyz. 3600 IN A ${networkIP}\""
               "\"docs.zekurio.xyz. 3600 IN A ${networkIP}\""
@@ -292,7 +287,6 @@ in
               "\"qbit.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
               "\"arr.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
               "\"ff.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
-              "\"stats.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
               "\"zekurio.xyz. 3600 IN A ${tailscaleIP}\""
               "\"vw.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
               "\"docs.zekurio.xyz. 3600 IN A ${tailscaleIP}\""

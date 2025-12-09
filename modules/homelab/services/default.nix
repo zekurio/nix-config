@@ -15,7 +15,6 @@
     ./radarr.nix
     ./sabnzbd.nix
     ./sonarr.nix
-    ./streamystats.nix
     ./tailscale.nix
     ./vaultwarden.nix
   ];
