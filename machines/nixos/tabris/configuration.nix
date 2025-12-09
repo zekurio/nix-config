@@ -50,6 +50,8 @@ in
 
   profiles.dev.enable = mkDefault true;
 
+  modules.virtualization.enable = true;
+
   services.openssh = {
     enable = mkDefault true;
     settings = {
