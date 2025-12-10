@@ -20,7 +20,7 @@ in {
         version = "develop";
         inherit src;
         fetcherVersion = 1;
-        hash = "sha256-BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB="; # Placeholder, will update
+        hash = "sha256-ZhkE/snz6DMxKIekclgCY3jDs492lUlQspvoflR2dFQ="; # Placeholder, will update
       };
       
       # Update nativeBuildInputs to use the new pnpm
