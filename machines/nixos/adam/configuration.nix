@@ -75,7 +75,6 @@ in
     hostId = "eab7e93e";
     nameservers = [ "127.0.0.1" ];
     firewall.allowedUDPPorts = [ 53 ];
-    firewall.allowedTCPPorts = [ 6767 ]; # Bazarr
   };
 
   # DNS over TLS with Cloudflare
