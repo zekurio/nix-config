@@ -2,6 +2,7 @@
 {
   imports = [
     ./autobrr.nix
+    ./bazarr.nix
     ./caddy.nix
 
     ./dex.nix

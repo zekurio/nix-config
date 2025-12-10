@@ -75,6 +75,7 @@ in
     hostId = "eab7e93e";
     nameservers = [ "127.0.0.1" ];
     firewall.allowedUDPPorts = [ 53 ];
+    firewall.allowedTCPPorts = [ 6767 ]; # Bazarr
   };
 
   # DNS over TLS with Cloudflare
@@ -205,6 +206,7 @@ in
     prowlarr-wrapped.enable = true;
     sabnzbd-wrapped.enable = true;
     autobrr-wrapped.enable = true;
+    bazarr-wrapped.enable = true;
 
     # qBittorrent with VPN confinement
     qbittorrent-wrapped.enable = true;
