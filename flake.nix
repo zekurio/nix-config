@@ -37,10 +37,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.disko.follows = "disko";
     };
-    nixos-wsl = {
-      url = "github:nix-community/NixOS-WSL";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+
 
     # System configuration management
     home-manager = {
@@ -75,7 +72,7 @@
       sharedModules = [
         ./modules/system
         ./modules/users
-        ./modules/profiles/dev.nix
+
         ./machines/nixos
         inputs.home-manager.nixosModules.home-manager
         (import ./overlays inputs)
@@ -98,15 +95,7 @@
             ./machines/nixos/adam/configuration.nix
           ];
         };
-        tabris = {
-          system = "x86_64-linux";
-          pkgsInput = inputs.nixpkgs-unstable;
-          modules = [
-            inputs.nixos-wsl.nixosModules.default
-            ./modules/virtualization
-            ./machines/nixos/tabris/configuration.nix
-          ];
-        };
+
       };
 
       # Build NixOS configurations from host definitions
