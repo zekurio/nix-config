@@ -9,7 +9,7 @@ let
   mainUser = "zekurio";
   shareUser = "share";
   shareGroup = "share";
-  
+
   # Network IP parameters - can be overridden when importing this module
   networkIP = "192.168.0.2";
   tailscaleIP = "100.103.132.84";
@@ -195,6 +195,7 @@ in
     jellyseerr-wrapped.enable = true;
     jellyfin-wrapped.enable = true;
     immich-wrapped.enable = true;
+    jfa-go-wrapped.enable = true;
 
     # Enable OIDC provider
     dex-wrapped.enable = true;
