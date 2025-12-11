@@ -9,6 +9,7 @@
     ./immich.nix
     ./jellyfin.nix
     ./jellyseerr.nix
+    ./jfa-go.nix
     ./media-share.nix
     ./paperless-ngx.nix
     ./prowlarr.nix
