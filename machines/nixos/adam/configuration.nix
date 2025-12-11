@@ -195,7 +195,6 @@ in
     jellyseerr-wrapped.enable = true;
     jellyfin-wrapped.enable = true;
     immich-wrapped.enable = true;
-    jfa-go-wrapped.enable = true;
 
     # Enable OIDC provider
     dex-wrapped.enable = true;
