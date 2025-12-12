@@ -11,10 +11,18 @@ let
     mkEnableOption
     mkIf
     mkOption
+    optionalAttrs
     types
     ;
 
   cfg = config.users.zekurio;
+
+  defaultSshAuthorizedKeys = [
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOCcQoZiY9wkJ+U93isE8B3CKLmzL7TPzVh3ugE1WPJq zekurio@lilith"
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAa219QnvgiicM6yAiCTwe9tPB2FJCEY75LNsf4NOsLT zekurio@adam"
+  ];
+
+  defaultGitSigningKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOCcQoZiY9wkJ+U93isE8B3CKLmzL7TPzVh3ugE1WPJq";
 
   basePackages =
     pkgs': with pkgs'; [
@@ -43,6 +51,18 @@ in
       default = "25.05";
       description = "Home Manager stateVersion for the managed user.";
     };
+
+    sshAuthorizedKeys = mkOption {
+      type = types.listOf types.str;
+      default = defaultSshAuthorizedKeys;
+      description = "SSH public keys allowed to login as zekurio.";
+    };
+
+    gitSigningKey = mkOption {
+      type = types.nullOr types.str;
+      default = defaultGitSigningKey;
+      description = "SSH public key used for Git commit signing (gpg.format=ssh).";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -68,11 +88,7 @@ in
             "input"
           ];
           group = "zekurio";
-          openssh = {
-            authorizedKeys.keys = [
-              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOCcQoZiY9wkJ+U93isE8B3CKLmzL7TPzVh3ugE1WPJq"
-            ];
-          };
+          openssh.authorizedKeys.keys = cfg.sshAuthorizedKeys;
         };
       };
       groups = {
@@ -135,14 +151,17 @@ in
           git = {
             enable = true;
             settings = {
-              user.name = "Michael Schwieger";
-              user.email = "git@zekurio.xyz";
+              user = {
+                name = "Michael Schwieger";
+                email = "git@zekurio.xyz";
+              } // optionalAttrs (cfg.gitSigningKey != null) {
+                signingKey = cfg.gitSigningKey;
+              };
               init.defaultBranch = "main";
               pull.rebase = true;
               rebase.autoStash = true;
               gpg.format = "ssh";
               gpg.ssh.program = "${pkgs.openssh}/bin/ssh-keygen";
-              user.signingKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOCcQoZiY9wkJ+U93isE8B3CKLmzL7TPzVh3ugE1WPJq";
               commit.gpgSign = true;
             };
           };

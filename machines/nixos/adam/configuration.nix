@@ -65,6 +65,7 @@ in
     publicInterface = "enp42s0";
   };
 
+  users.zekurio.gitSigningKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAa219QnvgiicM6yAiCTwe9tPB2FJCEY75LNsf4NOsLT";
 
   # Networking configuration
   networking = {
@@ -113,6 +114,8 @@ in
     zfs
     unstable.ab-av1
   ];
+
+  programs.ssh.startAgent = true;
 
   services = {
     openssh = {
@@ -215,7 +218,11 @@ in
       enable = true;
       settings = {
         server = {
-          interface = [ "127.0.0.1" "::1" "0.0.0.0" ];
+          interface = [
+            "127.0.0.1"
+            "::1"
+            "0.0.0.0"
+          ];
           access-control = [
             "127.0.0.0/8 allow"
             "::1/128 allow"
