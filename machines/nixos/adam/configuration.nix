@@ -14,11 +14,13 @@ let
   tailscaleIP = "100.103.132.84";
 in
 {
+  modules.users.zekurio = {
+    enable = true;
+    homeManager.enable = true;
+  };
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ./disko.nix
-    ../../../modules/graphics
-    ../../../modules/virtualization
     ../default.nix
   ];
 
@@ -55,7 +57,6 @@ in
 
   modules.graphics.intel.enable = true;
   modules.virtualization.enable = true;
-  modules.users.enable = true;
 
   modules.homelab.mediaShare = {
     enable = true;
@@ -334,13 +335,12 @@ in
     };
   };
 
-  # System configuration
   time.timeZone = "Europe/Vienna";
   system.autoUpgrade = {
     enable = true;
     allowReboot = true;
     dates = "Sun 04:00";
-    flake = "github:zekurio/nix-config#adam";
+    flake = "github:zekurio/nix#adam";
   };
 
   # DO NOT TOUCH THIS
