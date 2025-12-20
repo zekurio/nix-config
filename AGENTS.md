@@ -13,7 +13,6 @@
 | Host | Type | Key Features |
 |------|------|--------------|
 | `adam` | Homelab server | Podman services, backups, VPN |
-| `tabris` | WSL dev environment | Home Manager only, no system services |
 
 ## Code Style & Conventions
 

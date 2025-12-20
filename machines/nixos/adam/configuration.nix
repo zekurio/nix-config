@@ -188,7 +188,7 @@ in
     };
 
     # Enable wrapped services with Caddy integration
-    paperless-ngx-wrapped.enable = true;
+    paperless-ngx-wrapped.enable = false;
     vaultwarden-wrapped.enable = true;
     jellyseerr-wrapped.enable = true;
     jellyfin-wrapped.enable = true;

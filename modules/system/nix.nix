@@ -7,10 +7,18 @@ in
     allowUnfree = true;
   };
 
+  programs.nix-ld.enable = true;
+
   nix = {
     settings = {
-      experimental-features = [ "nix-command" "flakes" ];
-      trusted-users = [ "root" "@wheel" ];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+      trusted-users = [
+        "root"
+        "@wheel"
+      ];
       auto-optimise-store = true;
 
       substituters = [
