@@ -94,6 +94,14 @@
             ./machines/nixos/adam/configuration.nix
           ];
         };
+
+        lilith = {
+          system = "x86_64-linux";
+          modules = [
+            inputs.disko.nixosModules.disko
+            ./machines/nixos/lilith/configuration.nix
+          ];
+        };
       };
 
       # Build NixOS configurations from host definitions

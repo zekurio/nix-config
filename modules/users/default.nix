@@ -6,20 +6,10 @@
 }:
 let
   cfg = config.modules.users;
-
-  baseProfile = import ./profiles/base.nix { inherit pkgs; };
-  desktopProfile = import ./profiles/desktop.nix { inherit pkgs; };
 in
 {
   options.modules.users = {
     enable = lib.mkEnableOption "user configuration";
-
-    profiles = {
-      base = lib.mkEnableOption "base CLI tools and configuration" // {
-        default = true;
-      };
-      desktop = lib.mkEnableOption "desktop environment configuration";
-    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -56,23 +46,84 @@ in
       useUserPackages = true;
       backupFileExtension = "backup";
 
-      users.zekurio = lib.mkMerge [
-        # Base home-manager config
-        {
-          home = {
-            username = "zekurio";
-            homeDirectory = "/home/zekurio";
-            stateVersion = "25.05";
-            enableNixpkgsReleaseCheck = false;
+      users.zekurio = {
+        home = {
+          username = "zekurio";
+          homeDirectory = "/home/zekurio";
+          stateVersion = "25.05";
+          enableNixpkgsReleaseCheck = false;
+
+          packages = with pkgs; [
+            age
+            bat
+            btop
+            eza
+            envsubst
+            pfetch-rs
+            git
+            jq
+            nil
+            nixd
+            sops
+            zellij
+          ];
+        };
+
+        programs = {
+          direnv = {
+            enable = true;
+            nix-direnv.enable = true;
           };
-        }
 
-        # Conditionally merge base profile
-        (lib.mkIf cfg.profiles.base baseProfile)
+          eza = {
+            enable = true;
+            extraOptions = [
+              "--group-directories-first"
+              "--icons=auto"
+            ];
+          };
 
-        # Conditionally merge desktop profile
-        (lib.mkIf cfg.profiles.desktop desktopProfile)
-      ];
+          zsh = {
+            enable = true;
+            autosuggestion.enable = true;
+            syntaxHighlighting.enable = true;
+            oh-my-zsh = {
+              enable = true;
+              plugins = [
+                "git"
+                "sudo"
+                "direnv"
+              ];
+              theme = "robbyrussell";
+            };
+            initExtra = ''
+              # Disable greeting
+              unsetopt BEEP
+            '';
+          };
+
+          git = {
+            enable = true;
+            userName = "Michael Schwieger";
+            userEmail = "git@zekurio.xyz";
+            signing = {
+              key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOCcQoZiY9wkJ+U93isE8B3CKLmzL7TPzVh3ugE1WPJq";
+              signByDefault = true;
+            };
+            extraConfig = {
+              init.defaultBranch = "main";
+              pull.rebase = true;
+              rebase.autoStash = true;
+              gpg.format = "ssh";
+            };
+          };
+
+          ssh = {
+            enable = true;
+            matchBlocks."*".compression = true;
+          };
+        };
+      };
     };
   };
 }

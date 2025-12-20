@@ -55,13 +55,8 @@ in
 
   modules.graphics.intel.enable = true;
   modules.virtualization.enable = true;
-  modules.users = {
-    enable = true;
-    profiles = {
-      base = true;
-      desktop = false;
-    };
-  };
+  modules.users.enable = true;
+
   modules.homelab.mediaShare = {
     enable = true;
     collaborators = [ mainUser ];
