@@ -70,7 +70,7 @@
     enable = true;
     allowReboot = true;
     dates = "Sun 04:00";
-    flake = "github:zekurio/nix#lilith";
+    flake = "git+https://codeberg.org/zekurio/nix?ref=lilith";
   };
 
   # DO NOT TOUCH THIS
