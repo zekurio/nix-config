@@ -96,7 +96,7 @@ in
               ];
               theme = "robbyrussell";
             };
-            initExtra = ''
+            initContent = ''
               # Disable greeting
               unsetopt BEEP
             '';
@@ -104,13 +104,15 @@ in
 
           git = {
             enable = true;
-            userName = "Michael Schwieger";
-            userEmail = "git@zekurio.xyz";
             signing = {
               key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOCcQoZiY9wkJ+U93isE8B3CKLmzL7TPzVh3ugE1WPJq";
               signByDefault = true;
             };
-            extraConfig = {
+            settings = {
+              user = {
+                name = "Michael Schwieger";
+                email = "git@zekurio.xyz";
+              };
               init.defaultBranch = "main";
               pull.rebase = true;
               rebase.autoStash = true;
@@ -120,6 +122,7 @@ in
 
           ssh = {
             enable = true;
+            enableDefaultConfig = false;
             matchBlocks."*".compression = true;
           };
         };
