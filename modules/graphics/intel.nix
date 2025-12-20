@@ -6,11 +6,11 @@
 }:
 let
   inherit (lib) mkEnableOption mkIf;
-  cfg = config.modules.graphics.intelArc;
+  cfg = config.modules.graphics.intel;
 in
 {
-  options.modules.graphics.intelArc = {
-    enable = mkEnableOption "Intel ARC GPU support";
+  options.modules.graphics.intel = {
+    enable = mkEnableOption "Intel GPU support";
   };
 
   config = mkIf cfg.enable {

@@ -1,6 +1,8 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   imports = [
-    ./intel-arc.nix
+    ./amd.nix
+    ./intel.nix
   ];
 
   environment.systemPackages = with pkgs; [

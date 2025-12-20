@@ -53,8 +53,15 @@ in
     };
   };
 
-  modules.graphics.intelArc.enable = true;
+  modules.graphics.intel.enable = true;
   modules.virtualization.enable = true;
+  modules.users = {
+    enable = true;
+    profiles = {
+      base = true;
+      desktop = false;
+    };
+  };
   modules.homelab.mediaShare = {
     enable = true;
     collaborators = [ mainUser ];
@@ -66,7 +73,7 @@ in
     useDHCP = true;
     networkmanager.enable = false;
     firewall.enable = true;
-    hostId = "eab7e93e";
+    hostId = "eab7e93e"; # nix run nixpkgs#openssl -- rand -hex 4
     nameservers = [ "127.0.0.1" ];
     firewall.allowedUDPPorts = [ 53 ];
   };
@@ -108,9 +115,6 @@ in
     unstable.ab-av1
     lm_sensors
   ];
-
-  # User configuration - server only needs basic user and SSH
-  programs.ssh.startAgent = true;
 
   services = {
     openssh = {
