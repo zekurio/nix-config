@@ -16,7 +16,6 @@ in
   config = lib.mkIf config.services.karakeep-wrapped.enable {
     services.karakeep = {
       enable = true;
-      environmentFile = config.sops.secrets.karakeep_env.path;
       extraEnvironment = {
         PORT = toString port;
         HOST = "0.0.0.0";

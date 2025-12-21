@@ -101,7 +101,6 @@ in
     age.keyFile = "/var/lib/sops-nix/key.txt";
     secrets = {
       mullvad_wg = { };
-      karakeep_env = { };
     };
   };
 
