@@ -56,6 +56,12 @@
     vpn-confinement = {
       url = "github:Maroka-chan/VPN-Confinement";
     };
+
+    # Desktop environment
+    dms = {
+      url = "github:AvengeMedia/DankMaterialShell/stable";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -96,9 +102,10 @@
         };
         lilith = {
           system = "x86_64-linux";
-          pkgsInput = inputs.nixpkgs-unstable;
           modules = [
             inputs.disko.nixosModules.disko
+            inputs.dms.nixosModules.greeter
+            ./modules/desktop
             ./machines/nixos/lilith/configuration.nix
           ];
         };

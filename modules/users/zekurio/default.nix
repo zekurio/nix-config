@@ -61,7 +61,6 @@ in
             username = "zekurio";
             homeDirectory = "/home/zekurio";
             stateVersion = "25.05";
-            enableNixpkgsReleaseCheck = false;
 
             packages = with pkgs; [
               age
@@ -74,10 +73,14 @@ in
               jq
               nil
               nixd
+              unstable.opencode
               sops
               zellij
             ];
           };
+
+          # Suppress version mismatch warning
+          home.enableNixpkgsReleaseCheck = false;
 
           programs = {
             direnv = {

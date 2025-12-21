@@ -188,7 +188,7 @@ in
     };
 
     # Enable wrapped services with Caddy integration
-    paperless-ngx-wrapped.enable = false;
+    paperless-ngx-wrapped.enable = true;
     vaultwarden-wrapped.enable = true;
     jellyseerr-wrapped.enable = true;
     jellyfin-wrapped.enable = true;
@@ -203,9 +203,6 @@ in
     prowlarr-wrapped.enable = true;
     sabnzbd-wrapped.enable = true;
     autobrr-wrapped.enable = true;
-
-    # Enable Karakeep bookmark management
-    karakeep-wrapped.enable = true;
 
     # qBittorrent with VPN confinement
     qbittorrent-wrapped.enable = true;
@@ -277,7 +274,6 @@ in
               "\"vw.zekurio.xyz. 3600 IN A ${networkIP}\""
               "\"docs.zekurio.xyz. 3600 IN A ${networkIP}\""
               "\"photos.zekurio.xyz. 3600 IN A ${networkIP}\""
-              "\"karakeep.zekurio.xyz. 3600 IN A ${networkIP}\""
             ];
           }
           {
@@ -299,7 +295,6 @@ in
               "\"vw.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
               "\"docs.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
               "\"photos.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
-              "\"karakeep.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
             ];
           }
         ];
