@@ -7,6 +7,7 @@
     ./immich.nix
     ./jellyfin.nix
     ./jellyseerr.nix
+    ./karakeep.nix
     ./media-share.nix
     ./paperless-ngx.nix
     ./prowlarr.nix

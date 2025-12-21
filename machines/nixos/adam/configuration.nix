@@ -101,6 +101,7 @@ in
     age.keyFile = "/var/lib/sops-nix/key.txt";
     secrets = {
       mullvad_wg = { };
+      karakeep_env = { };
     };
   };
 
@@ -204,6 +205,9 @@ in
     sabnzbd-wrapped.enable = true;
     autobrr-wrapped.enable = true;
 
+    # Enable Karakeep bookmark management
+    karakeep-wrapped.enable = true;
+
     # qBittorrent with VPN confinement
     qbittorrent-wrapped.enable = true;
 
@@ -274,6 +278,7 @@ in
               "\"vw.zekurio.xyz. 3600 IN A ${networkIP}\""
               "\"docs.zekurio.xyz. 3600 IN A ${networkIP}\""
               "\"photos.zekurio.xyz. 3600 IN A ${networkIP}\""
+              "\"karakeep.zekurio.xyz. 3600 IN A ${networkIP}\""
             ];
           }
           {
@@ -295,6 +300,7 @@ in
               "\"vw.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
               "\"docs.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
               "\"photos.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
+              "\"karakeep.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
             ];
           }
         ];
