@@ -58,7 +58,7 @@
     };
   };
 
-  modules.graphics.amd.enable = true;
+  modules.graphics.hybrid.enable = true;
   modules.virtualization.enable = true;
   modules.desktop.enable = true;
   modules.users.zekurio = {
@@ -67,13 +67,14 @@
   };
 
   home-manager.users.zekurio.programs.niri.settings = {
-    input.keyboard.xkb.layout = "eu";
-    outputs."DP-2" = {
+    input.keyboard.xkb.layout = "de";
+    outputs."eDP-1" = {
       mode = {
-        width = 2560;
-        height = 1440;
-        refresh = 165.0;
+        width = 1920;
+        height = 1080;
+        refresh = 120.0;
       };
+      variable-refresh-rate = true;
     };
   };
 
@@ -82,7 +83,7 @@
     enable = true;
     allowReboot = true;
     dates = "Sun 04:00";
-    flake = "git+https://codeberg.org/zekurio/nix?ref=lilith";
+    flake = "git+https://codeberg.org/zekurio/nix?ref=sachiel";
   };
 
   # DO NOT TOUCH THIS

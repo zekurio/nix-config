@@ -28,9 +28,6 @@ in
     # D-Bus (dependency for polkit/keyring)
     services.dbus.enable = true;
 
-    # Electron/Chromium Wayland support
-    environment.sessionVariables.NIXOS_OZONE_WL = "1";
-
     security.rtkit.enable = true;
     services.pipewire = {
       enable = true;
@@ -49,7 +46,31 @@ in
         };
       };
 
+      gtk = {
+        enable = true;
+        theme = {
+          name = "adw-gtk3-dark";
+          package = pkgs.adw-gtk3;
+        };
+        iconTheme = {
+          name = "Papirus-Dark";
+          package = pkgs.papirus-icon-theme;
+        };
+        cursorTheme = {
+          name = "graphite-dark";
+        };
+      };
+
+      fonts.fontconfig.enable = true;
+
       home.packages = with pkgs; [
+        (nerd-fonts.symbols-only)
+        inter
+        fira-code
+        noto-fonts
+        noto-fonts-cjk-sans
+        noto-fonts-color-emoji
+        font-awesome
         unstable.brave
         unstable.zed-editor
         unstable.vesktop

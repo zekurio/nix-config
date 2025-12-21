@@ -13,6 +13,7 @@
 | Host | Type | Key Features |
 |------|------|--------------|
 | `adam` | Homelab server | Podman services, backups, VPN |
+| `lilith` | Desktop workstation | Niri compositor, DMS greeter |
 
 ## Code Style & Conventions
 
@@ -21,13 +22,15 @@
   - `machines/nixos/<host>/`: Host-specific configuration (configuration.nix, disko.nix).
   - `modules/`: Reusable modules (prefer over ad-hoc config).
   - `modules/homelab/`: Self-hosted services (adam only).
-  - `modules/profiles/dev.nix`: Developer tools & shell setup.
+  - `modules/desktop/`: Desktop environment modules (lilith only).
   - `modules/gaming/`, `modules/graphics/`, `modules/virtualization/`: Hardware & feature modules.
   - `secrets/`: Managed via `sops-nix`. NEVER commit plain text.
-- **Flake**: Uses `flake-parts`. Update `flake.lock` only when necessary.
+- **Flake**: Uses `flake-parts` with nixpkgs-25.11 and nixpkgs-unstable.
 - **Safety**: Verify `flake.lock` changes. Use `nix repl` to inspect.
 - **Formatting**: Mimic existing code. Align lists/attrs.
 - **Functions**: Use `let` bindings for complex logic, avoid inline expressions.
+- **Options**: Define custom options with proper types and defaults.
+- **Imports**: Keep at top of file, sorted alphabetically.
 
 ## Workflow
 

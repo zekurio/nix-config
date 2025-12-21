@@ -1,8 +1,9 @@
 { pkgs, ... }:
 {
   imports = [
-    ./intel.nix
     ./amd.nix
+    ./hybrid.nix
+    ./intel.nix
   ];
 
   environment.systemPackages = with pkgs; [
