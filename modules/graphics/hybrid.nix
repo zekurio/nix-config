@@ -21,7 +21,6 @@ in
         extraPackages = with pkgs; [
           # AMD packages
           mesa
-          rocmPackages.clr.icd
         ];
       };
       amdgpu.opencl.enable = true;
@@ -50,19 +49,6 @@ in
     systemd.packages = with pkgs; [ lact ];
     systemd.services.lactd.wantedBy = [ "multi-user.target" ];
 
-    systemd.tmpfiles.rules =
-      let
-        rocmEnv = pkgs.symlinkJoin {
-          name = "rocm-combined";
-          paths = with pkgs.rocmPackages; [
-            rocblas
-            hipblas
-            clr
-          ];
-        };
-      in
-      [
-        "L+    /opt/rocm   -    -    -     -    ${rocmEnv}"
-      ];
+    systemd.tmpfiles.rules = [ ];
   };
 }

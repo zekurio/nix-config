@@ -11,7 +11,7 @@ let
 
   # Network IP parameters - can be overridden when importing this module
   networkIP = "192.168.0.2";
-  tailscaleIP = "100.103.132.84";
+  tailscaleIP = "100.100.67.10";
 in
 {
   modules.users.zekurio = {
@@ -122,6 +122,13 @@ in
     };
     autoaspm.enable = true;
 
+    # Tailscale VPN
+    tailscale = {
+      enable = true;
+      useRoutingFeatures = "server";
+      openFirewall = true;
+    };
+
     # Samba network shares for ZFS tank pool
     samba = {
       enable = true;
@@ -193,6 +200,7 @@ in
     jellyseerr-wrapped.enable = true;
     jellyfin-wrapped.enable = true;
     immich-wrapped.enable = true;
+    streamystats-wrapped.enable = true;
 
     # Enable OIDC provider
     dex-wrapped.enable = true;
@@ -270,6 +278,7 @@ in
               "\"arr.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
               "\"ff.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
               "\"accounts.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
+              "\"stats.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
               "\"zekurio.xyz. 3600 IN A ${networkIP}\""
               "\"vw.zekurio.xyz. 3600 IN A ${networkIP}\""
               "\"docs.zekurio.xyz. 3600 IN A ${networkIP}\""
@@ -291,6 +300,7 @@ in
               "\"arr.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
               "\"ff.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
               "\"accounts.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
+              "\"stats.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
               "\"zekurio.xyz. 3600 IN A ${tailscaleIP}\""
               "\"vw.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
               "\"docs.zekurio.xyz. 3600 IN A ${tailscaleIP}\""

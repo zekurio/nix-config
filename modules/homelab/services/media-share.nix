@@ -9,7 +9,6 @@ let
 
   shareUser = "share";
   shareGroup = "share";
-  shareUmask = "0002";
   shareUid = 995;
   shareGid = 995;
 

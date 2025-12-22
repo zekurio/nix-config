@@ -38,7 +38,13 @@ in
     # Caddy virtual host configuration
     services.caddy-wrapper.virtualHosts."qbittorrent" = {
       domain = domain;
-      reverseProxy = "192.168.15.1:${toString webuiPort}";
+      extraConfig = ''
+        # Block access from outside local/tailscale networks
+        @blocked not remote_ip 192.168.0.0/16 100.64.0.0/10 127.0.0.1/8
+        respond @blocked "Access denied" 403
+
+        reverse_proxy 192.168.15.1:${toString webuiPort}
+      '';
     };
   };
 }

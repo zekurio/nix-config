@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   shareUser = "share";
   shareGroup = "share";
@@ -45,6 +50,29 @@ in
     services.caddy-wrapper.virtualHosts."jellyfin" = {
       domain = domain;
       reverseProxy = "localhost:${toString port}";
+      extraConfig = ''
+        # TODO: Enable CORS when stats.schnitzelflix.xyz is added to unbound DNS
+        # @cors_preflight {
+        #   method OPTIONS
+        #   header Origin https://stats.schnitzelflix.xyz
+        # }
+        # handle @cors_preflight {
+        #   header Access-Control-Allow-Origin "https://stats.schnitzelflix.xyz"
+        #   header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        #   header Access-Control-Allow-Headers "Content-Type, Authorization, X-Emby-Authorization"
+        #   header Access-Control-Allow-Credentials "true"
+        #   header Access-Control-Max-Age "86400"
+        #   respond "" 204
+        # }
+        #
+        # @cors_request {
+        #   header Origin https://stats.schnitzelflix.xyz
+        # }
+        # header @cors_request Access-Control-Allow-Origin "https://stats.schnitzelflix.xyz"
+        # header @cors_request Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        # header @cors_request Access-Control-Allow-Headers "Content-Type, Authorization, X-Emby-Authorization"
+        # header @cors_request Access-Control-Allow-Credentials "true"
+      '';
     };
   };
 }

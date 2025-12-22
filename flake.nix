@@ -68,6 +68,12 @@
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Homelab services
+    configarr = {
+      url = "github:raydak-labs/configarr";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -102,6 +108,7 @@
             inputs.autoaspm.nixosModules.default
             inputs.sops-nix.nixosModules.sops
             inputs.vpn-confinement.nixosModules.default
+            inputs.configarr.nixosModules.default
             ./modules/homelab
             ./machines/nixos/adam/configuration.nix
           ];

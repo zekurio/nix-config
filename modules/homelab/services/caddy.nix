@@ -9,6 +9,15 @@ let
 
   acmeEmail = "admin@zekurio.xyz";
 
+  # Helper to replace generic matchers with service-specific ones
+  makeMatchersUnique =
+    name: config:
+    let
+      # Replace @blocked with @blocked_<servicename>
+      uniqueBlockedMatcher = "@blocked_${name}";
+    in
+    builtins.replaceStrings [ "@blocked" ] [ uniqueBlockedMatcher ] config;
+
   # Group virtual hosts by domain and merge their configurations
   groupedHosts = lib.foldl' (
     acc: name:
@@ -20,6 +29,9 @@ let
           reverseProxies = [ ];
           extraConfigs = [ ];
         };
+      # Make matchers unique to avoid conflicts
+      uniqueExtraConfig =
+        if hostCfg.extraConfig != "" then makeMatchersUnique name hostCfg.extraConfig else "";
     in
     acc
     // {
@@ -27,8 +39,7 @@ let
         reverseProxies =
           existing.reverseProxies
           ++ (lib.optional (hostCfg.reverseProxy or null != null) hostCfg.reverseProxy);
-        extraConfigs =
-          existing.extraConfigs ++ (lib.optional (hostCfg.extraConfig or "" != "") hostCfg.extraConfig);
+        extraConfigs = existing.extraConfigs ++ (lib.optional (uniqueExtraConfig != "") uniqueExtraConfig);
       };
     }
   ) { } (builtins.attrNames cfg.virtualHosts);
@@ -81,10 +92,6 @@ in
           ${lib.optionalString (
             hostCfg.reverseProxies != [ ] && builtins.length hostCfg.reverseProxies == 1
           ) "reverse_proxy ${builtins.head hostCfg.reverseProxies}"}
-          tls {
-            dns cloudflare {env.CLOUDFLARE_API_TOKEN}
-            resolvers 1.1.1.1 8.8.8.8
-          }
         '';
       }) groupedHosts;
     };
