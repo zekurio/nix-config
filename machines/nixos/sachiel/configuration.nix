@@ -90,7 +90,7 @@
     enable = true;
     allowReboot = true;
     dates = "Sun 04:00";
-    flake = "git+https://codeberg.org/zekurio/nix?ref=sachiel";
+    flake = "github:zekurio/nix#sachiel";
   };
 
   # DO NOT TOUCH THIS

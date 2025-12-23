@@ -346,7 +346,7 @@ in
     enable = true;
     allowReboot = true;
     dates = "Sun 04:00";
-    flake = "git+https://codeberg.org/zekurio/nix?ref=adam";
+    flake = "github:zekurio/nix#adam";
   };
 
   # DO NOT TOUCH THIS

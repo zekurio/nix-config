@@ -57,12 +57,6 @@
       url = "github:Maroka-chan/VPN-Confinement";
     };
 
-    # Desktop environment
-    dms = {
-      url = "github:AvengeMedia/DankMaterialShell/stable";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     # Homelab services
     configarr = {
       url = "github:raydak-labs/configarr";
@@ -109,18 +103,18 @@
         };
         lilith = {
           system = "x86_64-linux";
+          pkgsInput = inputs.nixpkgs-unstable;
           modules = [
             inputs.disko.nixosModules.disko
-            inputs.dms.nixosModules.greeter
             ./modules/desktop
             ./machines/nixos/lilith/configuration.nix
           ];
         };
         sachiel = {
           system = "x86_64-linux";
+          pkgsInput = inputs.nixpkgs-unstable;
           modules = [
             inputs.disko.nixosModules.disko
-            inputs.dms.nixosModules.greeter
             ./modules/desktop
             ./machines/nixos/sachiel/configuration.nix
           ];
