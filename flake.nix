@@ -7,14 +7,12 @@
       "https://cachix.cachix.org"
       "https://nixpkgs.cachix.org"
       "https://nix-community.cachix.org"
-      "https://niri.cachix.org"
     ];
     extra-trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       "cachix.cachix.org-1:eWNHQldwUO7G2VkjpnjDbWwy4KQ/HNxht7H4SSoMckM="
       "nixpkgs.cachix.org-1:q91R6hxbwFvDqTSDKwDAV4T5PxqXGxswD8vhONFMeOE="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-      "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
     ];
     download-buffer-size = 1073741824;
   };
@@ -62,10 +60,6 @@
     # Desktop environment
     dms = {
       url = "github:AvengeMedia/DankMaterialShell/stable";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    niri = {
-      url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -118,7 +112,6 @@
           modules = [
             inputs.disko.nixosModules.disko
             inputs.dms.nixosModules.greeter
-            inputs.niri.nixosModules.niri
             ./modules/desktop
             ./machines/nixos/lilith/configuration.nix
           ];
@@ -128,7 +121,6 @@
           modules = [
             inputs.disko.nixosModules.disko
             inputs.dms.nixosModules.greeter
-            inputs.niri.nixosModules.niri
             ./modules/desktop
             ./machines/nixos/sachiel/configuration.nix
           ];

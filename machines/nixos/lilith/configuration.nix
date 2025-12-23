@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs,
   modulesPath,
   ...
@@ -70,16 +71,22 @@
     homeManager.enable = true;
   };
 
-  home-manager.users.zekurio.programs.niri.settings = {
-    input.keyboard.xkb.layout = "eu";
-    outputs."DP-2" = {
-      mode = {
-        width = 2560;
-        height = 1440;
-        refresh = 165.0;
-      };
-    };
-  };
+  users.users.zekurio.extraGroups = [ "networkmanager" ];
+
+  # Host-specific niri configuration (appended to base config)
+  home-manager.users.zekurio.xdg.configFile."niri/config.kdl".text = lib.mkAfter ''
+    input {
+      keyboard {
+        xkb {
+          layout "eu"
+        }
+      }
+    }
+
+    output "DP-2" {
+      mode "2560x1440@165"
+    }
+  '';
 
   time.timeZone = "Europe/Vienna";
   system.autoUpgrade = {
