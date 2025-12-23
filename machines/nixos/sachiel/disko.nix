@@ -26,7 +26,10 @@
               content = {
                 type = "luks";
                 name = "cryptroot";
-                settings.allowDiscards = true;
+                settings = {
+                  allowDiscards = true;
+                };
+                initrdUnlock = true;
                 content = {
                   type = "filesystem";
                   format = "ext4";

@@ -53,6 +53,10 @@
       url = "github:notthebee/AutoASPM";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     vpn-confinement = {
       url = "github:Maroka-chan/VPN-Confinement";
     };
@@ -115,6 +119,7 @@
           pkgsInput = inputs.nixpkgs-unstable;
           modules = [
             inputs.disko.nixosModules.disko
+            inputs.lanzaboote.nixosModules.lanzaboote
             ./modules/desktop
             ./machines/nixos/sachiel/configuration.nix
           ];

@@ -27,7 +27,15 @@
     loader = {
       timeout = 0;
       efi.canTouchEfiVariables = true;
-      systemd-boot.enable = true;
+      systemd-boot.enable = lib.mkForce false;
+    };
+    lanzaboote = {
+      enable = true;
+      pkiBundle = "/var/lib/sbctl";
+    };
+    initrd.systemd = {
+      enable = true;
+      emergencyAccess = true;
     };
     kernelPackages = pkgs.linuxPackages_zen;
   };
@@ -63,9 +71,27 @@
     };
   };
 
-  modules.desktop.enable = true;
+  environment.systemPackages = with pkgs; [
+    sbctl
+    tpm2-tools
+  ];
+
+  modules.desktop = {
+    enable = true;
+    niri = {
+      outputs."eDP-1" = {
+        mode = "1920x1080@120.003";
+        scale = 1.25;
+        variableRefreshRate = true;
+      };
+      xkbLayout = "de";
+      touchpad.tap = true;
+    };
+  };
   modules.graphics.hybrid.enable = true;
   modules.virtualization.enable = true;
+
+  services.power-profiles-daemon.enable = true;
 
   users.users.zekurio.extraGroups = [ "networkmanager" ];
 

@@ -67,6 +67,8 @@
   modules.graphics.amd.enable = true;
   modules.virtualization.enable = true;
 
+  services.power-profiles-daemon.enable = true;
+
   users.users.zekurio.extraGroups = [ "networkmanager" ];
 
   time.timeZone = "Europe/Vienna";
