@@ -14,10 +14,6 @@ let
   tailscaleIP = "100.100.67.10";
 in
 {
-  modules.users.zekurio = {
-    enable = true;
-    homeManager.enable = true;
-  };
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ./disko.nix

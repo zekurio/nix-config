@@ -65,11 +65,6 @@
 
   modules.graphics.amd.enable = true;
   modules.virtualization.enable = true;
-  modules.desktop.enable = true;
-  modules.users.zekurio = {
-    enable = true;
-    homeManager.enable = true;
-  };
 
   users.users.zekurio.extraGroups = [ "networkmanager" ];
 
