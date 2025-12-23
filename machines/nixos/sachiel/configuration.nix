@@ -63,6 +63,7 @@
     };
   };
 
+  modules.desktop.enable = true;
   modules.graphics.hybrid.enable = true;
   modules.virtualization.enable = true;
 

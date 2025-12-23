@@ -63,6 +63,7 @@
     };
   };
 
+  modules.desktop.enable = true;
   modules.graphics.amd.enable = true;
   modules.virtualization.enable = true;
 
