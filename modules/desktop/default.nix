@@ -43,6 +43,11 @@ in
         ghostty = {
           enable = true;
           enableZshIntegration = true;
+          settings = {
+            # Include DMS dynamic theme colors
+            # Ghostty resolves this relative to its config directory
+            config-file = [ "config-dankcolors" ];
+          };
         };
       };
 

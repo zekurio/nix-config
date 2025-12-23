@@ -32,8 +32,11 @@
   };
 
   networking = {
-    useDHCP = true;
-    useNetworkd = true;
+    networkmanager = {
+      enable = true;
+      wifi.powersave = false;
+      dns = "systemd-resolved";
+    };
     nameservers = [
       "192.168.0.2"
       "9.9.9.9"
@@ -52,6 +55,7 @@
 
   hardware = {
     enableRedistributableFirmware = true;
+    bluetooth.enable = true;
     cpu.amd = {
       updateMicrocode = true;
       ryzen-smu.enable = true;
