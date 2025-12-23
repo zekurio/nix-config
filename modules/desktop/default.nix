@@ -44,8 +44,10 @@ in
           enable = true;
           enableZshIntegration = true;
           settings = {
-            # DMS dynamic theme colors (DMS 1.2+ format)
-            theme = "dankcolors";
+            # DMS dynamic theme colors
+            config-file = [ "config-dankcolors" ];
+            # Disable GTK decorations
+            gtk-titlebar = false;
           };
         };
       };
