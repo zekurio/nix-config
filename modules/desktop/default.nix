@@ -59,12 +59,6 @@ in
 
     # Desktop home-manager configuration
     home-manager.users.zekurio = {
-      # Niri configuration file
-      # DMS and cliphist are auto-started by dms-shell systemd service
-      xdg.configFile."niri/config.kdl".text = ''
-        spawn-at-startup "xwayland-satellite"
-      '';
-
       programs = {
         # Terminal emulator
         ghostty = {

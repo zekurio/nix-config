@@ -69,21 +69,6 @@
 
   users.users.zekurio.extraGroups = [ "networkmanager" ];
 
-  # Host-specific niri configuration (appended to base config)
-  home-manager.users.zekurio.xdg.configFile."niri/config.kdl".text = lib.mkAfter ''
-    input {
-      keyboard {
-        xkb {
-          layout "eu"
-        }
-      }
-    }
-
-    output "DP-2" {
-      mode "2560x1440@165"
-    }
-  '';
-
   time.timeZone = "Europe/Vienna";
   system.autoUpgrade = {
     enable = true;
