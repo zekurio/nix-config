@@ -210,7 +210,6 @@ in
     jellyseerr-wrapped.enable = true;
     jellyfin-wrapped.enable = true;
     immich-wrapped.enable = true;
-    streamystats-wrapped.enable = true;
 
     # Enable OIDC provider
     dex-wrapped.enable = true;
@@ -286,10 +285,9 @@ in
               "\"sab.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
               "\"qbit.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
               "\"arr.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
-              "\"ff.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
-              "\"accounts.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
-              "\"stats.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
-              "\"zekurio.xyz. 3600 IN A ${networkIP}\""
+               "\"ff.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
+               "\"accounts.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
+               "\"zekurio.xyz. 3600 IN A ${networkIP}\""
               "\"vw.zekurio.xyz. 3600 IN A ${networkIP}\""
               "\"docs.zekurio.xyz. 3600 IN A ${networkIP}\""
               "\"photos.zekurio.xyz. 3600 IN A ${networkIP}\""
@@ -308,10 +306,9 @@ in
               "\"sab.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
               "\"qbit.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
               "\"arr.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
-              "\"ff.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
-              "\"accounts.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
-              "\"stats.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
-              "\"zekurio.xyz. 3600 IN A ${tailscaleIP}\""
+               "\"ff.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
+               "\"accounts.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
+               "\"zekurio.xyz. 3600 IN A ${tailscaleIP}\""
               "\"vw.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
               "\"docs.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
               "\"photos.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
