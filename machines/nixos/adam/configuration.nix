@@ -26,6 +26,7 @@ in
       "pcie_aspm=force"
       "consoleblank=60"
       "acpi_enforce_resources=lax"
+      "i915.enable_guc=3"
     ];
     kernelModules = [
       "kvm-amd"
@@ -49,9 +50,20 @@ in
       updateMicrocode = true;
       ryzen-smu.enable = true;
     };
+    graphics = {
+      enable = true;
+      extraPackages = with pkgs; [
+        intel-media-driver
+        intel-compute-runtime
+        vpl-gpu-rt
+      ];
+    };
   };
 
-  modules.graphics.intel.enable = true;
+  environment.sessionVariables = {
+    LIBVA_DRIVER_NAME = "iHD";
+  };
+
   modules.virtualization.enable = true;
 
   modules.homelab.mediaShare = {
@@ -106,6 +118,7 @@ in
     zfs
     unstable.ab-av1
     lm_sensors
+    intel-gpu-tools
   ];
 
   services = {

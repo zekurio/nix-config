@@ -116,18 +116,7 @@
           pkgsInput = inputs.nixpkgs-unstable;
           modules = [
             inputs.disko.nixosModules.disko
-            ./modules/desktop
             ./machines/nixos/lilith/configuration.nix
-          ];
-        };
-        sachiel = {
-          system = "x86_64-linux";
-          pkgsInput = inputs.nixpkgs-unstable;
-          modules = [
-            inputs.disko.nixosModules.disko
-            inputs.lanzaboote.nixosModules.lanzaboote
-            ./modules/desktop
-            ./machines/nixos/sachiel/configuration.nix
           ];
         };
       };
