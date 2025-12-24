@@ -29,10 +29,6 @@ in
     services.caddy-wrapper.virtualHosts."sonarr" = {
       domain = domain;
       extraConfig = ''
-        # Block access from outside local/tailscale networks
-        @blocked not remote_ip 192.168.0.0/16 100.64.0.0/10 127.0.0.1/8
-        respond @blocked "Access denied" 403
-
         redir /sonarr /sonarr/
         @sonarr path /sonarr*
         reverse_proxy @sonarr localhost:${toString port} {

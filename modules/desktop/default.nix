@@ -2,6 +2,7 @@
   lib,
   config,
   pkgs,
+  inputs,
   ...
 }:
 let
@@ -129,6 +130,13 @@ in
       pulse.enable = true;
     };
 
+    security.pam.services.greetd.text = ''
+      auth substack login
+      account include login
+      password substack login
+      session include login
+    '';
+
     environment.sessionVariables = {
       NIXOS_OZONE_WL = "1";
       SSH_AUTH_SOCK = "/home/zekurio/.bitwarden-ssh-agent.sock";
@@ -166,6 +174,7 @@ in
     # DankMaterialShell (from nixpkgs-unstable)
     programs.dms-shell = {
       enable = true;
+      quickshell.package = inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.quickshell;
       systemd = {
         enable = true;
         restartIfChanged = true;
@@ -183,8 +192,6 @@ in
       enable = true;
       systemd.enable = true;
     };
-
-    security.pam.services.greetd.enableGnomeKeyring = true;
 
     # DankGreeter (from nixpkgs-unstable)
     services.displayManager.dms-greeter = {

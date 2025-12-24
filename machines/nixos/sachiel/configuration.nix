@@ -41,6 +41,7 @@
   };
 
   networking = {
+    hostName = "sachiel";
     networkmanager = {
       enable = true;
       wifi.powersave = false;
@@ -74,6 +75,7 @@
   environment.systemPackages = with pkgs; [
     sbctl
     tpm2-tools
+    tailscale
   ];
 
   modules.desktop = {
@@ -81,7 +83,7 @@
     niri = {
       outputs."eDP-1" = {
         mode = "1920x1080@120.003";
-        scale = 1.25;
+        scale = 1.1;
         variableRefreshRate = true;
       };
       xkbLayout = "de";
@@ -91,7 +93,16 @@
   modules.graphics.hybrid.enable = true;
   modules.virtualization.enable = true;
 
+  # Make Niri use AMD GPU by default
+  environment.sessionVariables = {
+    DRI_PRIME = "1";
+    __GLX_VENDOR_LIBRARY_NAME = "mesa";
+    MESA_VENDOR = "amd";
+  };
+
   services.power-profiles-daemon.enable = true;
+  services.upower.enable = true;
+  services.tailscale.enable = true;
 
   users.users.zekurio.extraGroups = [ "networkmanager" ];
 

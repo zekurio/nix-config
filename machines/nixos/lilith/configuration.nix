@@ -33,6 +33,7 @@
   };
 
   networking = {
+    hostName = "lilith";
     networkmanager = {
       enable = true;
       wifi.powersave = false;

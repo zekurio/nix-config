@@ -66,6 +66,12 @@
       url = "github:raydak-labs/configarr";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Quickshell for DankMaterialShell
+    quickshell = {
+      url = "git+https://git.outfoxxed.me/quickshell/quickshell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

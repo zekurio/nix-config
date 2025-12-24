@@ -3,5 +3,8 @@ inputs: {
     (import ./jellyfin-ffmpeg.nix)
     (import ./jellyseerr-develop.nix inputs)
     (import ./unstable.nix inputs)
+    (final: prev: {
+      quickshell = inputs.quickshell.packages.${prev.system}.quickshell or prev.quickshell;
+    })
   ];
 }
