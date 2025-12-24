@@ -3,7 +3,6 @@
   imports = [
     ../../modules/system
     ../../modules/users
-    ../../modules/virtualization
   ];
 
   i18n = {

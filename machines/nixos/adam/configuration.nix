@@ -18,6 +18,7 @@ in
     (modulesPath + "/installer/scan/not-detected.nix")
     ./disko.nix
     ../default.nix
+    ../../../modules/virtualization
   ];
 
   # Boot configuration

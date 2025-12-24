@@ -60,16 +60,8 @@
     vpn-confinement = {
       url = "github:Maroka-chan/VPN-Confinement";
     };
-
-    # Homelab services
-    configarr = {
-      url = "github:raydak-labs/configarr";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # Quickshell for DankMaterialShell
-    quickshell = {
-      url = "git+https://git.outfoxxed.me/quickshell/quickshell";
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL/main";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -106,17 +98,15 @@
             inputs.autoaspm.nixosModules.default
             inputs.sops-nix.nixosModules.sops
             inputs.vpn-confinement.nixosModules.default
-            inputs.configarr.nixosModules.default
             ./modules/homelab
             ./machines/nixos/adam/configuration.nix
           ];
         };
-        lilith = {
+        tabris = {
           system = "x86_64-linux";
-          pkgsInput = inputs.nixpkgs-unstable;
           modules = [
-            inputs.disko.nixosModules.disko
-            ./machines/nixos/lilith/configuration.nix
+            inputs.nixos-wsl.nixosModules.default
+            ./machines/nixos/tabris/configuration.nix
           ];
         };
       };
