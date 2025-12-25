@@ -135,13 +135,13 @@
         overlays.default = import ./overlays inputs;
         nixosConfigurations = mkSystem hosts;
 
-        # Expose packages for building
         packages.x86_64-linux =
           let
             overlay = import ./overlays/jellyseerr-develop.nix inputs;
             pkgs = nixpkgs.legacyPackages.x86_64-linux.extend overlay;
           in
           {
+            inherit (mkSystem hosts.tabris.config.system.build) tarballBuilder;
             jellyseerr = pkgs.jellyseerr;
           };
       };

@@ -18,7 +18,6 @@ in
     (modulesPath + "/installer/scan/not-detected.nix")
     ./disko.nix
     ../default.nix
-    ../../../modules/virtualization
   ];
 
   # Boot configuration
@@ -210,6 +209,7 @@ in
     jellyseerr-wrapped.enable = true;
     jellyfin-wrapped.enable = true;
     immich-wrapped.enable = true;
+    streamystats-wrapped.enable = true;
 
     # Enable OIDC provider
     dex-wrapped.enable = true;
@@ -290,8 +290,9 @@ in
                "\"zekurio.xyz. 3600 IN A ${networkIP}\""
               "\"vw.zekurio.xyz. 3600 IN A ${networkIP}\""
               "\"docs.zekurio.xyz. 3600 IN A ${networkIP}\""
-              "\"photos.zekurio.xyz. 3600 IN A ${networkIP}\""
-            ];
+               "\"photos.zekurio.xyz. 3600 IN A ${networkIP}\""
+               "\"stats.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
+             ];
           }
           {
             name = "tailscale";
@@ -311,8 +312,9 @@ in
                "\"zekurio.xyz. 3600 IN A ${tailscaleIP}\""
               "\"vw.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
               "\"docs.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
-              "\"photos.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
-            ];
+               "\"photos.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
+               "\"stats.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
+             ];
           }
         ];
       };

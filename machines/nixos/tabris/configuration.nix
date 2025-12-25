@@ -50,6 +50,9 @@
     enable = true;
   };
 
+  # Enable Podman virtualization
+  modules.virtualization.enable = true;
+
   # Development-ready packages
   environment.systemPackages = with pkgs; [
     # WSL utilities
