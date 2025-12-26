@@ -37,7 +37,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.disko.follows = "disko";
     };
-
     # System configuration management
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -51,10 +50,6 @@
     # Hardware and security
     autoaspm = {
       url = "github:notthebee/AutoASPM";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    lanzaboote = {
-      url = "github:nix-community/lanzaboote";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     vpn-confinement = {
@@ -93,6 +88,7 @@
       hosts = {
         adam = {
           system = "x86_64-linux";
+          pkgsInput = inputs.nixpkgs-unstable;
           modules = [
             inputs.disko.nixosModules.disko
             inputs.autoaspm.nixosModules.default

@@ -16,7 +16,6 @@ in
       enable = true;
       user = shareUser;
       group = shareGroup;
-      package = pkgs.sonarr;
     };
 
     systemd.services.sonarr.serviceConfig = {

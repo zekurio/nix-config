@@ -116,7 +116,7 @@ in
   environment.systemPackages = with pkgs; [
     ryzen-monitor-ng
     zfs
-    unstable.ab-av1
+    ab-av1
     lm_sensors
     intel-gpu-tools
   ];

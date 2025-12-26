@@ -19,7 +19,6 @@ in
   config = lib.mkIf config.services.jellyfin-wrapped.enable {
     services.jellyfin = {
       enable = true;
-      package = pkgs.jellyfin;
       user = shareUser;
       group = shareGroup;
       openFirewall = true;

@@ -16,7 +16,6 @@ in
   config = lib.mkIf config.services.dex-wrapped.enable {
     services.dex = {
       enable = true;
-      package = pkgs.dex-oidc;
       environmentFile = config.sops.secrets.dex_env.path;
       settings = {
         issuer = "https://${domain}";

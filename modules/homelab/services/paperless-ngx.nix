@@ -11,7 +11,6 @@ in
   config = lib.mkIf config.services.paperless-ngx-wrapped.enable {
     services.paperless = {
       enable = true;
-      package = pkgs.paperless-ngx;
       dataDir = "/var/lib/paperless";
       consumptionDir = "/var/lib/paperless/consume";
       consumptionDirIsPublic = true;

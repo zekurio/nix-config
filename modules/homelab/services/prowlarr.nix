@@ -22,7 +22,6 @@ in
 
     services.prowlarr = {
       enable = true;
-      package = pkgs.prowlarr;
     };
 
     # Caddy virtual host configuration with base URL
