@@ -7,7 +7,6 @@ NixOS configurations for my homelab
 | Host | Description |
 |------|-------------|
 | `adam` | Homelab server |
-| `tabris` | WSL |
 
 ## Installation runbook (NixOS)
 
@@ -49,7 +48,7 @@ Install the system
 nixos-install \
 --root "/mnt" \
 --no-root-passwd \
---flake "git+file:///mnt/etc/nixos#hostname" # adam, tabris, etc.
+--flake "git+file:///mnt/etc/nixos#hostname" # adam, etc.
 ```
 
 Unmount the filesystems

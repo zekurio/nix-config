@@ -26,7 +26,6 @@
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
-
     # NixOS deployment and infrastructure
     disko = {
       url = "github:nix-community/disko";
@@ -46,7 +45,6 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
     # Hardware and security
     autoaspm = {
       url = "github:notthebee/AutoASPM";
@@ -54,10 +52,6 @@
     };
     vpn-confinement = {
       url = "github:Maroka-chan/VPN-Confinement";
-    };
-    nixos-wsl = {
-      url = "github:nix-community/NixOS-WSL/main";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
@@ -98,13 +92,6 @@
             ./machines/nixos/adam/configuration.nix
           ];
         };
-        tabris = {
-          system = "x86_64-linux";
-          modules = [
-            inputs.nixos-wsl.nixosModules.default
-            ./machines/nixos/tabris/configuration.nix
-          ];
-        };
       };
 
       # Build NixOS configurations from host definitions
@@ -137,7 +124,6 @@
             pkgs = nixpkgs.legacyPackages.x86_64-linux.extend overlay;
           in
           {
-            inherit (mkSystem hosts.tabris.config.system.build) tarballBuilder;
             jellyseerr = pkgs.jellyseerr;
           };
       };

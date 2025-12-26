@@ -5,7 +5,7 @@
 - **Check**: `nix flake check` to verify flake outputs
 - **Apply**: `nixos-rebuild switch --flake .#<host>` (use `--use-remote-sudo` if needed)
 - **Test**: No unit tests. Verify by building. No auto-formatter.
-- **Hosts**: `adam` (homelab server), `tabris` (WSL)
+- **Hosts**: `adam` (homelab server)
 
 ## Code Style
 - **Indent**: 2 spaces. **Naming**: `camelCase` for variables/functions
