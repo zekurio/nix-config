@@ -53,6 +53,10 @@
     vpn-confinement = {
       url = "github:Maroka-chan/VPN-Confinement";
     };
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL/main";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -90,6 +94,16 @@
             inputs.vpn-confinement.nixosModules.default
             ./modules/homelab
             ./machines/nixos/adam/configuration.nix
+          ];
+        };
+        tabris = {
+          system = "x86_64-linux";
+          pkgsInput = inputs.nixpkgs-unstable;
+          modules = [
+            inputs.nixos-wsl.nixosModules.default
+            ./modules/users/zekurio
+            ./modules/virtualization
+            ./machines/nixos/tabris/configuration.nix
           ];
         };
       };
