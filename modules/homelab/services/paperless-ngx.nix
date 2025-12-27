@@ -47,6 +47,10 @@ in
     services.caddy-wrapper.virtualHosts."paperless-ngx" = {
       domain = domain;
       reverseProxy = "localhost:${toString port}";
+      extraConfig = ''
+        @blocked path /admin/*
+        respond @blocked "Forbidden" 403
+      '';
     };
 
     users.users.paperless.extraGroups = [ "share" ];
