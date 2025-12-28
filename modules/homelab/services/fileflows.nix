@@ -42,10 +42,15 @@ in
       "d /tmp/fileflows 2775 ${shareUser} ${shareGroup} -"
     ];
 
-    # Caddy virtual host configuration
+    # Caddy virtual host configuration with basic auth
     services.caddy-wrapper.virtualHosts."fileflows" = {
       inherit domain;
-      reverseProxy = "localhost:${toString port}";
+      extraConfig = ''
+        basic_auth {
+          admin $2a$14$kp5H05ecqpOPcZViuQcAVuz4NrwbDk.f4uayB4ikcTD3BBNAKXDtu
+        }
+        reverse_proxy localhost:${toString port}
+      '';
     };
   };
 }
