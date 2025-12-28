@@ -4,6 +4,7 @@
     ./autobrr.nix
     ./caddy.nix
     ./dex.nix
+    ./fileflows.nix
     ./immich.nix
     ./jellyfin.nix
     ./jellyseerr.nix
@@ -16,5 +17,6 @@
     ./sonarr.nix
     ./streamystats.nix
     ./vaultwarden.nix
+    ./whisparr.nix
   ];
 }

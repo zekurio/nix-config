@@ -15,11 +15,17 @@ let
   mediaDirs = [
     "/tank/jellyfin/anime"
     "/tank/jellyfin/movies"
+    "/tank/jellyfin/smut"
     "/tank/jellyfin/tv"
     "/mnt/downloads"
     "/mnt/downloads/complete"
     "/mnt/downloads/complete/radarr"
     "/mnt/downloads/complete/sonarr"
+    "/mnt/downloads/complete/whisparr"
+    "/mnt/downloads/converted"
+    "/mnt/downloads/converted/radarr"
+    "/mnt/downloads/converted/sonarr"
+    "/mnt/downloads/converted/whisparr"
     "/mnt/downloads/incomplete"
     "/tank/jellyfin/torrents"
     "/tank/jellyfin/torrents/incomplete"
@@ -32,6 +38,7 @@ let
     "/var/lib/radarr"
     "/var/lib/sabnzbd"
     "/var/lib/sonarr"
+    "/var/lib/whisparr"
   ];
 
   managedPaths = mediaDirs ++ stateDirs;

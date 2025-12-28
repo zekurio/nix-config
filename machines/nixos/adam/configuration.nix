@@ -220,6 +220,8 @@ in
     prowlarr-wrapped.enable = true;
     sabnzbd-wrapped.enable = true;
     autobrr-wrapped.enable = true;
+    whisparr-wrapped.enable = true;
+    fileflows-wrapped.enable = true;
 
     # qBittorrent with VPN confinement
     qbittorrent-wrapped.enable = true;
