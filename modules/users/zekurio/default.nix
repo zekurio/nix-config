@@ -48,6 +48,7 @@
           age
           bat
           btop
+          unstable.claude-code
           eza
           envsubst
           pfetch-rs

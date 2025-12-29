@@ -1,5 +1,9 @@
 { lib, pkgs, ... }:
 {
+  imports = [
+    ../default.nix
+  ];
+
   system.stateVersion = "25.05";
 
   # Disable channels for flake-only setup

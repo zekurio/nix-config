@@ -70,9 +70,6 @@
 
       # Shared modules applied to all hosts
       sharedModules = [
-        ./modules/system
-        ./modules/users
-
         ./machines/nixos
         inputs.home-manager.nixosModules.home-manager
         (import ./overlays inputs)
@@ -101,8 +98,6 @@
           pkgsInput = inputs.nixpkgs-unstable;
           modules = [
             inputs.nixos-wsl.nixosModules.default
-            ./modules/users/zekurio
-            ./modules/virtualization
             ./machines/nixos/tabris/configuration.nix
           ];
         };
