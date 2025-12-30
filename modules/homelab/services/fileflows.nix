@@ -31,6 +31,7 @@ in
         "fileflows_data:/app/Data"
         "fileflows_logs:/app/Logs"
         "/mnt/downloads:/mnt/downloads"
+        "/tank/jellyfin:/media"
       ];
       extraOptions = [
         "--device=/dev/dri:/dev/dri"
