@@ -12,11 +12,12 @@ in
       owner = "seerr-team";
       repo = "seerr";
       rev = "develop";
-      hash = "sha256-vZKJm+ODEgXWna0klzvnTvmOFsqxI+xZ3lwm8uyqYgA=";
+      hash = "sha256-x4LNvloOuVjtxGSsjdlTRZ9xGPegsRwX1HS7wqxjR5M=";
     };
 
-    pnpmDeps = pnpm.fetchDeps {
-      inherit (finalAttrs) pname version src;
+    pnpmDeps = prev.fetchPnpmDeps {
+      inherit (finalAttrs) pname src;
+      inherit pnpm;
       fetcherVersion = 1;
       hash = "sha256-ZhkE/snz6DMxKIekclgCY3jDs492lUlQspvoflR2dFQ=";
     };
@@ -27,8 +28,9 @@ in
       python3
       python3Packages.distutils
       nodejs
+      pnpm
       makeWrapper
-      pnpm.configHook
+      (pnpmConfigHook.override { inherit pnpm; })
     ];
 
     preBuild = ''

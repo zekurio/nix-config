@@ -129,8 +129,6 @@ in
         PermitRootLogin = "no";
       };
     };
-    autoaspm.enable = true;
-
     # Tailscale VPN
     tailscale = {
       enable = true;

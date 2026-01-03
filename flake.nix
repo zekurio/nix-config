@@ -45,11 +45,6 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # Hardware and security
-    autoaspm = {
-      url = "github:notthebee/AutoASPM";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     vpn-confinement = {
       url = "github:Maroka-chan/VPN-Confinement";
     };
@@ -86,7 +81,6 @@
           pkgsInput = inputs.nixpkgs-unstable;
           modules = [
             inputs.disko.nixosModules.disko
-            inputs.autoaspm.nixosModules.default
             inputs.sops-nix.nixosModules.sops
             inputs.vpn-confinement.nixosModules.default
             ./modules/homelab
