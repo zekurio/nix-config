@@ -48,7 +48,7 @@
           age
           bat
           btop
-          unstable.claude-code
+          claude-code
           eza
           envsubst
           pfetch-rs
@@ -56,7 +56,7 @@
           jq
           nil
           nixd
-          unstable.opencode
+          opencode
           sops
           zellij
         ];

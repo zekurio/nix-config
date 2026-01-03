@@ -20,8 +20,7 @@
   # Flake inputs: external dependencies and frameworks
   inputs = {
     # Core dependencies
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11?shallow=true";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable?shallow=true";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable?shallow=true";
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
@@ -39,7 +38,7 @@
     # System configuration management
     home-manager = {
       url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     sops-nix = {
       url = "github:Mic92/sops-nix";
@@ -78,7 +77,6 @@
       hosts = {
         adam = {
           system = "x86_64-linux";
-          pkgsInput = inputs.nixpkgs-unstable;
           modules = [
             inputs.disko.nixosModules.disko
             inputs.sops-nix.nixosModules.sops
@@ -89,7 +87,6 @@
         };
         tabris = {
           system = "x86_64-linux";
-          pkgsInput = inputs.nixpkgs-unstable;
           modules = [
             inputs.nixos-wsl.nixosModules.default
             ./machines/nixos/tabris/configuration.nix
@@ -97,7 +94,6 @@
         };
         lilith = {
           system = "x86_64-linux";
-          pkgsInput = inputs.nixpkgs-unstable;
           modules = [
             inputs.disko.nixosModules.disko
             ./machines/nixos/lilith/configuration.nix
@@ -108,10 +104,7 @@
       # Build NixOS configurations from host definitions
       mkSystem = lib.mapAttrs (
         _: host:
-        let
-          pkgsInput = host.pkgsInput or nixpkgs;
-        in
-        pkgsInput.lib.nixosSystem {
+        nixpkgs.lib.nixosSystem {
           inherit (host) system;
           specialArgs = mkSpecialArgs;
           modules = sharedModules ++ host.modules;

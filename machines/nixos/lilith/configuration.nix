@@ -101,6 +101,18 @@ in
     vesktop
     zed-editor
     bitwarden-desktop
+    ghostty
+
+    # Theming
+    adw-gtk3
+    papirus-icon-theme
+  ];
+
+  # Fonts
+  fonts.packages = with pkgs; [
+    inter
+    fira-code
+    nerd-fonts.symbols-only
   ];
 
   services = {

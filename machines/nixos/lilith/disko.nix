@@ -3,7 +3,6 @@
     disk = {
       main = {
         type = "disk";
-        # TODO: Replace with actual disk device identifier
         device = "/dev/nvme0n1";
         content = {
           type = "gpt";
