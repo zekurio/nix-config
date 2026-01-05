@@ -3,7 +3,6 @@
   imports = [
     ./autobrr.nix
     ./caddy.nix
-    ./dex.nix
     ./fileflows.nix
     ./immich.nix
     ./jellyfin.nix
@@ -15,7 +14,6 @@
     ./radarr.nix
     ./sabnzbd.nix
     ./sonarr.nix
-    ./vaultwarden.nix
     ./whisparr.nix
   ];
 }

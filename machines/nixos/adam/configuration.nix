@@ -203,13 +203,9 @@ in
 
     # Enable wrapped services with Caddy integration
     paperless-ngx-wrapped.enable = true;
-    vaultwarden-wrapped.enable = true;
     jellyseerr-wrapped.enable = true;
     jellyfin-wrapped.enable = true;
     immich-wrapped.enable = true;
-
-    # Enable OIDC provider
-    dex-wrapped.enable = true;
 
     # Enable arr stack services
     sonarr-wrapped.enable = true;
@@ -287,10 +283,9 @@ in
                "\"ff.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
                "\"accounts.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
                "\"zekurio.xyz. 3600 IN A ${networkIP}\""
-              "\"vw.zekurio.xyz. 3600 IN A ${networkIP}\""
-              "\"docs.zekurio.xyz. 3600 IN A ${networkIP}\""
-                "\"photos.zekurio.xyz. 3600 IN A ${networkIP}\""
-              ];
+               "\"docs.zekurio.xyz. 3600 IN A ${networkIP}\""
+                 "\"photos.zekurio.xyz. 3600 IN A ${networkIP}\""
+               ];
             }
             {
               name = "tailscale";
@@ -308,10 +303,9 @@ in
                "\"ff.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
                "\"accounts.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
                "\"zekurio.xyz. 3600 IN A ${tailscaleIP}\""
-              "\"vw.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
-              "\"docs.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
-                "\"photos.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
-              ];
+               "\"docs.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
+                 "\"photos.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
+               ];
             }
           ];
       };

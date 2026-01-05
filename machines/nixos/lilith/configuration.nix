@@ -97,11 +97,12 @@ in
     lm_sensors
 
     # Desktop applications
+    _1password-cli
+    _1password-gui
     brave
+    ghostty
     vesktop
     zed-editor
-    bitwarden-desktop
-    ghostty
 
     # Theming
     adw-gtk3

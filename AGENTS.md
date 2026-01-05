@@ -1,167 +1,144 @@
 # Agent Guidelines for nix-config
 
-This repository contains NixOS configurations for homelab infrastructure. Agents should follow these guidelines when making changes.
+NixOS configurations for homelab infrastructure.
 
 ## Build & Verification
 
-### Build Commands
-- **Build specific host**: `nix build .#nixosConfigurations.<host>.config.system.build.toplevel`
-- **Build all**: `nix build .#`
-- **Check flake outputs**: `nix flake check`
-- **List available packages**: `nix flake show`
+```bash
+# Build specific host (fastest verification) - hosts: adam, tabris, lilith
+nix build .#nixosConfigurations.<host>.config.system.build.toplevel
 
-### Apply Changes
-- **Switch config**: `nixos-rebuild switch --flake .#<host>` (e.g., `adam`, `tabris`)
-- **Remote sudo**: Add `--use-remote-sudo` for remote deployments
-- **Dry run**: Add `--dry-run` to preview changes without applying
-- **Show diff**: `nixos-rebuild diff --flake .#<host>` before switching
+# Check all flake outputs
+nix flake check
 
-### Linting & Formatting
-- **No auto-formatter**: This project does not use alejandra or other formatters
-- **Manual review**: Review changes carefully before committing
-- **Validate flake**: `nix fmt --check .` (reports syntax errors only)
+# Switch config (on target host)
+nixos-rebuild switch --flake .#<host>
 
-### Testing
-- **No unit tests**: Configuration is validated by building only
-- **VM test**: Not configured; verify by building
+# Remote deployment
+nixos-rebuild switch --flake .#<host> --use-remote-sudo
+
+# Preview changes
+nixos-rebuild dry-run --flake .#<host>
+```
+
+### Linting & Testing
+- **No formatter**: This project does not use alejandra/nixfmt
+- **No unit tests**: Configuration validated by building only
+- **Always verify**: Run build command after every change
 
 ## Code Style
 
-### Indentation & Formatting
-- **Indentation**: 2 spaces (soft tabs)
-- **Line length**: No hard limit, but keep lines readable
-- **No trailing whitespace**: Remove on save
-- **Lists/attrs**: One item per line, aligned vertically
+### Formatting
+- **Indentation**: 2 spaces
+- **Lists/attrs**: One item per line
+- **Function args**: Multi-line, opening brace on first line
 
 ### Naming Conventions
-- **Variables/functions**: `camelCase` (e.g., `myVariable`, `enableService`)
-- **Module options**: `camelCase` within `services.<name>` namespace
-- **Host names**: lowercase (e.g., `adam`, `tabris`)
-- **Package names**: Follow nixpkgs convention (hyphens allowed)
+- **Variables**: `camelCase` (e.g., `shareUser`, `networkIP`)
+- **Wrapper services**: `-wrapped` suffix (e.g., `jellyfin-wrapped`)
+- **Hosts**: lowercase (e.g., `adam`, `tabris`)
 
 ### Module Pattern
 ```nix
-{ config, lib, pkgs, inputs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
-  cfg = config.services.<name>;
-  domain = "example.com";
+  domain = "service.example.com";
+  port = 8080;
 in
 {
-  options.services.<name> = {
+  options.services.<name>-wrapped = {
     enable = lib.mkEnableOption "Service description";
-    # ... other options
   };
 
-  config = lib.mkIf cfg.enable {
-    # ... configuration
+  config = lib.mkIf config.services.<name>-wrapped.enable {
+    services.<name>.enable = true;
+    
+    services.caddy-wrapper.virtualHosts."<name>" = {
+      domain = domain;
+      reverseProxy = "localhost:${toString port}";
+    };
   };
 }
 ```
 
-### Imports & Dependencies
-- **Keep imports at file top**: Sorted alphabetically
-- **Use inputs parameter**: Access flake inputs via `inputs.<name>`
-- **Minimize redundancy**: Leverage shared modules in `modules/`
+### Key Functions
+- `lib.mkEnableOption`: Boolean toggles
+- `lib.mkOption`: Typed options with `lib.types.*`
+- `lib.mkIf`: Conditional config blocks
+- `lib.mkMerge`: Merge conditional attrsets
+- `lib.mkForce`: Override inherited values
+- `lib.mkDefault`: Overridable defaults
 
-### Options Definition
-- **Use lib.mkEnableOption**: For boolean toggles
-- **Use lib.mkOption**: For typed options with proper types
-- **Document options**: Add `description` to every option
-- **Types**: Use `lib.types.str`, `lib.types.int`, `lib.types.bool`, `lib.types.path`
-
-### Conditionals
-- **Use lib.mkIf**: For conditional config blocks
-- **Avoid if-then-else**: Prefer `lib.mkIf cfg.enable { ... }`
-- **Complex conditions**: Use `lib.mkMerge` for merging conditional attrsets
-
-### Error Handling
-- **No exceptions**: Nix configs don't have runtime errors
-- **Validate types**: Ensure option types match expected values
-- **Check null values**: Use `lib.mkDefault` for optional sensible defaults
-- **Debug**: Use `lib.trace` or `lib.traceSeq` for debugging config evaluation
-
-### Secrets Management
-- **NEVER commit plain text secrets**: Use `sops-nix` only
-- **Secrets location**: `secrets/<host>.yaml` encrypted with SOPS
-- **Reference secrets**: Use `sops.secrets.<name>.path` or `config.sops.secrets.<name>.yaml`
+### Secrets (sops-nix)
+- **NEVER commit plain text secrets**
+- Secrets: `secrets/<host>.yaml` (encrypted with age)
+- Keys: `.sops.yaml` defines age keys per host
+- Reference: `config.sops.secrets.<name>.path`
 
 ## Repository Structure
 
 ```
-├── machines/nixos/<host>/     # Host-specific configs (configuration.nix, disko.nix)
-├── modules/                   # Reusable modules
-│   ├── homelab/services/      # Service modules (immich, jellyfin, etc.)
-│   ├── system/                # System-level modules
-│   ├── users/                 # User configurations
-│   └── virtualization/        # VM/container modules
-├── overlays/                  # Nix overlays (package modifications)
-├── secrets/                   # SOPS-encrypted secrets
-├── flake.nix                  # Flake entry point
-└── AGENTS.md                  # This file
+├── machines/nixos/<host>/   # Host configs (configuration.nix, disko.nix)
+├── modules/
+│   ├── homelab/services/    # Service modules (immich, jellyfin, etc.)
+│   ├── system/              # System-level modules
+│   └── users/               # User configurations
+├── overlays/                # Package modifications
+├── secrets/                 # SOPS-encrypted secrets
+└── flake.nix                # Flake entry point
 ```
-
-## Workflow
-
-1. **Analyze dependencies**: Start by reading `flake.nix` to understand inputs and structure
-2. **Read existing files**: Always read files before editing to understand context
-3. **Build to verify**: Run build command after any changes
-4. **Use sops-nix**: For all sensitive data - never hardcode credentials
-5. **Commit atomic changes**: Group related changes in single commits
 
 ## Common Patterns
 
-### Service Module Skeleton
+### Shared User/Group
 ```nix
-{ config, lib, pkgs, ... }:
 let
-  cfg = config.services.<service-name>;
-in
-{
-  options.services.<service-name> = {
-    enable = lib.mkEnableOption "Service description";
-    port = lib.mkOption {
-      type = lib.types.port;
-      default = 8080;
-      description = "Port to listen on";
-    };
-  };
-
-  config = lib.mkIf cfg.enable {
-    # Service config
-    # Firewall rules
-    # Environment variables
-    # User/group setup
-  };
+  shareUser = "share";
+  shareGroup = "share";
+  shareUmask = "0002";
+in {
+  services.<name>.user = shareUser;
+  systemd.services.<name>.serviceConfig.UMask = lib.mkForce shareUmask;
 }
 ```
 
-### Caddy Integration Pattern
+### SOPS in Host Config
 ```nix
-services.caddy-wrapper.virtualHosts."<name>" = {
-  domain = domain;
-  reverseProxy = "localhost:${toString port}";
-  # or
-  fileServer = "/var/www";
+sops = {
+  defaultSopsFile = ../../../secrets/<host>.yaml;
+  age.keyFile = "/var/lib/sops-nix/key.txt";
+  secrets.<name> = { };
 };
+
+# In service
+systemd.services.<name>.serviceConfig.EnvironmentFile = 
+  [ config.sops.secrets.<name>_env.path ];
 ```
 
-### Database/Storage Pattern
-```nix
-services.postgresql.enable = true;
-# or
-services.<service>.database.createLocally = true;
-```
+## Hosts
 
-## Hosts Reference
+| Host    | Description     | Special Modules                  |
+|---------|-----------------|----------------------------------|
+| `adam`  | Homelab server  | disko, sops-nix, vpn-confinement |
+| `tabris`| WSL workstation | nixos-wsl                        |
+| `lilith`| Additional host | disko                            |
 
-| Host | Description | Platform |
-|------|-------------|----------|
-| `adam` | Homelab server | x86_64-linux |
-| `tabris` | Workstation/WSL | x86_64-linux |
+## Workflow
 
-## Tips for Agents
+1. Read `flake.nix` to understand inputs and structure
+2. Read existing files before editing
+3. Build to verify after changes
+4. Use sops-nix for secrets (never hardcode)
+5. Commit atomic changes
 
-- **Incremental builds**: Use `--max-jobs` to limit parallel builds
-- **Offline mode**: Use `--offline` with pre-fetched dependencies
-- **Garbage collection**: `nix-collect-jarbage -d` to clean old generations
-- **Cache reuse**: Builds use cached substitutes when available
+## Tips
+
+- `nix flake show` to list all outputs
+- `nix-collect-garbage -d` to clean old generations
+- Check `nixConfig` in flake.nix for binary caches
+- Use `lib.trace` for debugging evaluation

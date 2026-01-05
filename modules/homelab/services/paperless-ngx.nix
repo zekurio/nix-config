@@ -26,18 +26,7 @@ in
           ".DS_STORE/*"
           "desktop.ini"
         ];
-        # OIDC Authentication via Dex
-        PAPERLESS_APPS = "allauth.socialaccount.providers.openid_connect";
       };
-      # Environment file containing PAPERLESS_SOCIALACCOUNT_PROVIDERS JSON
-      # See secrets/adam.yaml for the required format
-      environmentFile = config.sops.secrets.paperless_env.path;
-    };
-
-    sops.secrets.paperless_env = {
-      owner = "paperless";
-      group = "paperless";
-      mode = "0400";
     };
 
     systemd.tmpfiles.rules = [
