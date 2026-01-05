@@ -215,6 +215,7 @@ in
     autobrr-wrapped.enable = true;
     whisparr-wrapped.enable = true;
     fileflows-wrapped.enable = true;
+    pocket-id-wrapped.enable = true;
 
     # qBittorrent with VPN confinement
     qbittorrent-wrapped.enable = true;
@@ -285,6 +286,7 @@ in
                "\"zekurio.xyz. 3600 IN A ${networkIP}\""
                "\"docs.zekurio.xyz. 3600 IN A ${networkIP}\""
                  "\"photos.zekurio.xyz. 3600 IN A ${networkIP}\""
+              "\"auth.zekurio.xyz. 3600 IN A ${networkIP}\""
                ];
             }
             {
@@ -305,6 +307,7 @@ in
                "\"zekurio.xyz. 3600 IN A ${tailscaleIP}\""
                "\"docs.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
                  "\"photos.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
+              "\"auth.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
                ];
             }
           ];
