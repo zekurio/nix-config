@@ -55,6 +55,8 @@ in
     amdgpu.overdrive.enable = true;
   };
 
+  modules.virtualization.enable = true;
+
   # SMB shares
   fileSystems = {
     "/mnt/vault" = {
@@ -247,6 +249,8 @@ in
   fonts.packages = with pkgs; [
     inter
     fira-code
+    noto-fonts-cjk-sans
+    noto-fonts-cjk-serif
     nerd-fonts.symbols-only
   ];
 
