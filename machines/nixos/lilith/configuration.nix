@@ -3,6 +3,7 @@
   pkgs,
   inputs,
   modulesPath,
+  lib,
   ...
 }:
 let
@@ -15,7 +16,7 @@ in
     ../default.nix
   ];
 
-  # Boot configuration
+  # System Configuration
   boot = {
     kernelPackages = pkgs.linuxPackages_zen;
     kernelModules = [
@@ -33,19 +34,39 @@ in
     '';
     blacklistedKernelModules = [ "k10temp" ];
     loader = {
-      timeout = 0;
+      timeout = 3;
       efi.canTouchEfiVariables = true;
-      systemd-boot.enable = true;
+      systemd-boot = {
+        enable = lib.mkForce false;
+        configurationLimit = 3;
+      };
+    };
+    lanzaboote = {
+      enable = true;
+      pkiBundle = "/var/lib/sbctl";
     };
   };
 
-  # Hardware configuration
+  swapDevices = [
+    {
+      device = "/var/lib/swapfile";
+      size = 16 * 1024;
+    }
+  ];
+
+  time.timeZone = "Europe/Vienna";
+
+  # Hardware
   hardware = {
     enableRedistributableFirmware = true;
+
+    # AMD CPU
     cpu.amd = {
       updateMicrocode = true;
       ryzen-smu.enable = true;
     };
+
+    # AMD GPU
     graphics = {
       enable = true;
       extraPackages = with pkgs; [
@@ -53,11 +74,24 @@ in
       ];
     };
     amdgpu.overdrive.enable = true;
+
+    bluetooth = {
+      enable = true;
+      powerOnBoot = true;
+    };
   };
 
-  modules.virtualization.enable = true;
+  # Networking
+  networking = {
+    hostName = "lilith";
+    networkmanager.enable = true;
+    firewall = {
+      enable = true;
+      allowedTCPPorts = [ 22 ];
+    };
+  };
 
-  # SMB shares
+  # Storage & Filesystems
   fileSystems = {
     "/mnt/vault" = {
       device = "//192.168.0.2/vault";
@@ -102,70 +136,70 @@ in
     };
   };
 
-  environment.sessionVariables = {
-    AMD_VULKAN_ICD = "RADV";
-    ELECTRON_OZONE_PLATFORM_HINT = "auto";
-    QT_QPA_PLATFORM = "wayland";
-    QT_QPA_PLATFORMTHEME = "gtk3";
-    QT_QPA_PLATFORMTHEME_QT6 = "gtk3";
-    XCURSOR_THEME = "BreezeX-RosePine-Linux";
-    XCURSOR_SIZE = "32";
+  # Security
+  security = {
+    rtkit.enable = true; # Real-time scheduling for audio
+    pam.services.greetd.enableGnomeKeyring = true;
   };
 
-  # Networking configuration
-  networking = {
-    hostName = "lilith";
-    networkmanager.enable = true;
-    firewall = {
+  # Services
+  services = {
+    # System
+    openssh = {
       enable = true;
-      allowedTCPPorts = [ 22 ];
-    };
-  };
-
-  # SSH
-  services.openssh = {
-    enable = true;
-    settings = {
-      PasswordAuthentication = false;
-      PermitRootLogin = "no";
-    };
-  };
-
-  swapDevices = [
-    {
-      device = "/var/lib/swapfile";
-      size = 16 * 1024;
-    }
-  ];
-
-  # Niri compositor
-  programs.niri.enable = true;
-
-  # Steam
-  programs.steam = {
-    enable = true;
-    remotePlay.openFirewall = true;
-    dedicatedServer.openFirewall = true;
-    localNetworkGameTransfers.openFirewall = true;
-  };
-
-  # GameMode for automatic performance optimizations
-  programs.gamemode = {
-    enable = true;
-    settings = {
-      general = {
-        renice = 10;
-      };
-      gpu = {
-        apply_gpu_optimisations = "accept-responsibility";
-        gpu_device = 0;
-        amd_performance_level = "high";
+      settings = {
+        PasswordAuthentication = false;
+        PermitRootLogin = "no";
       };
     };
+
+    # Hardware
+    lact.enable = true; # AMD GPU control
+    power-profiles-daemon.enable = true;
+    blueman.enable = true;
+    udisks2.enable = true;
+    scx = {
+      enable = true;
+      scheduler = "scx_lavd";
+    };
+
+    # Desktop
+    gnome.gnome-keyring.enable = true;
+    displayManager.dms-greeter = {
+      enable = true;
+      compositor.name = "niri";
+      configHome = "/home/${mainUser}";
+    };
+
+    # Audio
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+
+      extraConfig.pipewire = {
+        "10-clock-rate" = {
+          "context.properties" = {
+            "default.clock.rate" = 48000;
+            "default.clock.allowed-rates" = [
+              44100
+              48000
+              96000
+            ];
+            "default.clock.quantum" = 4096;
+            "default.clock.min-quantum" = 2048;
+            "default.clock.max-quantum" = 8192;
+          };
+        };
+      };
+    };
   };
 
-  # DankMaterialShell
+  # Programs
   programs = {
+    # Desktop
+    niri.enable = true;
     dms-shell = {
       enable = true;
       quickshell.package = inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.quickshell;
@@ -177,65 +211,78 @@ in
       enableClipboard = true;
       enableDynamicTheming = true;
       enableAudioWavelength = true;
+      enableVPN = true;
     };
 
     _1password.enable = true;
-
     _1password-gui = {
       enable = true;
       polkitPolicyOwners = [ "zekurio" ];
     };
 
     coolercontrol.enable = true;
+
+    # Gaming
+    steam = {
+      enable = true;
+      remotePlay.openFirewall = true;
+      dedicatedServer.openFirewall = true;
+      localNetworkGameTransfers.openFirewall = true;
+    };
+    gamemode = {
+      enable = true;
+      settings = {
+        general = {
+          renice = 10;
+        };
+        gpu = {
+          apply_gpu_optimisations = "accept-responsibility";
+          gpu_device = 0;
+          amd_performance_level = "high";
+        };
+      };
+    };
   };
 
-  # DankGreeter with greetd
-  services.displayManager.dms-greeter = {
-    enable = true;
-    compositor.name = "niri";
-    configHome = "/home/${mainUser}";
-  };
-
-  # Set cursor theme for greetd
-  systemd.services.greetd.environment = {
+  # Environment
+  environment.sessionVariables = {
+    AMD_VULKAN_ICD = "RADV";
+    ELECTRON_OZONE_PLATFORM_HINT = "auto";
+    QT_QPA_PLATFORM = "wayland";
+    QT_QPA_PLATFORMTHEME = "gtk3";
+    QT_QPA_PLATFORMTHEME_QT6 = "gtk3";
     XCURSOR_THEME = "BreezeX-RosePine-Linux";
     XCURSOR_SIZE = "32";
   };
 
-  # GNOME Keyring
-  services.gnome.gnome-keyring.enable = true;
-  security.pam.services.greetd.enableGnomeKeyring = true;
-
-  # Enable real-time scheduling for audio (prevents crackling)
-  security.rtkit.enable = true;
-
-  # System packages
   environment.systemPackages = with pkgs; [
-    # system
+    # System
     ryzen-monitor-ng
     lm_sensors
     xwayland-satellite
+    cifs-utils
+    udiskie
+    wl-clip-persist
+    sbctl
 
-    # Desktop applications
+    # Desktop
     _1password-cli
     _1password-gui
     brave
+    celluloid
     deezer-enhanced
     ghostty
     heroic
+    jellyfin-desktop
+    loupe
+    nautilus
+    papers
     protonplus
-    tsukimi
     vesktop
     zed-editor
 
     # Gaming
     mangohud
-
-    # smb
-    cifs-utils
-
-    # Automounting
-    udiskie
 
     # Theming
     adw-gtk3
@@ -245,7 +292,6 @@ in
     rose-pine-cursor
   ];
 
-  # Fonts
   fonts.packages = with pkgs; [
     inter
     fira-code
@@ -254,47 +300,15 @@ in
     nerd-fonts.symbols-only
   ];
 
-  services = {
-    # LACT for AMD GPU control
-    lact.enable = true;
+  # Virtualization
+  modules.virtualization.enable = true;
 
-    # Power management
-    power-profiles-daemon.enable = true;
-
-    # Pipewire audio
-    pipewire = {
-      enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
-
-      # Fix audio crackling/static during gaming
-      extraConfig.pipewire = {
-        "context.properties" = {
-          "default.clock.rate" = 96000;
-          "default.clock.allowed-rates" = [
-            48000
-            96000
-          ];
-          "default.clock.quantum" = 1024;
-          "default.clock.min-quantum" = 32;
-          "default.clock.max-quantum" = 2048;
-          "default.clock.quantum-limit" = 8192;
-        };
-      };
-    };
-
-    # udisks2 for automounting removable drives
-    udisks2.enable = true;
+  # Systemd
+  systemd.services.greetd.environment = {
+    XCURSOR_THEME = "BreezeX-RosePine-Linux";
+    XCURSOR_SIZE = "32";
   };
 
-  # XDG portal for Wayland
-  xdg.portal = {
-    enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-  };
-
-  # Systemd user services
   systemd.user.services = {
     udiskie = {
       description = "udiskie automounter for removable drives";
@@ -306,8 +320,11 @@ in
     };
   };
 
-  time.timeZone = "Europe/Vienna";
+  # XDG
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  };
 
-  # DO NOT TOUCH THIS
-  system.stateVersion = "25.11";
+  system.stateVersion = "25.11"; # DO NOT CHANGE
 }

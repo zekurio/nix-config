@@ -1,12 +1,15 @@
-{ config, lib, pkgs, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   shareUser = "share";
   shareGroup = "share";
   shareUmask = "0002";
   domain = "arr.schnitzelflix.xyz";
   port = 8989;
-in
-{
+in {
   options.services.sonarr-wrapped = {
     enable = lib.mkEnableOption "Sonarr TV show manager with Caddy integration";
   };

@@ -1,9 +1,7 @@
-inputs: final: prev:
-let
+inputs: final: prev: let
   nodejs = prev.nodejs_22;
-  pnpm = prev.pnpm_10.override { inherit nodejs; };
-in
-{
+  pnpm = prev.pnpm_10.override {inherit nodejs;};
+in {
   jellyseerr = prev.stdenv.mkDerivation (finalAttrs: {
     pname = "jellyseerr";
     version = "develop";
@@ -12,7 +10,7 @@ in
       owner = "seerr-team";
       repo = "seerr";
       rev = "develop";
-      hash = "sha256-x4LNvloOuVjtxGSsjdlTRZ9xGPegsRwX1HS7wqxjR5M=";
+      hash = "sha256-qdYWfNZVl+sefvj9fpsG61RGoCc35Tlk2s5W+xiDlgc=";
     };
 
     pnpmDeps = prev.fetchPnpmDeps {
@@ -22,7 +20,7 @@ in
       hash = "sha256-ZhkE/snz6DMxKIekclgCY3jDs492lUlQspvoflR2dFQ=";
     };
 
-    buildInputs = [ prev.sqlite ];
+    buildInputs = [prev.sqlite];
 
     nativeBuildInputs = with prev; [
       python3
@@ -30,7 +28,7 @@ in
       nodejs
       pnpm
       makeWrapper
-      (pnpmConfigHook.override { inherit pnpm; })
+      (pnpmConfigHook.override {inherit pnpm;})
     ];
 
     preBuild = ''
@@ -73,7 +71,7 @@ in
       description = "Fork of overseerr for jellyfin support (develop branch)";
       homepage = "https://github.com/seerr-team/seerr";
       license = licenses.mit;
-      maintainers = [ ];
+      maintainers = [];
       platforms = platforms.linux;
       mainProgram = "jellyseerr";
     };

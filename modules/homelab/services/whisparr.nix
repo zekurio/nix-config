@@ -3,15 +3,13 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   shareUser = "share";
   shareGroup = "share";
   shareUmask = "0002";
   domain = "arr.schnitzelflix.xyz";
   port = 6969;
-in
-{
+in {
   options.services.whisparr-wrapped = {
     enable = lib.mkEnableOption "Whisparr adult content manager with Caddy integration";
   };

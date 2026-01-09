@@ -1,8 +1,6 @@
-{ lib, ... }:
-let
+{lib, ...}: let
   inherit (lib) mkDefault;
-in
-{
+in {
   imports = [
     ../../modules/users
     ../../modules/virtualization
@@ -10,7 +8,7 @@ in
 
   i18n = {
     defaultLocale = "en_US.UTF-8";
-    supportedLocales = [ "en_US.UTF-8/UTF-8" ];
+    supportedLocales = ["en_US.UTF-8/UTF-8"];
   };
 
   nixpkgs.config = {

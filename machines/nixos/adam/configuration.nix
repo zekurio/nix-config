@@ -3,8 +3,7 @@
   pkgs,
   modulesPath,
   ...
-}:
-let
+}: let
   mainUser = "zekurio";
   shareUser = "share";
   shareGroup = "share";
@@ -12,8 +11,7 @@ let
   # Network IP parameters - can be overridden when importing this module
   networkIP = "192.168.0.2";
   tailscaleIP = "100.100.67.10";
-in
-{
+in {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ./disko.nix
@@ -32,15 +30,15 @@ in
       "kvm-amd"
       "zenpower"
     ];
-    extraModulePackages = [ config.boot.kernelPackages.zenpower ];
-    blacklistedKernelModules = [ "k10temp" ];
+    extraModulePackages = [config.boot.kernelPackages.zenpower];
+    blacklistedKernelModules = ["k10temp"];
     loader = {
       timeout = 0;
       efi.canTouchEfiVariables = true;
       systemd-boot.enable = true;
     };
-    supportedFilesystems = [ "zfs" ];
-    zfs.extraPools = [ "tank" ];
+    supportedFilesystems = ["zfs"];
+    zfs.extraPools = ["tank"];
   };
 
   # Hardware configuration
@@ -68,7 +66,7 @@ in
 
   modules.homelab.mediaShare = {
     enable = true;
-    collaborators = [ mainUser ];
+    collaborators = [mainUser];
   };
 
   # Networking configuration
@@ -78,8 +76,8 @@ in
     networkmanager.enable = false;
     firewall.enable = true;
     hostId = "eab7e93e"; # nix run nixpkgs#openssl -- rand -hex 4
-    nameservers = [ "127.0.0.1" ];
-    firewall.allowedUDPPorts = [ 53 ];
+    nameservers = ["127.0.0.1"];
+    firewall.allowedUDPPorts = [53];
   };
 
   # DNS over TLS with Cloudflare
@@ -108,7 +106,7 @@ in
     defaultSopsFile = ../../../secrets/adam.yaml;
     age.keyFile = "/var/lib/sops-nix/key.txt";
     secrets = {
-      mullvad_wg = { };
+      mullvad_wg = {};
     };
   };
 
@@ -281,16 +279,16 @@ in
               "\"sab.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
               "\"qbit.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
               "\"arr.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
-               "\"ff.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
-               "\"accounts.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
-               "\"zekurio.xyz. 3600 IN A ${networkIP}\""
-               "\"docs.zekurio.xyz. 3600 IN A ${networkIP}\""
-                 "\"photos.zekurio.xyz. 3600 IN A ${networkIP}\""
+              "\"ff.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
+              "\"accounts.schnitzelflix.xyz. 3600 IN A ${networkIP}\""
+              "\"zekurio.xyz. 3600 IN A ${networkIP}\""
+              "\"docs.zekurio.xyz. 3600 IN A ${networkIP}\""
+              "\"photos.zekurio.xyz. 3600 IN A ${networkIP}\""
               "\"auth.zekurio.xyz. 3600 IN A ${networkIP}\""
-               ];
-            }
-            {
-              name = "tailscale";
+            ];
+          }
+          {
+            name = "tailscale";
             local-zone = [
               "schnitzelflix.xyz. transparent"
               "zekurio.xyz. transparent"
@@ -302,15 +300,15 @@ in
               "\"sab.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
               "\"qbit.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
               "\"arr.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
-               "\"ff.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
-               "\"accounts.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
-               "\"zekurio.xyz. 3600 IN A ${tailscaleIP}\""
-               "\"docs.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
-                 "\"photos.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
+              "\"ff.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
+              "\"accounts.schnitzelflix.xyz. 3600 IN A ${tailscaleIP}\""
+              "\"zekurio.xyz. 3600 IN A ${tailscaleIP}\""
+              "\"docs.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
+              "\"photos.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
               "\"auth.zekurio.xyz. 3600 IN A ${tailscaleIP}\""
-               ];
-            }
-          ];
+            ];
+          }
+        ];
       };
     };
   };

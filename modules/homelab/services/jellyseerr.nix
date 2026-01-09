@@ -1,9 +1,12 @@
-{ config, lib, pkgs, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   domain = "requests.schnitzelflix.xyz";
   port = 5055;
-in
-{
+in {
   options.services.jellyseerr-wrapped = {
     enable = lib.mkEnableOption "Jellyseerr media request manager with Caddy integration";
   };

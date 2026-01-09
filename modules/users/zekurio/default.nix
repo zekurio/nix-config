@@ -3,14 +3,20 @@
   lib,
   config,
   ...
-}:
-let
+}: let
   use1Password = config.networking.hostName != "adam";
   onePassPath = "~/.1password/agent.sock";
-in
-{
+in {
+  imports = [
+    ./desktop.nix
+  ];
   # System-level user configuration
-  nix.settings.trusted-users = [ "zekurio" ];
+  nix.settings.trusted-users = ["zekurio"];
+
+  programs.vim = {
+    enable = true;
+    defaultEditor = true;
+  };
 
   programs.zsh.enable = true;
 
@@ -71,60 +77,6 @@ in
 
       # Suppress version mismatch warning
       home.enableNixpkgsReleaseCheck = false;
-
-      # Font configuration
-      fonts.fontconfig = {
-        enable = true;
-        defaultFonts = {
-          sansSerif = [ "Inter" ];
-          monospace = [ "Fira Code" ];
-        };
-      };
-
-      # MangoHud configuration
-      xdg.configFile."MangoHud/MangoHud.conf".text = ''
-        control=mangohud
-        full
-        cpu_temp
-        gpu_temp
-        ram
-        vram
-        io_read
-        io_write
-        arch
-        gpu_name
-        cpu_power
-        gpu_power
-        wine
-        frametime
-      '';
-
-      gtk = {
-        enable = true;
-        theme = {
-          name = "adw-gtk3-dark";
-          package = pkgs.adw-gtk3;
-        };
-        iconTheme = {
-          name = "Papirus-Dark";
-          package = pkgs.papirus-icon-theme;
-        };
-        cursorTheme = {
-          name = "BreezeX-RosePine-Linux";
-          package = pkgs.rose-pine-cursor;
-          size = 32;
-        };
-        font = {
-          name = "Inter";
-          size = 11;
-        };
-        gtk3.extraConfig = {
-          gtk-application-prefer-dark-theme = true;
-        };
-        gtk4.extraConfig = {
-          gtk-application-prefer-dark-theme = true;
-        };
-      };
 
       programs = {
         direnv = {

@@ -1,5 +1,8 @@
-{ lib, pkgs, ... }:
 {
+  lib,
+  pkgs,
+  ...
+}: {
   imports = [
     ../default.nix
   ];
@@ -19,7 +22,7 @@
   # WSL2 SSH agent bridge to Windows ssh-agent.exe
   # Requires Windows OpenSSH agent service to be running
   home-manager.users.zekurio = {
-    home.packages = [ pkgs.wsl2-ssh-agent ];
+    home.packages = [pkgs.wsl2-ssh-agent];
 
     programs.zsh.initContent = lib.mkAfter ''
       # Initialize wsl2-ssh-agent for Windows SSH agent forwarding
