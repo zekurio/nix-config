@@ -3,8 +3,7 @@
   pkgs,
   modulesPath,
   ...
-}:
-let
+}: let
   mainUser = "zekurio";
   shareUser = "share";
   shareGroup = "share";
@@ -12,8 +11,7 @@ let
   # Network IP parameters - can be overridden when importing this module
   networkIP = "192.168.0.2";
   tailscaleIP = "100.100.67.10";
-in
-{
+in {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ./disko.nix
@@ -32,15 +30,15 @@ in
       "kvm-amd"
       "zenpower"
     ];
-    extraModulePackages = [ config.boot.kernelPackages.zenpower ];
-    blacklistedKernelModules = [ "k10temp" ];
+    extraModulePackages = [config.boot.kernelPackages.zenpower];
+    blacklistedKernelModules = ["k10temp"];
     loader = {
       timeout = 0;
       efi.canTouchEfiVariables = true;
       systemd-boot.enable = true;
     };
-    supportedFilesystems = [ "zfs" ];
-    zfs.extraPools = [ "tank" ];
+    supportedFilesystems = ["zfs"];
+    zfs.extraPools = ["tank"];
   };
 
   # Hardware configuration
@@ -68,7 +66,7 @@ in
 
   modules.homelab.mediaShare = {
     enable = true;
-    collaborators = [ mainUser ];
+    collaborators = [mainUser];
   };
 
   # Networking configuration
@@ -78,8 +76,8 @@ in
     networkmanager.enable = false;
     firewall.enable = true;
     hostId = "eab7e93e"; # nix run nixpkgs#openssl -- rand -hex 4
-    nameservers = [ "127.0.0.1" ];
-    firewall.allowedUDPPorts = [ 53 ];
+    nameservers = ["127.0.0.1"];
+    firewall.allowedUDPPorts = [53];
   };
 
   # DNS over TLS with Cloudflare
@@ -108,7 +106,7 @@ in
     defaultSopsFile = ../../../secrets/adam.yaml;
     age.keyFile = "/var/lib/sops-nix/key.txt";
     secrets = {
-      mullvad_wg = { };
+      mullvad_wg = {};
     };
   };
 
@@ -205,8 +203,9 @@ in
     paperless-ngx-wrapped.enable = true;
     jellyseerr-wrapped.enable = true;
     jellyfin-wrapped.enable = true;
-    streamystats-wrapped.enable = true;
     immich-wrapped.enable = true;
+
+    # Enable arr stack services
     sonarr-wrapped.enable = true;
     radarr-wrapped.enable = true;
     prowlarr-wrapped.enable = true;
@@ -215,6 +214,8 @@ in
     whisparr-wrapped.enable = true;
     fileflows-wrapped.enable = true;
     pocket-id-wrapped.enable = true;
+
+    # qBittorrent with VPN confinement
     qbittorrent-wrapped.enable = true;
 
     # Unbound DNS server

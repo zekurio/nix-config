@@ -1,13 +1,12 @@
 {
   config,
   lib,
+  pkgs,
   ...
-}:
-let
+}: let
   domain = "docs.zekurio.xyz";
   port = 8010;
-in
-{
+in {
   options.services.paperless-ngx-wrapped = {
     enable = lib.mkEnableOption "Paperless-ngx document management system with Caddy integration";
   };
@@ -46,6 +45,6 @@ in
       '';
     };
 
-    users.users.paperless.extraGroups = [ "share" ];
+    users.users.paperless.extraGroups = ["share"];
   };
 }
