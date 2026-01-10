@@ -1,4 +1,5 @@
-{...}: {
+{ ... }:
+{
   imports = [
     ./autobrr.nix
     ./caddy.nix
@@ -13,6 +14,7 @@
     ./qbittorrent.nix
     ./radarr.nix
     ./sabnzbd.nix
+    ./streamystats.nix
     ./sonarr.nix
     ./whisparr.nix
   ];
