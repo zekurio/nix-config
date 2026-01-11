@@ -19,6 +19,7 @@ in {
       consumptionDirIsPublic = true;
       port = port;
       address = "127.0.0.1";
+      environmentFile = config.sops.secrets.paperless_env.path;
       settings = {
         PAPERLESS_URL = "https://${domain}";
         PAPERLESS_OCR_LANGUAGE = "deu+eng";
@@ -46,5 +47,11 @@ in {
     };
 
     users.users.paperless.extraGroups = ["share"];
+
+    sops.secrets.paperless_env = {
+      owner = "paperless";
+      group = "paperless";
+      mode = "0400";
+    };
   };
 }
