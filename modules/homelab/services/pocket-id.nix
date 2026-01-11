@@ -1,12 +1,13 @@
 {
   config,
   lib,
-  pkgs,
   ...
-}: let
+}:
+let
   domain = "auth.zekurio.xyz";
   port = 1411;
-in {
+in
+{
   options.services.pocket-id-wrapped = {
     enable = lib.mkEnableOption "Pocket ID authentication server with Caddy integration";
   };
